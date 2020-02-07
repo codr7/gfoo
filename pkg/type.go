@@ -8,16 +8,17 @@ type Type interface {
 	Compare(x, y interface{}) Order
 	Dump(val interface{}, out io.Writer) error
 	Name() string
+	Unquote(val interface{}) Form
 }
 
 type TypeBase struct {
 	name string
 }
 
-func (typ *TypeBase) Init(name string) {
-	typ.name = name
+func (self *TypeBase) Init(name string) {
+	self.name = name
 }
 
-func (typ *TypeBase) Name() string {
-	return typ.name
+func (self *TypeBase) Name() string {
+	return self.name
 }

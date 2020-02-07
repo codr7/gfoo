@@ -11,32 +11,40 @@ type Value struct {
 }
 
 func NewValue(dataType Type, data interface{}) Value {
-	var val Value
-	val.Init(dataType, data)
-	return val
+	var v Value
+	v.Init(dataType, data)
+	return v
 }
 
-func (val *Value) Init(dataType Type, data interface{}) {
-	val.dataType = dataType
-	val.data = data
+func (self *Value) Init(dataType Type, data interface{}) {
+	self.dataType = dataType
+	self.data = data
 }
 
-func (val Value) Compare(other Value) Order {
-	if val.dataType != other.dataType {
-		return strings.Compare(val.dataType.Name(), other.dataType.Name())
+func (self Value) Compare(other Value) Order {
+	if self.dataType != other.dataType {
+		return strings.Compare(self.dataType.Name(), other.dataType.Name())
 	}
 
-	return val.dataType.Compare(val.data, other.data)
+	return self.dataType.Compare(self.data, other.data)
 }
 
-func (val Value) Dump(out io.Writer) error {
-	return val.dataType.Dump(val.data, out)
+func (self Value) Dump(out io.Writer) error {
+	return self.dataType.Dump(self.data, out)
 }
 
-func (val Value) Is(other Value) bool {
-	if val.dataType != other.dataType {
+func (self Value) Is(other Value) bool {
+	if self.dataType != other.dataType {
 		return false
 	}
 	
-	return val.data == other.data
+	return self.data == other.data
+}
+
+func (self Value) Literal() *Literal {
+	return &Literal{value: self}
+}
+
+func (self Value) Unquote() Form {
+	return self.dataType.Unquote(self.data)
 }

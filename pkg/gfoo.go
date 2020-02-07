@@ -23,37 +23,37 @@ func New() *GFoo {
 	return gfoo
 }
 
-func (gfoo *GFoo) Compile(forms []Form) ([]Op, error) {
+func (self *GFoo) Compile(forms []Form) ([]Op, error) {
 	return nil, nil
 }
 
-func (gfoo *GFoo) DumpStack(out io.Writer) error {
-	return DumpSlice(gfoo.stack, out)
+func (self *GFoo) DumpStack(out io.Writer) error {
+	return DumpSlice(self.stack, out)
 }
 
-func (gfoo *GFoo) Errorf(pos Position, spec string, args...interface{}) error {
+func (self *GFoo) Errorf(pos Position, spec string, args...interface{}) error {
 	msg := fmt.Sprintf("Error in '%v', line %v, column %v: %v ", 
 		pos.filename, pos.line, pos.column, fmt.Sprintf(spec, args...))
 
-	if gfoo.Debug {
+	if self.Debug {
 		panic(msg)
 	}
 
 	return errors.New(msg)
 }
 
-func (gfoo *GFoo) Evaluate(ops []Op) error {
+func (self *GFoo) Evaluate(ops []Op) error {
 	return nil
 }
 
-func (gfoo *GFoo) Parse(in *bufio.Reader, pos *Position) ([]Form, error) {
+func (self *GFoo) Parse(in *bufio.Reader, pos *Position) ([]Form, error) {
 	var out []Form
 	var f Form
 	var err error
 	
 	for {
 		if err = skipSpace(in, pos); err == nil {
-			f, err = gfoo.parseForm(in, pos)
+			f, err = self.parseForm(in, pos)
 		}
 
 		if err == io.EOF {

@@ -15,7 +15,12 @@ type SymbolType struct {
 	StringType
 }
 
-func (typ *SymbolType) Dump(val interface{}, out io.Writer) error {
+func (_ *SymbolType) Dump(val interface{}, out io.Writer) error {
 	_, err := fmt.Fprintf(out, "'%v", val.(string))
 	return err
 }
+
+func (_ *SymbolType) Unquote(val interface{}) Form {
+	return NewIdentifier(val.(string))
+}
+

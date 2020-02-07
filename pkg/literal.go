@@ -10,6 +10,6 @@ func NewLiteral(dataType Type, data interface{}) *Literal {
 	return lit
 }
 
-func (lit *Literal) Quote() Value {
-	return lit.value
+func (self *Literal) Quote() Value {
+	return self.value
 }

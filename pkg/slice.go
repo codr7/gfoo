@@ -14,11 +14,7 @@ type SliceType struct {
 	TypeBase
 }
 
-func (typ *SliceType) Dump(val interface{}, out io.Writer) error {
-	return DumpSlice(val.([]Value), out)
-}
-
-func (typ *SliceType) Compare(x, y interface{}) Order {
+func (_ *SliceType) Compare(x, y interface{}) Order {
 	xv, yv := x.([]Value), y.([]Value)
 	xl, yl := len(xv), len(yv)
 	
@@ -29,4 +25,37 @@ func (typ *SliceType) Compare(x, y interface{}) Order {
 	}
 	
 	return CompareInt(xl, yl)
+}
+
+func (_ *SliceType) Dump(val interface{}, out io.Writer) error {
+	return DumpSlice(val.([]Value), out)
+}
+
+func (_ *SliceType) Unquote(val interface{}) Form {
+	in := val.([]Value)
+	out := make([]Form, len(in))
+
+	for i, v := range in {
+		out[i] = v.Unquote()
+	}
+
+	return NewSliceForm(out)
+}
+
+type SliceForm struct {
+	items []Form
+}
+
+func NewSliceForm(items []Form) *SliceForm {
+	return &SliceForm{items: items}
+}
+
+func (self *SliceForm) Quote() Value {
+	v := make([]Value, len(self.items))
+
+	for i, f := range self.items {
+		v[i] = f.Quote()
+	}
+	
+	return NewValue(&Slice, v)
 }

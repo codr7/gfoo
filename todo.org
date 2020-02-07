@@ -1,5 +1,4 @@
-* implement GFoo.Parse
-** implement ParseIdentifier
-** implement ParseNumber
+* implement parseNumber
 * implement GFoo.Compile
 * implement GFoo.Evaluate
+** evaluate Group as Slice

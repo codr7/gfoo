@@ -14,7 +14,7 @@ func MinInt(x, y int) int {
 }
 
 func DumpSlice(in []Value, out io.Writer) error {
-	if _, err := fmt.Fprint(out, "["); err != nil {
+	if _, err := fmt.Fprint(out, "("); err != nil {
 		return err
 	}
 
@@ -30,7 +30,7 @@ func DumpSlice(in []Value, out io.Writer) error {
 		}
 	}
 	
-	if _, err := fmt.Fprint(out, "]"); err != nil {
+	if _, err := fmt.Fprint(out, ")"); err != nil {
 		return err
 	}
 	

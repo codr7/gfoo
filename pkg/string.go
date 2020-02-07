@@ -16,11 +16,15 @@ type StringType struct {
 	TypeBase
 }
 
-func (typ *StringType) Dump(val interface{}, out io.Writer) error {
+func (_ *StringType) Compare(x, y interface{}) Order {
+	return Order(strings.Compare(x.(string), y.(string)))
+}
+
+func (_ *StringType) Dump(val interface{}, out io.Writer) error {
 	_, err := fmt.Fprintf(out, "\"%v\"", val.(string))
 	return err
 }
 
-func (typ *StringType) Compare(x, y interface{}) Order {
-	return Order(strings.Compare(x.(string), y.(string)))
+func (_ *StringType) Unquote(val interface{}) Form {
+	return NewLiteral(&String, val)
 }

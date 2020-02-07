@@ -3,6 +3,7 @@ package gfoo
 import (
 	"bufio"
 	"bytes"
+	"io"
 	"unicode"
 )
 
@@ -30,7 +31,7 @@ func skipSpace(in *bufio.Reader, pos *Position) error {
 	}
 }
 
-func (gfoo *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 	c, _, err := in.ReadRune()
 	
 	if err != nil {
@@ -38,28 +39,37 @@ func (gfoo *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 	}
 
 	switch c {
+	case '\'':
+		pos.column++
+		var f Form
+
+		if f, err = self.parseIdentifier(in,  0, pos); err != nil {
+			return nil, err
+		}
+		
+		return f.Quote().Literal(), nil
 	case '"':
 		pos.column++
-		return gfoo.parseString(in, pos)
+		return self.parseString(in, pos)
 	case '(':
 		pos.column++
-		return gfoo.parseGroup(in, pos)
+		return self.parseSlice(in, pos)
 	default:
 		if unicode.IsDigit(c) {
 			pos.column++
-			return gfoo.parseNumber(in, c, pos)
+			return self.parseNumber(in, c, pos)
 		}
 
 		if unicode.IsGraphic(c) {
 			pos.column++
-			return gfoo.parseIdentifier(in, c, pos)
+			return self.parseIdentifier(in, c, pos)
 		}
 	}
 
-	return nil, gfoo.Errorf(*pos, "Unexpected input: %v", c)
+	return nil, self.Errorf(*pos, "Unexpected input: %v", c)
 }
 
-func (gfoo *GFoo) parseGroup(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseSlice(in *bufio.Reader, pos *Position) (Form, error) {
 	var forms []Form
 	var f Form
 	
@@ -82,25 +92,54 @@ func (gfoo *GFoo) parseGroup(in *bufio.Reader, pos *Position) (Form, error) {
 			return nil, err
 		}
 
-		if f, err = gfoo.parseForm(in, pos); err != nil {
+		if f, err = self.parseForm(in, pos); err != nil {
 			return nil, err
 		}
 
 		forms = append(forms, f)
 	}
+
+	return NewSliceForm(forms), nil
+}
+
+func (self *GFoo) parseIdentifier(in *bufio.Reader, c rune, pos *Position) (Form, error) {
+	var buffer bytes.Buffer
+	var err error
 	
-	return NewGroup(forms), nil
+	for {
+		if c > 0 {
+			if !unicode.IsGraphic(c) || c == '(' || c == ')' || c == '\'' || c == '"' {
+				if err = in.UnreadRune(); err != nil {
+					return nil, err
+				}
+				
+				break
+			}
+			
+			if _, err = buffer.WriteRune(c); err != nil {
+				return nil, err
+			}
+		}
+
+		c, _, err = in.ReadRune()
+		
+		if err == io.EOF {
+			break
+		}
+		
+		if err != nil {
+			return nil, err
+		}
+	}
+	
+	return NewIdentifier(buffer.String()), nil
 }
 
-func (gfoo *GFoo) parseIdentifier(in *bufio.Reader, c rune, pos *Position) (Form, error) {
+func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, error) {
 	return nil, nil
 }
 
-func (gfoo *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, error) {
-	return nil, nil
-}
-
-func (gfoo *GFoo) parseString(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseString(in *bufio.Reader, pos *Position) (Form, error) {
 	var buffer bytes.Buffer
 
 	for {
@@ -112,6 +151,10 @@ func (gfoo *GFoo) parseString(in *bufio.Reader, pos *Position) (Form, error) {
 
 		if c == '"' {
 			break
+		}
+
+		if _, err = buffer.WriteRune(c); err != nil {
+			return nil, err
 		}
 	}
 	

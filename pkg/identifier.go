@@ -8,6 +8,6 @@ func NewIdentifier(name string) *Identifier {
 	return &Identifier{name: name}
 }
 
-func (id *Identifier) Quote() Value {
-	return NewValue(&Symbol, id.name)
+func (self *Identifier) Quote() Value {
+	return NewValue(&Symbol, self.name)
 }
