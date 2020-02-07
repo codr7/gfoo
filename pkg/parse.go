@@ -136,7 +136,82 @@ func (self *GFoo) parseIdentifier(in *bufio.Reader, c rune, pos *Position) (Form
 }
 
 func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, error) {
-	return nil, nil
+	v := int64(0)
+	base := int64(10)
+	var err error
+
+	if c == 0 {
+		if c, _, err = in.ReadRune(); err != nil {
+			return nil, err
+		}
+
+		pos.column++
+
+		if !unicode.IsDigit(c) {
+			return nil, self.Errorf(*pos, "Expected number: %v", c)
+		}
+	}
+	
+	if c == '0' {
+		if c, _, err = in.ReadRune(); err != nil {
+			if err == io.EOF {
+				return NewLiteral(&Int64, v), nil
+			}
+			
+			return nil, err
+		}
+		
+		switch c {
+		case 'b':
+			pos.column++
+			base = 2
+			c = 0
+		case 'x':
+			pos.column++
+			base = 16
+			c = 0
+		default:			
+			if err = in.UnreadRune(); err != nil {
+				return nil, err
+			}
+
+			c = '0'
+		}
+	}
+
+	for {
+		if c > 0 {
+			var dv int64
+			
+			if base == 16 && c >= 'a' && c <= 'f' {
+				dv = 10 + int64(c - 'a')
+			} else {
+				dv = int64(c - '0')
+			}
+
+			v = v * base + dv
+		}
+		
+		c, _, err = in.ReadRune()
+
+		if err == io.EOF {
+			break
+		}
+		
+		if err != nil {
+			return nil, err
+		}
+
+		if !unicode.IsDigit(c) {
+			if err = in.UnreadRune(); err != nil {
+				return nil, err
+			}
+			
+			break
+		}
+	}
+	
+	return NewLiteral(&Int64, v), nil
 }
 
 func (self *GFoo) parseString(in *bufio.Reader, pos *Position) (Form, error) {
