@@ -6,6 +6,30 @@ import (
 	"unicode"
 )
 
+func skipSpace(in *bufio.Reader, pos *Position) error {
+	for {
+		c, _, err := in.ReadRune()
+		
+		if err != nil {
+			return err
+		}
+
+		switch c {
+		case ' ':
+			pos.column++
+		case '\n':
+			pos.line++
+			pos.column = MIN_COLUMN
+		default:
+			if err = in.UnreadRune(); err != nil {
+				return err
+			}
+
+			return nil
+		}
+	}
+}
+
 func (gfoo *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 	c, _, err := in.ReadRune()
 	
@@ -40,6 +64,10 @@ func (gfoo *GFoo) parseGroup(in *bufio.Reader, pos *Position) (Form, error) {
 	var f Form
 	
 	for {
+		if err := skipSpace(in, pos); err != nil {
+			return nil, err
+		}
+		
 		c, _, err := in.ReadRune()
 		
 		if err != nil {

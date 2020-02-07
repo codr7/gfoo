@@ -52,11 +52,15 @@ func (gfoo *GFoo) Parse(in *bufio.Reader, pos *Position) ([]Form, error) {
 	var err error
 	
 	for {
-		if f, err = gfoo.parseForm(in, pos); err != nil {
-			if err == io.EOF {
-				break
-			}
-			
+		if err = skipSpace(in, pos); err == nil {
+			f, err = gfoo.parseForm(in, pos)
+		}
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {			
 			return nil, err
 		}
 
