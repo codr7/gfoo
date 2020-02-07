@@ -7,6 +7,7 @@ import (
 	"gfoo/pkg"
 	"log"
 	"os"
+	"strings"
 )
 
 func repl(g *gfoo.GFoo) {
@@ -33,12 +34,11 @@ func repl(g *gfoo.GFoo) {
 			var err error
 			var forms []gfoo.Form
 			source := buffer.String()
-			fmt.Println(source)
-			
 			buffer.Reset()
 			pos := gfoo.NewPosition("repl")
 			
-			if forms, err = g.Parse(source, &pos); err != nil {
+			if forms, err = g.Parse(bufio.NewReader(strings.NewReader(source)), &pos);
+			err != nil {
 				fmt.Println(err)
 				continue
 			}

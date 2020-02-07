@@ -1,6 +1,8 @@
 package gfoo
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
 	"io"
 )
@@ -26,33 +28,40 @@ func (gfoo *GFoo) Compile(forms []Form) ([]Op, error) {
 }
 
 func (gfoo *GFoo) DumpStack(out io.Writer) error {
-	if _, err := fmt.Fprint(out, "["); err != nil {
-		return err
+	return DumpSlice(gfoo.stack, out)
+}
+
+func (gfoo *GFoo) Errorf(pos Position, spec string, args...interface{}) error {
+	msg := fmt.Sprintf("Error in '%v', line %v, column %v: %v ", 
+		pos.filename, pos.line, pos.column, fmt.Sprintf(spec, args...))
+
+	if gfoo.Debug {
+		panic(msg)
 	}
 
-	for i, v := range gfoo.stack {
-		if i > 0 {
-			if _, err := fmt.Fprint(out, " "); err != nil {
-				return err
-			}
-		}
-		
-		if err := v.Dump(out); err != nil {
-			return err
-		}
-	}
-	
-	if _, err := fmt.Fprint(out, "]"); err != nil {
-		return err
-	}
-	
-	return nil
+	return errors.New(msg)
 }
 
 func (gfoo *GFoo) Evaluate(ops []Op) error {
 	return nil
 }
 
-func (gfoo *GFoo) Parse(source string, pos *Position) ([]Form, error) {
-	return nil, nil
+func (gfoo *GFoo) Parse(in *bufio.Reader, pos *Position) ([]Form, error) {
+	var out []Form
+	var f Form
+	var err error
+	
+	for {
+		if f, err = gfoo.parseForm(in, pos); err != nil {
+			if err == io.EOF {
+				break
+			}
+			
+			return nil, err
+		}
+
+		out = append(out, f)
+	}
+	
+	return out, nil
 }

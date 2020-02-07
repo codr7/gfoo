@@ -1,11 +1,11 @@
 package gfoo
 
 type Position struct {
-	Line, Column uint
 	filename string
+	line, column uint
 }
 
 func NewPosition(filename string) Position {
-	return Position{Line: 1, Column: 0, filename: filename}
+	return Position{filename: filename, line: 1, column: 0}
 }
 

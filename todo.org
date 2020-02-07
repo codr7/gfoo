@@ -1,5 +1,6 @@
 * implement GFoo.Parse
-** add parse.go
+** implement ParseIdentifier
+** implement ParseNumber
+** add GFoo.Skip(in, pos) error
 * implement GFoo.Compile
 * implement GFoo.Evaluate
-

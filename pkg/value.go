@@ -10,8 +10,15 @@ type Value struct {
 	data interface{}
 }
 
-func NewValue(typ Type, dat interface{}) Value {
-	return Value{dataType: typ, data: dat} 
+func NewValue(dataType Type, data interface{}) Value {
+	var val Value
+	val.Init(dataType, data)
+	return val
+}
+
+func (val *Value) Init(dataType Type, data interface{}) {
+	val.dataType = dataType
+	val.data = data
 }
 
 func (val Value) Compare(other Value) Order {
