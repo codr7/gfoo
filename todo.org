@@ -1,1 +1,4 @@
-* implement repl
+* implement GFoo.Parse
+* implement GFoo.Compile
+* implement GFoo.Eval
+

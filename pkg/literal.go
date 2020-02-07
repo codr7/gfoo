@@ -1,13 +1,13 @@
 package gfoo
 
 type Literal struct {
-	value *Value
+	value Value
 }
 
-func NewLiteral(val *Value) *Literal {
+func NewLiteral(val Value) *Literal {
 	return &Literal{value: val}
 }
 
-func (lit *Literal) Quote() *Value {
+func (lit *Literal) Quote(gfoo *GFoo) Value {
 	return lit.value
 }
