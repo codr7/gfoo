@@ -10,6 +10,6 @@ func repl(gfoo *gfoo.GFoo) {
 
 func main() {
 	gfoo := gfoo.New()
-	gfoo.Symbol("foo").Quote().Dump(os.Stdout)
+	gfoo.Symbol("foo").Dump(os.Stdout)
 	repl(gfoo)
 }

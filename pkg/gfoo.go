@@ -13,14 +13,14 @@ func New() *GFoo {
 	return gfoo
 }
 
-func (gfoo *GFoo) Symbol(name string) *Symbol {
+func (gfoo *GFoo) Symbol(name string) *Value {
 	found, _ := gfoo.symbols.Load(name)
 
 	if found != nil {
-		return found.(*Symbol)
+		return found.(*Value)
 	}
 	
-	s := NewSymbol(name)
+	s := NewValue(&Symbol, name)
 	gfoo.symbols.Store(name, s)
 	return s
 }

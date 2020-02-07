@@ -4,22 +4,10 @@ import (
 	"io"
 )
 
-type Symbol struct {
-	name string
-}
-
-func NewSymbol(name string) *Symbol {
-	return &Symbol{name: name}
-}
-
-func (sym *Symbol) Quote() *Value {
-	return NewValue(&TSymbol, sym) 
-}
-
-var TSymbol SymbolType
+var Symbol SymbolType
 
 func init() {
-	TSymbol.Init()
+	Symbol.Init()
 }
 
 type SymbolType struct {
@@ -31,7 +19,6 @@ func (typ *SymbolType) Init() {
 }
 
 func (typ *SymbolType) Dump(val interface{}, out io.Writer) error {
-	_, err := io.WriteString(out, val.(*Symbol).name)
+	_, err := io.WriteString(out, val.(string))
 	return err
 }
-
