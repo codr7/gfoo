@@ -1,5 +1,5 @@
 package gfoo
 
 type Form interface {
-	Quote() *Value
+	Quote(*GFoo) *Value
 }

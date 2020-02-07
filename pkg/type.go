@@ -5,13 +5,19 @@ import (
 )
 
 type Type interface {
+	Compare(x, y interface{}) Order
 	Dump(val interface{}, out io.Writer) error
+	Name() string
 }
 
 type TypeBase struct {
-	id string
+	name string
 }
 
-func (typ *TypeBase) Init(id string) {
-	typ.id = id
+func (typ *TypeBase) Init(name string) {
+	typ.name = name
+}
+
+func (typ *TypeBase) Name() string {
+	return typ.name
 }
