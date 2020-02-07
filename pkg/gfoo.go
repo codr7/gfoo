@@ -3,7 +3,6 @@ package gfoo
 import (
 	"fmt"
 	"io"
-	"sync"
 )
 
 const (

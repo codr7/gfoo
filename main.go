@@ -33,6 +33,8 @@ func repl(g *gfoo.GFoo) {
 			var err error
 			var forms []gfoo.Form
 			source := buffer.String()
+			fmt.Println(source)
+			
 			buffer.Reset()
 			pos := gfoo.NewPosition("repl")
 			
@@ -58,7 +60,7 @@ func repl(g *gfoo.GFoo) {
 			}
 		
 			fmt.Print("\n")
-		} else if _, err := buffer.WriteString(line); err != nil {
+		} else if _, err := fmt.Fprintf(&buffer, "%v\n", line); err != nil {
 			log.Fatal(err)
 		}
 	}	

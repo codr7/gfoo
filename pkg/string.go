@@ -1,6 +1,7 @@
 package gfoo
 
 import (
+	"fmt"
 	"io"
 	"strings"
 )
@@ -16,7 +17,7 @@ type StringType struct {
 }
 
 func (typ *StringType) Dump(val interface{}, out io.Writer) error {
-	_, err := io.WriteString(out, val.(string))
+	_, err := fmt.Fprintf(out, "\"%v\"", val.(string))
 	return err
 }
 

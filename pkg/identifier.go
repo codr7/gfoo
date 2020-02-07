@@ -9,5 +9,5 @@ func NewIdentifier(name string) *Identifier {
 }
 
 func (id *Identifier) Quote(gfoo *GFoo) Value {
-	return NewValue(&String, id.name)
+	return NewValue(&Symbol, id.name)
 }
