@@ -1,2 +1,1 @@
-* add Int64/String/Time types
 * implement repl
