@@ -34,8 +34,9 @@ func repl(g *gfoo.GFoo) {
 			var forms []gfoo.Form
 			source := buffer.String()
 			buffer.Reset()
+			pos := gfoo.NewPosition("repl")
 			
-			if forms, err = g.Parse(source); err != nil {
+			if forms, err = g.Parse(source, &pos); err != nil {
 				fmt.Println(err)
 				continue
 			}
@@ -47,7 +48,7 @@ func repl(g *gfoo.GFoo) {
 				continue
 			}
 
-			if err = g.Eval(ops); err != nil {
+			if err = g.Evaluate(ops); err != nil {
 				fmt.Println(err)
 				continue
 			}

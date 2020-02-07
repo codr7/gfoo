@@ -13,8 +13,7 @@ const (
 	
 type GFoo struct {
 	Debug bool
-	
-	symbols sync.Map
+
 	stack []Value
 }
 
@@ -51,22 +50,10 @@ func (gfoo *GFoo) DumpStack(out io.Writer) error {
 	return nil
 }
 
-func (gfoo *GFoo) Eval(ops []Op) error {
+func (gfoo *GFoo) Evaluate(ops []Op) error {
 	return nil
 }
 
-func (gfoo *GFoo) Parse(source string) ([]Form, error) {
+func (gfoo *GFoo) Parse(source string, pos *Position) ([]Form, error) {
 	return nil, nil
-}
-
-func (gfoo *GFoo) Symbol(name string) Value {
-	found, _ := gfoo.symbols.Load(name)
-
-	if found != nil {
-		return found.(Value)
-	}
-	
-	s := NewValue(&Symbol, name)
-	gfoo.symbols.Store(name, s)
-	return s
 }

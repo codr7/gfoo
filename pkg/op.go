@@ -1,5 +1,5 @@
 package gfoo
 
 type Op interface {
-	Eval(*GFoo) error
+	Evaluate(*GFoo) error
 }

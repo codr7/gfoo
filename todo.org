@@ -1,4 +1,5 @@
 * implement GFoo.Parse
+** add parse.go
 * implement GFoo.Compile
-* implement GFoo.Eval
+* implement GFoo.Evaluate
 
