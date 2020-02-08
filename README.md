@@ -8,7 +8,7 @@ $ ./build
 $ dist/gfoo
 gfoo v0.1
 
-Press Return in empty row to evaluate.
+Press Return on empty line to evaluate.
 
   42
 

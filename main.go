@@ -12,7 +12,7 @@ import (
 
 func repl(g *gfoo.GFoo) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VERSION_MAJOR, gfoo.VERSION_MINOR)
-	fmt.Print("Press return on empty line to evaluate.\n\n")
+	fmt.Print("Press Return on empty line to evaluate.\n\n")
 
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
