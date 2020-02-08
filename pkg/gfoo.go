@@ -62,6 +62,16 @@ func (self *GFoo) Evaluate(ops []Op, scope *Scope) error {
 	return nil
 }
 
+func (self *GFoo) Let(scope *Scope, pos Pos, key string, dataType Type, data interface{}) {
+	if found := scope.Get(key); found == nil {
+		if found.scope == scope {
+			self.Errorf(pos, "Duplicate binding: %v", key) 
+		}
+	} else {
+		scope.Set(key, dataType, data)
+	}
+}
+
 func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
 	var f Form
 	var err error

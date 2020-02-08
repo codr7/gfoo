@@ -7,30 +7,6 @@ import (
 	"unicode"
 )
 
-func skipSpace(in *bufio.Reader, pos *Pos) error {
-	for {
-		c, _, err := in.ReadRune()
-		
-		if err != nil {
-			return err
-		}
-
-		switch c {
-		case ' ':
-			pos.column++
-		case '\n':
-			pos.line++
-			pos.column = MIN_COLUMN
-		default:
-			if err = in.UnreadRune(); err != nil {
-				return err
-			}
-
-			return nil
-		}
-	}
-}
-
 func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
@@ -243,4 +219,28 @@ func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	}
 	
 	return NewLiteral(fpos, &String, buffer.String()), nil
+}
+
+func skipSpace(in *bufio.Reader, pos *Pos) error {
+	for {
+		c, _, err := in.ReadRune()
+		
+		if err != nil {
+			return err
+		}
+
+		switch c {
+		case ' ':
+			pos.column++
+		case '\n':
+			pos.line++
+			pos.column = MIN_COLUMN
+		default:
+			if err = in.UnreadRune(); err != nil {
+				return err
+			}
+
+			return nil
+		}
+	}
 }

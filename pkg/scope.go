@@ -19,5 +19,5 @@ func (self *Scope) Get(key string) *Binding {
 }
 
 func (self *Scope) Set(key string, dataType Type, data interface{}) {
-	self.bindings[key] = NewBinding(dataType, data)
+	self.bindings[key] = NewBinding(self, dataType, data)
 }
