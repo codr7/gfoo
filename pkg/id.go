@@ -20,7 +20,7 @@ func (self *Id) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, er
 			return v.data.(*Macro).Expand(gfoo, scope, self, in, out)
 		}
 		
-		return append(out, NewPush(self, *v)), nil
+		return append(out, NewPush(self, v.dataType, v.data)), nil
 	}
 
 	return append(out, NewGet(self, self.name)), nil

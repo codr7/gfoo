@@ -16,7 +16,7 @@ type GFoo struct {
 	Debug bool
 	
 	rootScope Scope
-	stack []Val
+	stack Slice
 }
 
 func typeImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
@@ -48,8 +48,8 @@ func (self *GFoo) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
 	return out, nil
 }
 
-func (self *GFoo) DumpStack(out io.Writer) error {
-	return DumpSlice(self.stack, out)
+func (self *GFoo) StackDump(out io.Writer) error {
+	return self.stack.Dump(out)
 }
 
 func (self *GFoo) Error(pos Pos, spec string, args...interface{}) error {
@@ -107,17 +107,11 @@ func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) 
 }
 
 func (self *GFoo) Peek() *Val {
-	i := len(self.stack)
-	
-	if i == 0 {
-		return nil
-	}
-
-	return &self.stack[i-1]
+	return self.stack.Peek()
 }
 
-func (self *GFoo) Push(val Val) {
-	self.stack = append(self.stack, val)
+func (self *GFoo) Push(dataType Type, data interface{}) {
+	self.stack.Push(dataType, data)
 }
 
 func (self *GFoo) RootScope() *Scope {

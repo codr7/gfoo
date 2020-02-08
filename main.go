@@ -56,7 +56,7 @@ func repl(g *gfoo.GFoo) {
 				continue
 			}
 
-			if err := g.DumpStack(os.Stdout); err != nil {
+			if err := g.StackDump(os.Stdout); err != nil {
 				log.Fatal(err)
 			}
 		

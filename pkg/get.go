@@ -19,7 +19,7 @@ func (self *Get) Evaluate(gfoo *GFoo, scope *Scope) error {
 		return gfoo.Error(self.form.Pos(), "Unknown identifier: %v", self.key)
 	}
 	
-	gfoo.Push(b.val)
+	gfoo.Push(b.val.dataType, b.val.data)
 	return nil
 }
 

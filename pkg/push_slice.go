@@ -13,17 +13,13 @@ func NewPushSlice(form Form, ops []Op) *PushSlice {
 }
 
 func (self *PushSlice) Evaluate(gfoo *GFoo, scope *Scope) error {
-	i := len(gfoo.stack)
+	i := gfoo.stack.Len()
 
 	if err := gfoo.Evaluate(self.ops, scope); err != nil {
 		return err
 	}
 
-	n := len(gfoo.stack) - i
-	items := make([]Val, n)
-	copy(items, gfoo.stack[i:])
-	gfoo.stack = gfoo.stack[:i]
-	gfoo.Push(NewVal(&TSlice, items))
+	gfoo.Push(&TSlice, NewSlice(gfoo.stack.Cut(i)))
 	return nil
 }
 
