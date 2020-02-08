@@ -8,7 +8,7 @@ type Type interface {
 	Compare(x, y interface{}) Order
 	Dump(val interface{}, out io.Writer) error
 	Name() string
-	Unquote(val interface{}) Form
+	Unquote(pos Position, val interface{}) Form
 }
 
 type TypeBase struct {

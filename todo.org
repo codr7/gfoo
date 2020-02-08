@@ -1,3 +1,5 @@
-* implement GFoo.Compile
-* implement GFoo.Evaluate
-** evaluate Group as Slice
+* implement Scope
+** binary sorted slice []Binding
+** track source in Binding
+** add Clone()
+* add foo(...) -> ... foo transform to parseIdentifier

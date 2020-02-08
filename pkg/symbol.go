@@ -20,7 +20,7 @@ func (_ *SymbolType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *SymbolType) Unquote(val interface{}) Form {
-	return NewIdentifier(val.(string))
+func (_ *SymbolType) Unquote(pos Position, val interface{}) Form {
+	return NewIdentifier(pos, val.(string))
 }
 

@@ -32,25 +32,26 @@ func repl(g *gfoo.GFoo) {
 
 		if line == "" {
 			var err error
-			var forms []gfoo.Form
 			source := buffer.String()
 			buffer.Reset()
+			in := bufio.NewReader(strings.NewReader(source))
 			pos := gfoo.NewPosition("repl")
+			var forms []gfoo.Form
 			
-			if forms, err = g.Parse(bufio.NewReader(strings.NewReader(source)), &pos);
-			err != nil {
+			if forms, err = g.Parse(in, &pos, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
+			scope := g.RootScope()
 			var ops []gfoo.Op
 			
-			if ops, err = g.Compile(forms); err != nil {
+			if ops, err = g.Compile(forms, scope, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			if err = g.Evaluate(ops); err != nil {
+			if err = g.Evaluate(ops, scope); err != nil {
 				fmt.Println(err)
 				continue
 			}

@@ -39,6 +39,6 @@ func (_ *TimeType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *TimeType) Unquote(val interface{}) Form {
-	return NewLiteral(&Time, val)
+func (_ *TimeType) Unquote(pos Position, val interface{}) Form {
+	return NewLiteral(pos, &Time, val)
 }

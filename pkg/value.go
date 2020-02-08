@@ -41,10 +41,10 @@ func (self Value) Is(other Value) bool {
 	return self.data == other.data
 }
 
-func (self Value) Literal() *Literal {
-	return &Literal{value: self}
+func (self Value) Literal(pos Position) *Literal {
+	return NewLiteral(pos, self.dataType, self.data)
 }
 
-func (self Value) Unquote() Form {
-	return self.dataType.Unquote(self.data)
+func (self Value) Unquote(pos Position) Form {
+	return self.dataType.Unquote(pos, self.data)
 }
