@@ -6,8 +6,19 @@ type Scope struct {
 	bindings Bindings
 }
 
-func (self *Scope) Init() {
+func (self *Scope) Init() *Scope {
 	self.bindings = make(Bindings)
+	return self
+}
+
+func (self *Scope) Clone() *Scope {
+	out := new(Scope).Init()
+
+	for k, b := range self.bindings {
+		out.bindings[k] = b
+	}
+	
+	return out
 }
 
 func (self *Scope) Get(key string) *Binding {

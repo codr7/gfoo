@@ -43,15 +43,14 @@ func repl(g *gfoo.GFoo) {
 				continue
 			}
 
-			scope := g.RootScope()
 			var ops []gfoo.Op
 			
-			if ops, err = g.Compile(forms, scope, nil); err != nil {
+			if ops, err = g.Compile(forms, g.RootScope(), nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			if err = g.Evaluate(ops, scope); err != nil {
+			if err = g.Evaluate(ops, g.RootScope()); err != nil {
 				fmt.Println(err)
 				continue
 			}

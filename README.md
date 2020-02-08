@@ -59,12 +59,12 @@ Identifiers may be bound to values in the current scope using `let:`.
 [42]
 ```
 
-Rebinding identifiers within the same scope is not allowed.
+Rebinding identifiers within the same scope gives a compile time error.
 
 ```
   let: foo 42
 
-Error in 'repl', line 1, column 0: Duplicate binding: foo
+Error in 'repl', line 1, column 6: Duplicate binding: foo
 ```
 
 Specifying `_` as value pops it from the stack.

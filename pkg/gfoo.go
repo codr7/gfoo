@@ -30,6 +30,14 @@ func letImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, e
 		gfoo.Error(key.Pos(), "Expected id: %v", key)
 	}
 
+	if found := scope.Get(key.name); found == nil {
+		scope.Set(key.name, nil, nil)
+	} else {
+		if found.scope == scope {
+			return out, gfoo.Error(key.Pos(), "Duplicate binding: %v", key.name) 
+		}
+	}
+	
 	val := args.Pop()
 	
 	if id, ok := val.(*Id); !ok || id.name != "_" {
@@ -104,18 +112,6 @@ func (self *GFoo) Evaluate(ops []Op, scope *Scope) error {
 		}
 	}
 	
-	return nil
-}
-
-func (self *GFoo) Let(scope *Scope, pos Pos, key string, dataType Type, data interface{}) error {
-	if found := scope.Get(key); found == nil {
-		scope.Set(key, dataType, data)
-	} else {
-		if found.scope == scope {
-			return self.Error(pos, "Duplicate binding: %v", key) 
-		}
-	}
-
 	return nil
 }
 

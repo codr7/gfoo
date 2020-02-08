@@ -20,6 +20,7 @@ func (self *Let) Evaluate(gfoo *GFoo, scope *Scope) error {
 		return gfoo.Error(p, "Missing value: %v", self.key)
 	}
 	
-	return gfoo.Let(scope, p, self.key, v.dataType, v.data)
+	scope.Set(self.key, v.dataType, v.data)
+	return nil
 }
 
