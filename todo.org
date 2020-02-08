@@ -1,4 +1,5 @@
-* add foo(...) -> ... foo transform to parseId
+* add Drop op
+** add _ macro
 * add Let op
 ** init with key string/val *Value
 ** add let: macro

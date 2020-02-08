@@ -43,8 +43,28 @@ func (_ *SliceType) Unquote(pos Pos, val interface{}) Form {
 	return NewGroup(pos, out)
 }
 
+type Slice struct {
+	Group
+}
+
+func NewSlice(pos Pos, forms []Form) *Slice {
+	f := new(Slice)
+	f.Group.Init(pos, forms)
+	return f
+}
+
+func (self *Slice) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+	ops, err := gfoo.Compile(self.forms, scope, nil)
+
+	if err != nil {
+		return out, err
+	}
+	
+	return append(out, NewPushSlice(self, ops)), nil
+}
+
 func DumpSlice(in []Val, out io.Writer) error {
-	if _, err := fmt.Fprint(out, "("); err != nil {
+	if _, err := fmt.Fprint(out, "["); err != nil {
 		return err
 	}
 
@@ -60,7 +80,7 @@ func DumpSlice(in []Val, out io.Writer) error {
 		}
 	}
 	
-	if _, err := fmt.Fprint(out, ")"); err != nil {
+	if _, err := fmt.Fprint(out, "]"); err != nil {
 		return err
 	}
 	

@@ -28,6 +28,8 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	case '"':
 		return self.parseString(in, pos)
 	case '(':
+		return self.parseGroup(in, pos)
+	case '[':
 		return self.parseSlice(in, pos)
 	default:
 		if unicode.IsDigit(c) {
@@ -40,6 +42,40 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	}
 
 	return nil, self.Error(*pos, "Unexpected input: %v", c)
+}
+
+func (self *GFoo) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
+	var out []Form
+	
+	for {
+		if err := skipSpace(in, pos); err != nil {
+			return nil, err
+		}
+		
+		c, _, err := in.ReadRune()
+		
+		if err != nil {
+			return nil, err
+		}
+
+		if c == end {
+			break
+		}
+
+		if err = in.UnreadRune(); err != nil {
+			return nil, err
+		}
+
+		var f Form
+
+		if f, err = self.parseForm(in, pos); err != nil {
+			return nil, err
+		}
+
+		out = append(out, f)
+	}
+
+	return out, nil
 }
 
 func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
@@ -75,8 +111,31 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 		if err != nil {
 			return nil, err
 		}
+
+		pos.column++
 	}
-	
+
+	c, _, err = in.ReadRune()
+
+	if err != nil && err != io.EOF {
+		return nil, err
+	}
+
+	if err == nil {
+		if c == '(' {
+			var f Form
+
+			if f, err = self.parseGroup(in, pos); err != nil {
+				return nil, err
+			}
+
+			f.(*Group).AddForm(NewId(fpos, buffer.String()))
+			return f, nil
+		} else if err = in.UnreadRune(); err != nil {
+			return nil, err
+		}
+	}
+		
 	return NewId(fpos, buffer.String()), nil
 }
 
@@ -157,44 +216,35 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) 
 			
 			break
 		}
+
+		pos.column++
 	}
 	
 	return NewLiteral(fpos, &TInt64, v), nil
 }
 
-func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
-	var items []Form
-	var f Form
+func (self *GFoo) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
-	
-	for {
-		if err := skipSpace(in, pos); err != nil {
-			return nil, err
-		}
-		
-		c, _, err := in.ReadRune()
-		
-		if err != nil {
-			return nil, err
-		}
+	forms, err := self.parseForms(in, pos, ')')
 
-		if c == ')' {
-			break
-		}
-
-		if err = in.UnreadRune(); err != nil {
-			return nil, err
-		}
-
-		if f, err = self.parseForm(in, pos); err != nil {
-			return nil, err
-		}
-
-		items = append(items, f)
+	if err != nil {
+		return nil, err
 	}
 
-	return NewGroup(fpos, items), nil
+	return NewGroup(fpos, forms), nil
+}
+
+func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	forms, err := self.parseForms(in, pos, ']')
+
+	if err != nil {
+		return nil, err
+	}
+	
+	return NewSlice(fpos, forms), nil
 }
 
 func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -204,10 +254,16 @@ func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	
 	for {
 		c, _, err := in.ReadRune()
+
+		if err == io.EOF {
+			break
+		}
 		
 		if err != nil {
 			return nil, err
 		}
+
+		pos.column++
 
 		if c == '"' {
 			break

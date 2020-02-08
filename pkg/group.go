@@ -2,30 +2,31 @@ package gfoo
 
 type Group struct {
 	FormBase
-	items []Form
+	forms []Form
 }
 
-func NewGroup(pos Pos, items []Form) *Group {
-	f := new(Group)
-	f.FormBase.Init(pos)
-	f.items = items
-	return f
+func NewGroup(pos Pos, forms []Form) *Group {
+	return new(Group).Init(pos, forms)
+}
+
+func (self *Group) Init(pos Pos, forms []Form) *Group {
+	self.FormBase.Init(pos)
+	self.forms = forms
+	return self
+}
+
+func (self *Group) AddForm(form Form) {
+	self.forms = append(self.forms, form)
 }
 
 func (self *Group) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, error) {
-	ops, err := gfoo.Compile(self.items, scope, nil)
-
-	if err != nil {
-		return out, err
-	}
-	
-	return append(out, NewPushSlice(self, ops)), nil
+	return gfoo.Compile(self.forms, scope, out)
 }
 
 func (self *Group) Quote() Val {
-	v := make([]Val, len(self.items))
+	v := make([]Val, len(self.forms))
 
-	for i, f := range self.items {
+	for i, f := range self.forms {
 		v[i] = f.Quote()
 	}
 	
