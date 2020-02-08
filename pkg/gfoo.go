@@ -16,7 +16,7 @@ type GFoo struct {
 	Debug bool
 	
 	rootScope Scope
-	stack []Value
+	stack []Val
 }
 
 func New() *GFoo {
@@ -85,7 +85,7 @@ func (self *GFoo) Parse(in *bufio.Reader, pos *Position, out []Form) ([]Form, er
 	return out, nil
 }
 
-func (self *GFoo) Push(val Value) {
+func (self *GFoo) Push(val Val) {
 	self.stack = append(self.stack, val)
 }
 

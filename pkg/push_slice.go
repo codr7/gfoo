@@ -20,10 +20,10 @@ func (self *PushSlice) Evaluate(gfoo *GFoo, scope *Scope) error {
 	}
 
 	n := len(gfoo.stack) - i
-	items := make([]Value, n)
+	items := make([]Val, n)
 	copy(items, gfoo.stack[i:])
 	gfoo.stack = gfoo.stack[:i]
-	gfoo.Push(NewValue(&Slice, items))
+	gfoo.Push(NewVal(&Slice, items))
 	return nil
 }
 

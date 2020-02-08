@@ -2,18 +2,18 @@ package gfoo
 
 type Push struct {
 	OpBase
-	value Value
+	val Val
 }
 
-func NewPush(src Form, val Value) *Push {
+func NewPush(src Form, val Val) *Push {
 	o := new(Push)
 	o.OpBase.Init(src)
-	o.value = val
+	o.val = val
 	return o
 }
 
 func (self *Push) Evaluate(gfoo *GFoo, scope *Scope) error {
-	gfoo.Push(self.value)
+	gfoo.Push(self.val)
 	return nil
 }
 

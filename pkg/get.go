@@ -19,7 +19,7 @@ func (self *Get) Evaluate(gfoo *GFoo, scope *Scope) error {
 		return gfoo.Errorf(self.source.Position(), "Unknown identifier: %v", self.key)
 	}
 	
-	gfoo.Push(b.value)
+	gfoo.Push(b.val)
 	return nil
 }
 

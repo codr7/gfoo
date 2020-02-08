@@ -1,6 +1,7 @@
 package gfoo
 
 import (
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ type SliceType struct {
 }
 
 func (_ *SliceType) Compare(x, y interface{}) Order {
-	xv, yv := x.([]Value), y.([]Value)
+	xv, yv := x.([]Val), y.([]Val)
 	xl, yl := len(xv), len(yv)
 	
 	for i := 0; i < MinInt(xl, yl); i++ {
@@ -28,11 +29,11 @@ func (_ *SliceType) Compare(x, y interface{}) Order {
 }
 
 func (_ *SliceType) Dump(val interface{}, out io.Writer) error {
-	return DumpSlice(val.([]Value), out)
+	return DumpSlice(val.([]Val), out)
 }
 
 func (_ *SliceType) Unquote(pos Position, val interface{}) Form {
-	in := val.([]Value)
+	in := val.([]Val)
 	out := make([]Form, len(in))
 
 	for i, v := range in {
@@ -40,4 +41,28 @@ func (_ *SliceType) Unquote(pos Position, val interface{}) Form {
 	}
 
 	return NewSliceForm(pos, out)
+}
+
+func DumpSlice(in []Val, out io.Writer) error {
+	if _, err := fmt.Fprint(out, "("); err != nil {
+		return err
+	}
+
+	for i, v := range in {
+		if i > 0 {
+			if _, err := fmt.Fprint(out, " "); err != nil {
+				return err
+			}
+		}
+		
+		if err := v.Dump(out); err != nil {
+			return err
+		}
+	}
+	
+	if _, err := fmt.Fprint(out, ")"); err != nil {
+		return err
+	}
+	
+	return nil
 }

@@ -22,12 +22,12 @@ func (self *SliceForm) Compile(gfoo *GFoo, scope *Scope, out []Op) ([]Op, error)
 	return append(out, NewPushSlice(self, ops)), nil
 }
 
-func (self *SliceForm) Quote() Value {
-	v := make([]Value, len(self.items))
+func (self *SliceForm) Quote() Val {
+	v := make([]Val, len(self.items))
 
 	for i, f := range self.items {
 		v[i] = f.Quote()
 	}
 	
-	return NewValue(&Slice, v)
+	return NewVal(&Slice, v)
 }

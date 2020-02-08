@@ -14,12 +14,12 @@ func NewId(pos Position, name string) *Id {
 
 func (self *Id) Compile(gfoo *GFoo, scope *Scope, out []Op) ([]Op, error) {
 	if b := scope.Get(self.name); b != nil {
-		return append(out, NewPush(self, b.value)), nil
+		return append(out, NewPush(self, b.val)), nil
 	}
 
 	return append(out, NewGet(self, self.name)), nil
 }
 
-func (self *Id) Quote() Value {
-	return NewValue(&Symbol, self.name)
+func (self *Id) Quote() Val {
+	return NewVal(&Symbol, self.name)
 }

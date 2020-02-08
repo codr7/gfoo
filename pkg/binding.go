@@ -1,11 +1,11 @@
 package gfoo
 
 type Binding struct {
-	value Value
+	val Val
 }
 
 func NewBinding(dataType Type, data interface{}) Binding {
 	var b Binding
-	b.value.Init(dataType, data)
+	b.val.Init(dataType, data)
 	return b
 }

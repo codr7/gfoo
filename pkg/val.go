@@ -5,23 +5,23 @@ import (
 	"strings"
 )
 
-type Value struct {
+type Val struct {
 	dataType Type
 	data interface{}
 }
 
-func NewValue(dataType Type, data interface{}) Value {
-	var v Value
+func NewVal(dataType Type, data interface{}) Val {
+	var v Val
 	v.Init(dataType, data)
 	return v
 }
 
-func (self *Value) Init(dataType Type, data interface{}) {
+func (self *Val) Init(dataType Type, data interface{}) {
 	self.dataType = dataType
 	self.data = data
 }
 
-func (self Value) Compare(other Value) Order {
+func (self Val) Compare(other Val) Order {
 	if self.dataType != other.dataType {
 		return strings.Compare(self.dataType.Name(), other.dataType.Name())
 	}
@@ -29,11 +29,11 @@ func (self Value) Compare(other Value) Order {
 	return self.dataType.Compare(self.data, other.data)
 }
 
-func (self Value) Dump(out io.Writer) error {
+func (self Val) Dump(out io.Writer) error {
 	return self.dataType.Dump(self.data, out)
 }
 
-func (self Value) Is(other Value) bool {
+func (self Val) Is(other Val) bool {
 	if self.dataType != other.dataType {
 		return false
 	}
@@ -41,10 +41,10 @@ func (self Value) Is(other Value) bool {
 	return self.data == other.data
 }
 
-func (self Value) Literal(pos Position) *Literal {
+func (self Val) Literal(pos Position) *Literal {
 	return NewLiteral(pos, self.dataType, self.data)
 }
 
-func (self Value) Unquote(pos Position) Form {
+func (self Val) Unquote(pos Position) Form {
 	return self.dataType.Unquote(pos, self.data)
 }

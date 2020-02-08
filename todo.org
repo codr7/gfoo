@@ -1,4 +1,3 @@
-* rename Value -> Val
 * rename Position -> Pos
 * rename SliceForm -> Group
 * rename Scope.Set -> Let
