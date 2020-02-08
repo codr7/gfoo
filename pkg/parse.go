@@ -218,7 +218,7 @@ func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 		items = append(items, f)
 	}
 
-	return NewSliceForm(fpos, items), nil
+	return NewGroup(fpos, items), nil
 }
 
 func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {

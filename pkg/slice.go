@@ -40,7 +40,7 @@ func (_ *SliceType) Unquote(pos Pos, val interface{}) Form {
 		out[i] = v.Unquote(pos)
 	}
 
-	return NewSliceForm(pos, out)
+	return NewGroup(pos, out)
 }
 
 func DumpSlice(in []Val, out io.Writer) error {

@@ -1,8 +1,6 @@
-* rename SliceForm -> Group
 * rename Scope.Set -> Let
 ** track source in Binding
 *** check duplicate
-* --
 * add Bool type
 ** bind T/F in root scope
 * add OpMacro
