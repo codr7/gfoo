@@ -22,7 +22,3 @@ func (self *Macro) Expand(gfoo *GFoo, scope *Scope, form Form, args *Forms, out 
 	
 	return self.imp(gfoo, scope, form, args, out)
 }
-
-func (self *GFoo) AddMacro(name string, argCount int, imp MacroImp) {
-	self.rootScope.Set(name, &TMacro, NewMacro(name, argCount, imp))
-}

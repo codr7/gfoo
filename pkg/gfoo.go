@@ -38,6 +38,10 @@ func (self *GFoo) AddConst(name string, dataType Type, data interface{}) {
 	self.rootScope.Set(name, dataType, data)
 }
 
+func (self *GFoo) AddMacro(name string, argCount int, imp MacroImp) {
+	self.rootScope.Set(name, &TMacro, NewMacro(name, argCount, imp))
+}
+
 func (self *GFoo) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
 	var err error
 	var inForms Forms
