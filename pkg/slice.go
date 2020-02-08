@@ -5,10 +5,10 @@ import (
 	"io"
 )
 
-var Slice SliceType
+var TSlice SliceType
 
 func init() {
-	Slice.Init("Slice")
+	TSlice.Init("Slice")
 }
 
 type SliceType struct {

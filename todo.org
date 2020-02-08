@@ -1,12 +1,4 @@
-* add OpMacro
-** arg_count
-* add Meta type
-** add GetType op
-*** replace top of stack with its type
-**** add GFoo.Peek() *Value
-** add type macro
-*** compile to GetType
-* add foo(...) -> ... foo transform to parseIdentifier
+* add foo(...) -> ... foo transform to parseId
 * add Let op
 ** init with key string/val *Value
 ** add let: macro

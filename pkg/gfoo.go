@@ -19,20 +19,28 @@ type GFoo struct {
 	stack []Val
 }
 
+func typeImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+	return append(out, NewGetType(form)), nil
+}
+	
 func New() *GFoo {
 	g := new(GFoo)
 	g.rootScope.Init()
 	
-	g.rootScope.Set("T", &Bool, true)
-	g.rootScope.Set("F", &Bool, false)
+	g.rootScope.Set("T", &TBool, true)
+	g.rootScope.Set("F", &TBool, false)
+
+	g.rootScope.SetMacro("type", 0, typeImp)
 	return g
 }
 
 func (self *GFoo) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
 	var err error
+	var inForms Forms
+	inForms.Init(in)
 	
-	for _, f := range in {
-		if out, err = f.Compile(self, scope, out); err != nil {
+	for f := inForms.Pop(); f != nil; f = inForms.Pop() {
+		if out, err = f.Compile(self, scope, &inForms, out); err != nil {
 			return out, err
 		}
 	}
@@ -44,7 +52,7 @@ func (self *GFoo) DumpStack(out io.Writer) error {
 	return DumpSlice(self.stack, out)
 }
 
-func (self *GFoo) Errorf(pos Pos, spec string, args...interface{}) error {
+func (self *GFoo) Error(pos Pos, spec string, args...interface{}) error {
 	msg := fmt.Sprintf("Error in '%v', line %v, column %v: %v ", 
 		pos.source, pos.line, pos.column, fmt.Sprintf(spec, args...))
 
@@ -68,7 +76,7 @@ func (self *GFoo) Evaluate(ops []Op, scope *Scope) error {
 func (self *GFoo) Let(scope *Scope, pos Pos, key string, dataType Type, data interface{}) {
 	if found := scope.Get(key); found == nil {
 		if found.scope == scope {
-			self.Errorf(pos, "Duplicate binding: %v", key) 
+			self.Error(pos, "Duplicate binding: %v", key) 
 		}
 	} else {
 		scope.Set(key, dataType, data)
@@ -96,6 +104,16 @@ func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) 
 	}
 	
 	return out, nil
+}
+
+func (self *GFoo) Peek() *Val {
+	i := len(self.stack)
+	
+	if i == 0 {
+		return nil
+	}
+
+	return &self.stack[i-1]
 }
 
 func (self *GFoo) Push(val Val) {

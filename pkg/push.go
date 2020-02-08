@@ -5,9 +5,9 @@ type Push struct {
 	val Val
 }
 
-func NewPush(src Form, val Val) *Push {
+func NewPush(form Form, val Val) *Push {
 	o := new(Push)
-	o.OpBase.Init(src)
+	o.OpBase.Init(form)
 	o.val = val
 	return o
 }

@@ -5,9 +5,9 @@ type Op interface {
 }
 
 type OpBase struct {
-	source Form
+	form Form
 }
 
-func (self *OpBase) Init(src Form) {
-	self.source = src
+func (self *OpBase) Init(form Form) {
+	self.form = form
 }

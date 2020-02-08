@@ -5,9 +5,9 @@ type PushSlice struct {
 	ops []Op
 }
 
-func NewPushSlice(src Form, ops []Op) *PushSlice {
+func NewPushSlice(form Form, ops []Op) *PushSlice {
 	o := new(PushSlice)
-	o.OpBase.Init(src)
+	o.OpBase.Init(form)
 	o.ops = ops
 	return o
 }
@@ -23,7 +23,7 @@ func (self *PushSlice) Evaluate(gfoo *GFoo, scope *Scope) error {
 	items := make([]Val, n)
 	copy(items, gfoo.stack[i:])
 	gfoo.stack = gfoo.stack[:i]
-	gfoo.Push(NewVal(&Slice, items))
+	gfoo.Push(NewVal(&TSlice, items))
 	return nil
 }
 

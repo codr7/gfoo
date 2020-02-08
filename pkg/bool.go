@@ -4,10 +4,10 @@ import (
 	"io"
 )
 
-var Bool BoolType
+var TBool BoolType
 
 func init() {
-	Bool.Init("Bool")
+	TBool.Init("Bool")
 }
 
 type BoolType struct {
@@ -41,6 +41,6 @@ func (_ *BoolType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *BoolType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, &Bool, val)
+func (self *BoolType) Unquote(pos Pos, val interface{}) Form {
+	return NewLiteral(pos, self, val)
 }

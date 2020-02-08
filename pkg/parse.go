@@ -39,7 +39,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 		}
 	}
 
-	return nil, self.Errorf(*pos, "Unexpected input: %v", c)
+	return nil, self.Error(*pos, "Unexpected input: %v", c)
 }
 
 func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
@@ -94,7 +94,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) 
 		pos.column++
 
 		if !unicode.IsDigit(c) {
-			return nil, self.Errorf(*pos, "Expected number: %v", c)
+			return nil, self.Error(*pos, "Expected number: %v", c)
 		}
 	} else {
 		pos.column++
@@ -103,7 +103,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) 
 	if c == '0' {
 		if c, _, err = in.ReadRune(); err != nil {
 			if err == io.EOF {
-				return NewLiteral(fpos, &Int64, v), nil
+				return NewLiteral(fpos, &TInt64, v), nil
 			}
 			
 			return nil, err
@@ -159,7 +159,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) 
 		}
 	}
 	
-	return NewLiteral(fpos, &Int64, v), nil
+	return NewLiteral(fpos, &TInt64, v), nil
 }
 
 func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {

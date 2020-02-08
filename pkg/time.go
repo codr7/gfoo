@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-var Time TimeType
+var TTime TimeType
 
 func init() {
-	Time.Init("Time")
+	TTime.Init("Time")
 }
 
 type TimeType struct {
@@ -39,6 +39,6 @@ func (_ *TimeType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *TimeType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, &Time, val)
+func (self *TimeType) Unquote(pos Pos, val interface{}) Form {
+	return NewLiteral(pos, self, val)
 }

@@ -5,10 +5,10 @@ import (
 	"strconv"
 )
 
-var Int64 Int64Type
+var TInt64 Int64Type
 
 func init() {
-	Int64.Init("Int64")
+	TInt64.Init("Int64")
 }
 
 type Int64Type struct {
@@ -34,6 +34,6 @@ func (_ *Int64Type) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *Int64Type) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, &Int64, val)
+func (self *Int64Type) Unquote(pos Pos, val interface{}) Form {
+	return NewLiteral(pos, self, val)
 }

@@ -12,7 +12,7 @@ func NewGroup(pos Pos, items []Form) *Group {
 	return f
 }
 
-func (self *Group) Compile(gfoo *GFoo, scope *Scope, out []Op) ([]Op, error) {
+func (self *Group) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, error) {
 	ops, err := gfoo.Compile(self.items, scope, nil)
 
 	if err != nil {
@@ -29,5 +29,5 @@ func (self *Group) Quote() Val {
 		v[i] = f.Quote()
 	}
 	
-	return NewVal(&Slice, v)
+	return NewVal(&TSlice, v)
 }

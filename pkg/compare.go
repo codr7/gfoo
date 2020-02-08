@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"strings"
+)
+
 type Order = int
 
 const (
@@ -18,5 +22,9 @@ func CompareInt(x, y int) Order {
 	}
 
 	return Eq
+}
+
+func CompareString(x, y string) Order {
+	return Order(strings.Compare(x, y))
 }
 

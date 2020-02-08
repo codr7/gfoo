@@ -25,6 +25,6 @@ func (_ *StringType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (_ *StringType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, &String, val)
+func (self *StringType) Unquote(pos Pos, val interface{}) Form {
+	return NewLiteral(pos, self, val)
 }
