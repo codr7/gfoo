@@ -2,8 +2,8 @@ package gfoo
 
 import (
 	"bufio"
-	"bytes"
 	"io"
+	"strings"
 	"unicode"
 )
 
@@ -43,7 +43,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 }
 
 func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
-	var buffer bytes.Buffer
+	var buffer strings.Builder
 	var err error
 	fpos := *pos
 
@@ -198,7 +198,7 @@ func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 }
 
 func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
-	var buffer bytes.Buffer
+	var buffer strings.Builder
 	fpos := *pos
 	pos.column++
 	

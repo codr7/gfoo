@@ -22,6 +22,9 @@ type GFoo struct {
 func New() *GFoo {
 	g := new(GFoo)
 	g.rootScope.Init()
+	
+	g.rootScope.Set("T", &Bool, true)
+	g.rootScope.Set("F", &Bool, false)
 	return g
 }
 

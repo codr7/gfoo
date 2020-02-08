@@ -1,5 +1,3 @@
-* add Bool type
-** bind T/F in root scope
 * add OpMacro
 ** arg_count
 * add Meta type
