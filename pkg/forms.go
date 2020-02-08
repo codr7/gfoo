@@ -1,5 +1,11 @@
 package gfoo
 
+var NilForms Forms
+
+func init() {
+	NilForms.Init(nil)
+}
+
 type Forms struct {
 	items []Form
 }

@@ -1,11 +1,7 @@
-* add Let op
-** init with key string/val *Value
-** add let: macro
-** let: foo 42
-** let: foo _
-*** get value from stack
+* add Dup
+** use .
+** add to README
 * add ScopeForm
 ** add parseScope {}
-** compile/evaluate with separate Scope
+** compile/evaluate in separate Scope
 *** add Scope.Copy(out *Scope)
-

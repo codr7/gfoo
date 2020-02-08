@@ -23,6 +23,26 @@ func dropImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, 
 	return append(out, NewDrop(form)), nil
 }
 
+func letImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+	key, ok := args.Pop().(*Id)
+
+	if !ok {
+		gfoo.Error(key.Pos(), "Expected id: %v", key)
+	}
+
+	val := args.Pop()
+	
+	if id, ok := val.(*Id); !ok || id.name != "_" {
+		var err error
+		
+		if out, err = val.Compile(gfoo, scope, &NilForms, out); err != nil {
+			return out, err
+		}
+	}
+	
+	return append(out, NewLet(form, key.name)), nil
+}
+
 func typeImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
 	return append(out, NewGetType(form)), nil
 }
@@ -35,6 +55,7 @@ func New() *GFoo {
 	g.AddConst("F", &TBool, false)
 
 	g.AddMacro("_", 0, dropImp)
+	g.AddMacro("let:", 0, letImp)
 	g.AddMacro("type", 0, typeImp)
 	return g
 }
@@ -86,14 +107,16 @@ func (self *GFoo) Evaluate(ops []Op, scope *Scope) error {
 	return nil
 }
 
-func (self *GFoo) Let(scope *Scope, pos Pos, key string, dataType Type, data interface{}) {
+func (self *GFoo) Let(scope *Scope, pos Pos, key string, dataType Type, data interface{}) error {
 	if found := scope.Get(key); found == nil {
-		if found.scope == scope {
-			self.Error(pos, "Duplicate binding: %v", key) 
-		}
-	} else {
 		scope.Set(key, dataType, data)
+	} else {
+		if found.scope == scope {
+			return self.Error(pos, "Duplicate binding: %v", key) 
+		}
 	}
+
+	return nil
 }
 
 func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
