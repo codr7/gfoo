@@ -27,9 +27,9 @@ By default, arguments are expected to appear before function calls.
 Trailing arguments may be enclosed in parens to get prefix/infix notation.
 
 ```
-  type('foo)
+  type("foo")
 
-[Id]
+[String]
 ```
 
 ### the stack
@@ -59,10 +59,10 @@ Identifiers may be bound to values in the current scope using `let:`.
 [42]
 ```
 
-Rebinding identifiers within the same scope gives a compile time error.
+Rebinding identifiers within the same scope signals compile time errors.
 
 ```
-  let: foo 42
+  let: foo "bar"
 
 Error in 'repl', line 1, column 6: Duplicate binding: foo
 ```

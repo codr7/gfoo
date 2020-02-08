@@ -1,6 +1,5 @@
-* add Dup
-** use .
-** add to README
+* add Dup op
+** add .. macro
 * add ScopeForm
 ** add parseScope {}
 ** compile/evaluate in separate Scope
