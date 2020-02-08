@@ -244,7 +244,7 @@ func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 		return nil, err
 	}
 	
-	return NewSlice(fpos, forms), nil
+	return NewSliceForm(fpos, forms), nil
 }
 
 func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
