@@ -20,7 +20,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 		pos.column++
 		var f Form
 
-		if f, err = self.parseId(in,  0, pos); err != nil {
+		if f, err = self.parseForm(in, pos); err != nil {
 			return nil, err
 		}
 		
