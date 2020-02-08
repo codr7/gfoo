@@ -1,5 +1,12 @@
 * implement Scope
-** binary sorted slice []Binding
-** track source in Binding
-** add Clone()
+** map[string]Binding
+* add Bool type
+** bind T/F in root scope
+* add Meta type
+** add GetType op
+*** replace top of stack with its type
+**** add GFoo.Peek() *Value
+* add op macros
+** add type macro
+** compile to GetType
 * add foo(...) -> ... foo transform to parseIdentifier

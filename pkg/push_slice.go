@@ -18,9 +18,12 @@ func (self *PushSlice) Evaluate(gfoo *GFoo, scope *Scope) error {
 	if err := gfoo.Evaluate(self.ops, scope); err != nil {
 		return err
 	}
-	
-	gfoo.Push(NewValue(&Slice, gfoo.stack[i:]))
+
+	n := len(gfoo.stack) - i
+	items := make([]Value, n)
+	copy(items, gfoo.stack[i:])
 	gfoo.stack = gfoo.stack[:i]
+	gfoo.Push(NewValue(&Slice, items))
 	return nil
 }
 
