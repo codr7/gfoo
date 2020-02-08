@@ -6,3 +6,14 @@
 ** let: foo 42
 ** let: foo _
 *** get value from stack
+* add ScopeForm
+** add parseScope {}
+** compile with separate Scope
+*** add Scope.Copy(out *Scope)
+* add PointerForm
+** ^foo -> push value
+** ^{} -> push lambda
+** else push Type.Pointer(value)
+*** add Pointer struct
+**** create for all values except Type/Slice
+**** dump as ^...
