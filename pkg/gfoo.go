@@ -19,6 +19,10 @@ type GFoo struct {
 	stack Slice
 }
 
+func dropImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+	return append(out, NewDrop(form)), nil
+}
+
 func typeImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
 	return append(out, NewGetType(form)), nil
 }
@@ -30,6 +34,7 @@ func New() *GFoo {
 	g.AddConst("T", &TBool, true)
 	g.AddConst("F", &TBool, false)
 
+	g.AddMacro("_", 0, dropImp)
 	g.AddMacro("type", 0, typeImp)
 	return g
 }
@@ -116,6 +121,10 @@ func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) 
 
 func (self *GFoo) Peek() *Val {
 	return self.stack.Peek()
+}
+
+func (self *GFoo) Pop() *Val {
+	return self.stack.Pop()
 }
 
 func (self *GFoo) Push(dataType Type, data interface{}) {

@@ -1,5 +1,3 @@
-* add Drop op
-** add _ macro
 * add Let op
 ** init with key string/val *Value
 ** add let: macro
@@ -8,12 +6,6 @@
 *** get value from stack
 * add ScopeForm
 ** add parseScope {}
-** compile with separate Scope
+** compile/evaluate with separate Scope
 *** add Scope.Copy(out *Scope)
-* add PointerForm
-** ^foo -> push value
-** ^{} -> push lambda
-** else push Type.Pointer(value)
-*** add Pointer struct
-**** create for all values except Type/Slice
-**** dump as ^...
+

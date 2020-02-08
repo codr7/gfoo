@@ -72,6 +72,18 @@ func (self Slice) Peek() *Val {
 	return &self.items[i-1]
 }
 
+func (self *Slice) Pop() *Val {
+	i := len(self.items)
+	
+	if i == 0 {
+		return nil
+	}
+
+	v := &self.items[i-1]
+	self.items = self.items[:i-1]
+	return v
+}
+
 func (self *Slice) Push(dataType Type, data interface{}) {
 	self.items = append(self.items, NewVal(dataType, data))
 }
