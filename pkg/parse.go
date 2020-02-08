@@ -174,7 +174,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, er
 			return nil, err
 		}
 
-		if !unicode.IsDigit(c) {
+		if !unicode.IsDigit(c) && (base != 16 || c < 'a' || c > 'f') {
 			if err = in.UnreadRune(); err != nil {
 				return nil, err
 			}
