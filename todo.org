@@ -1,5 +1,3 @@
-* implement Scope
-** map[string]Binding
 * add Bool type
 ** bind T/F in root scope
 * add Meta type
@@ -10,3 +8,6 @@
 ** add type macro
 ** compile to GetType
 * add foo(...) -> ... foo transform to parseIdentifier
+* add Set op
+** init with key
+** take value from stack
