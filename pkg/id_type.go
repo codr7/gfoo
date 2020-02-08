@@ -5,10 +5,10 @@ import (
 	"io"
 )
 
-var Symbol SymbolType
+var TId SymbolType
 
 func init() {
-	Symbol.Init("Symbol")
+	TId.Init("Id")
 }
 
 type SymbolType struct {
@@ -23,4 +23,3 @@ func (_ *SymbolType) Dump(val interface{}, out io.Writer) error {
 func (_ *SymbolType) Unquote(pos Pos, val interface{}) Form {
 	return NewId(pos, val.(string))
 }
-

@@ -27,5 +27,5 @@ func (self *Id) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, er
 }
 
 func (self *Id) Quote() Val {
-	return NewVal(&Symbol, self.name)
+	return NewVal(&TId, self.name)
 }

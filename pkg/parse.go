@@ -7,6 +7,11 @@ import (
 	"unicode"
 )
 
+func isId(c rune) bool {
+	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
+		c != '(' && c != ')' && c != '\'' && c != '"'
+}
+
 func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
@@ -36,7 +41,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 			return self.parseNumber(in, c, pos)
 		}
 
-		if unicode.IsGraphic(c) {
+		if isId(c) {
 			return self.parseId(in, c, pos)
 		}
 	}
@@ -89,7 +94,7 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	
 	for {
 		if c > 0 {
-			if !unicode.IsGraphic(c) || c == '(' || c == ')' || c == '\'' || c == '"' {
+			if !isId(c) {
 				if err = in.UnreadRune(); err != nil {
 					return nil, err
 				}
