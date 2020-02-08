@@ -279,7 +279,7 @@ func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 		}
 	}
 	
-	return NewLiteral(fpos, &String, buffer.String()), nil
+	return NewLiteral(fpos, &TString, buffer.String()), nil
 }
 
 func skipSpace(in *bufio.Reader, pos *Pos) error {

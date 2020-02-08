@@ -3,13 +3,12 @@ package gfoo
 import (
 	"fmt"
 	"io"
-	"strings"
 )
 
-var String StringType
+var TString StringType
 
 func init() {
-	String.Init("String")
+	TString.Init("String")
 }
 
 type StringType struct {
@@ -17,7 +16,7 @@ type StringType struct {
 }
 
 func (_ *StringType) Compare(x, y interface{}) Order {
-	return Order(strings.Compare(x.(string), y.(string)))
+	return CompareString(x.(string), y.(string))
 }
 
 func (_ *StringType) Dump(val interface{}, out io.Writer) error {
