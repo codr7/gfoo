@@ -27,11 +27,15 @@ func New() *GFoo {
 	g := new(GFoo)
 	g.rootScope.Init()
 	
-	g.rootScope.Set("T", &TBool, true)
-	g.rootScope.Set("F", &TBool, false)
+	g.AddConst("T", &TBool, true)
+	g.AddConst("F", &TBool, false)
 
-	g.rootScope.SetMacro("type", 0, typeImp)
+	g.AddMacro("type", 0, typeImp)
 	return g
+}
+
+func (self *GFoo) AddConst(name string, dataType Type, data interface{}) {
+	self.rootScope.Set(name, dataType, data)
 }
 
 func (self *GFoo) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
