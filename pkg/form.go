@@ -2,18 +2,18 @@ package gfoo
 
 type Form interface {
 	Compile(gfoo *GFoo, scope *Scope, out []Op) ([]Op, error)
-	Position() Position
+	Pos() Pos
 	Quote() Val
 }
 
 type FormBase struct {
-	position Position
+	pos Pos
 }
 
-func (self *FormBase) Init(pos Position) {
-	self.position = pos
+func (self *FormBase) Init(pos Pos) {
+	self.pos = pos
 }
 
-func (self *FormBase) Position() Position {
-	return self.position
+func (self *FormBase) Pos() Pos {
+	return self.pos
 }

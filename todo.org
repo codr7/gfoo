@@ -1,4 +1,3 @@
-* rename Position -> Pos
 * rename SliceForm -> Group
 * rename Scope.Set -> Let
 ** track source in Binding
@@ -6,7 +5,7 @@
 * --
 * add Bool type
 ** bind T/F in root scope
-* add op macros
+* add OpMacro
 ** arg_count
 * add Meta type
 ** add GetType op
@@ -15,8 +14,6 @@
 ** add type macro
 *** compile to GetType
 * add foo(...) -> ... foo transform to parseIdentifier
-* add foo: ... -> foo(...) transform 
-** use arg_count
 * add Let op
 ** init with key string/val *Value
 ** add let: macro

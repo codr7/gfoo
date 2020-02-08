@@ -35,7 +35,7 @@ func repl(g *gfoo.GFoo) {
 			source := buffer.String()
 			buffer.Reset()
 			in := bufio.NewReader(strings.NewReader(source))
-			pos := gfoo.NewPosition("repl")
+			pos := gfoo.NewPos("repl")
 			var forms []gfoo.Form
 			
 			if forms, err = g.Parse(in, &pos, nil); err != nil {

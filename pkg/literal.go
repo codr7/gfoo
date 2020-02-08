@@ -5,7 +5,7 @@ type Literal struct {
 	val Val
 }
 
-func NewLiteral(pos Position, dataType Type, data interface{}) *Literal {
+func NewLiteral(pos Pos, dataType Type, data interface{}) *Literal {
 	f := new(Literal)
 	f.FormBase.Init(pos)
 	f.val.Init(dataType, data)

@@ -41,9 +41,9 @@ func (self *GFoo) DumpStack(out io.Writer) error {
 	return DumpSlice(self.stack, out)
 }
 
-func (self *GFoo) Errorf(pos Position, spec string, args...interface{}) error {
+func (self *GFoo) Errorf(pos Pos, spec string, args...interface{}) error {
 	msg := fmt.Sprintf("Error in '%v', line %v, column %v: %v ", 
-		pos.filename, pos.line, pos.column, fmt.Sprintf(spec, args...))
+		pos.source, pos.line, pos.column, fmt.Sprintf(spec, args...))
 
 	if self.Debug {
 		panic(msg)
@@ -62,7 +62,7 @@ func (self *GFoo) Evaluate(ops []Op, scope *Scope) error {
 	return nil
 }
 
-func (self *GFoo) Parse(in *bufio.Reader, pos *Position, out []Form) ([]Form, error) {
+func (self *GFoo) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
 	var f Form
 	var err error
 	

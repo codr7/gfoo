@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-func skipSpace(in *bufio.Reader, pos *Position) error {
+func skipSpace(in *bufio.Reader, pos *Pos) error {
 	for {
 		c, _, err := in.ReadRune()
 		
@@ -31,7 +31,7 @@ func skipSpace(in *bufio.Reader, pos *Position) error {
 	}
 }
 
-func (self *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
 	if err != nil {
@@ -66,7 +66,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 	return nil, self.Errorf(*pos, "Unexpected input: %v", c)
 }
 
-func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Position) (Form, error) {
+func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	var buffer bytes.Buffer
 	var err error
 	fpos := *pos
@@ -104,7 +104,7 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Position) (Form, error)
 	return NewId(fpos, buffer.String()), nil
 }
 
-func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, error) {
+func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	v := int64(0)
 	base := int64(10)
 	var err error
@@ -186,7 +186,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, er
 	return NewLiteral(fpos, &Int64, v), nil
 }
 
-func (self *GFoo) parseSlice(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	var items []Form
 	var f Form
 	fpos := *pos
@@ -221,7 +221,7 @@ func (self *GFoo) parseSlice(in *bufio.Reader, pos *Position) (Form, error) {
 	return NewSliceForm(fpos, items), nil
 }
 
-func (self *GFoo) parseString(in *bufio.Reader, pos *Position) (Form, error) {
+func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	var buffer bytes.Buffer
 	fpos := *pos
 	pos.column++

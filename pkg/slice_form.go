@@ -5,7 +5,7 @@ type SliceForm struct {
 	items []Form
 }
 
-func NewSliceForm(pos Position, items []Form) *SliceForm {
+func NewSliceForm(pos Pos, items []Form) *SliceForm {
 	f := new(SliceForm)
 	f.FormBase.Init(pos)
 	f.items = items

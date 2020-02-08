@@ -5,7 +5,7 @@ type Id struct {
 	name string
 }
 
-func NewId(pos Position, name string) *Id {
+func NewId(pos Pos, name string) *Id {
 	f := new(Id)
 	f.FormBase.Init(pos)
 	f.name = name

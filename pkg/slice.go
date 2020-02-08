@@ -32,7 +32,7 @@ func (_ *SliceType) Dump(val interface{}, out io.Writer) error {
 	return DumpSlice(val.([]Val), out)
 }
 
-func (_ *SliceType) Unquote(pos Position, val interface{}) Form {
+func (_ *SliceType) Unquote(pos Pos, val interface{}) Form {
 	in := val.([]Val)
 	out := make([]Form, len(in))
 

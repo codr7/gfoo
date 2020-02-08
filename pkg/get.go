@@ -16,7 +16,7 @@ func (self *Get) Evaluate(gfoo *GFoo, scope *Scope) error {
 	b := scope.Get(self.key)
 
 	if b == nil {
-		return gfoo.Errorf(self.source.Position(), "Unknown identifier: %v", self.key)
+		return gfoo.Errorf(self.source.Pos(), "Unknown identifier: %v", self.key)
 	}
 	
 	gfoo.Push(b.val)
