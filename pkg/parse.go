@@ -44,7 +44,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 		pos.column++
 		var f Form
 
-		if f, err = self.parseIdentifier(in,  0, pos); err != nil {
+		if f, err = self.parseId(in,  0, pos); err != nil {
 			return nil, err
 		}
 		
@@ -59,14 +59,14 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Position) (Form, error) {
 		}
 
 		if unicode.IsGraphic(c) {
-			return self.parseIdentifier(in, c, pos)
+			return self.parseId(in, c, pos)
 		}
 	}
 
 	return nil, self.Errorf(*pos, "Unexpected input: %v", c)
 }
 
-func (self *GFoo) parseIdentifier(in *bufio.Reader, c rune, pos *Position) (Form, error) {
+func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Position) (Form, error) {
 	var buffer bytes.Buffer
 	var err error
 	fpos := *pos
@@ -101,7 +101,7 @@ func (self *GFoo) parseIdentifier(in *bufio.Reader, c rune, pos *Position) (Form
 		}
 	}
 	
-	return NewIdentifier(fpos, buffer.String()), nil
+	return NewId(fpos, buffer.String()), nil
 }
 
 func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Position) (Form, error) {

@@ -1,13 +1,26 @@
+* rename Value -> Val
+* rename Position -> Pos
+* rename SliceForm -> Group
+* rename Scope.Set -> Let
+** track source in Binding
+*** check duplicate
+* --
 * add Bool type
 ** bind T/F in root scope
+* add op macros
+** arg_count
 * add Meta type
 ** add GetType op
 *** replace top of stack with its type
 **** add GFoo.Peek() *Value
-* add op macros
 ** add type macro
-** compile to GetType
+*** compile to GetType
 * add foo(...) -> ... foo transform to parseIdentifier
-* add Set op
-** init with key
-** take value from stack
+* add foo: ... -> foo(...) transform 
+** use arg_count
+* add Let op
+** init with key string/val *Value
+** add let: macro
+** let: foo 42
+** let: foo _
+*** get value from stack

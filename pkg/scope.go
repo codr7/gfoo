@@ -10,9 +10,9 @@ func (self *Scope) Init() {
 	self.bindings = make(Bindings)
 }
 
-func (self *Scope) Get(key string) *Value {
+func (self *Scope) Get(key string) *Binding {
 	if found, ok := self.bindings[key]; ok {
-		return &found.value
+		return &found
 	}
 
 	return nil

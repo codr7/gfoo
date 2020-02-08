@@ -21,6 +21,6 @@ func (_ *SymbolType) Dump(val interface{}, out io.Writer) error {
 }
 
 func (_ *SymbolType) Unquote(pos Position, val interface{}) Form {
-	return NewIdentifier(pos, val.(string))
+	return NewId(pos, val.(string))
 }
 
