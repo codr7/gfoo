@@ -88,6 +88,10 @@ func (self *Slice) Push(dataType Type, data interface{}) {
 	self.items = append(self.items, NewVal(dataType, data))
 }
 
+func (self *Slice) Reset() {
+	self.items = nil
+}
+
 func (self *Slice) Unquote(pos Pos) Form {
 	out := make([]Form, len(self.items))
 

@@ -41,12 +41,28 @@ Literals, values of bindings and results of macros and methods are pushed on the
 [1 2 3]
 ```
 
-The top value may be dropped using `_`.
+The top value may be duplicated using `..`,
 
 ```
-  1 2 3 _
+  ..
+  
+[1 2 3 3]
+```
 
-[1 2]
+and dropped using `_`.
+
+```
+  _
+  
+[1 2 3]
+```
+
+`|` may be used to reset the stack.
+
+```
+  1 2 3 | 4 5 6
+
+[4 5 6]
 ```
 
 ### bindings

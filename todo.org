@@ -1,6 +1,15 @@
-* add Dup op
-** add .. macro
+* create packages core, parse, form, op & type
+** rename types: TString -> type.String
+** rename parsers: parseId -> parse.Id
+** rename forms: SliceForm -> form.Slice
 * add ScopeForm
 ** add parseScope {}
 ** compile/evaluate in separate Scope
-*** add Scope.Copy(out *Scope)
+* add Splat op
+** add Type.Splat
+*** implement for Int
+**** 3... -> 0 1 2
+*** implement for Slice
+*** implement for String
+**** add Char type
+** add ... macro

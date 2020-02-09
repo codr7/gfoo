@@ -23,6 +23,14 @@ func dropImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, 
 	return append(out, NewDrop(form)), nil
 }
 
+func dupImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+	return append(out, NewDup(form)), nil
+}
+
+func resetImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+	return append(out, NewReset(form)), nil
+}
+
 func letImp(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
 	key, ok := args.Pop().(*Id)
 
@@ -63,6 +71,8 @@ func New() *GFoo {
 	g.AddConst("F", &TBool, false)
 
 	g.AddMacro("_", 0, dropImp)
+	g.AddMacro("..", 0, dupImp)
+	g.AddMacro("|", 0, resetImp)
 	g.AddMacro("let:", 0, letImp)
 	g.AddMacro("type", 0, typeImp)
 	return g
