@@ -10,13 +10,13 @@ func NewDup(form Form) *Dup {
 	return o
 }
 
-func (self *Dup) Evaluate(gfoo *GFoo, scope *Scope) error {
-	v := gfoo.Peek()
+func (self *Dup) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+	v := stack.Peek()
 	
 	if v == nil {
-		return gfoo.Error(self.form.Pos(), "Nothing to dup")
+		return vm.Error(self.form.Pos(), "Nothing to dup")
 	}
 
-	gfoo.Push(v.dataType, v.data)
+	stack.Push(v.dataType, v.data)
 	return nil
 }

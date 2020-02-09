@@ -14,7 +14,7 @@ func NewPush(form Form, dataType Type, data interface{}) *Push {
 	return o
 }
 
-func (self *Push) Evaluate(gfoo *GFoo, scope *Scope) error {
-	gfoo.Push(self.dataType, self.data)
+func (self *Push) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+	stack.Push(self.dataType, self.data)
 	return nil
 }

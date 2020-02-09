@@ -1,7 +1,3 @@
-* remove GFoo.stack
-** pass stack arg to Evaluate instead
-* rename GFoo to VM
-* --
 * add ScopeForm
 ** add parseScope {}
 ** compile/evaluate in separate Scope

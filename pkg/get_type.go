@@ -10,13 +10,13 @@ func NewGetType(form Form) *GetType {
 	return o
 }
 
-func (self *GetType) Evaluate(gfoo *GFoo, scope *Scope) error {
-	v := gfoo.Peek()
+func (self *GetType) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+	v := stack.Peek()
 
 	if v == nil {
-		return gfoo.Error(self.form.Pos(), "Missing value")
+		return vm.Error(self.form.Pos(), "Missing value")
 	}
 
-	v.data, v.dataType = v.dataType, &TType
+	v.data, v.dataType = v.dataType, &TMeta
 	return nil
 }

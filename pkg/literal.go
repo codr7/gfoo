@@ -14,7 +14,7 @@ func NewLiteral(pos Pos, dataType Type, data interface{}) *Literal {
 	return f
 }
 
-func (self *Literal) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *Literal) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
 	return append(out, NewPush(self, self.dataType, self.data)), nil
 }
 

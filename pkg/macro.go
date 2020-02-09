@@ -3,7 +3,7 @@ package gfoo
 import (
 )
 
-type MacroImp = func(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error)
+type MacroImp = func(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error)
 
 type Macro struct {
 	name string
@@ -15,10 +15,10 @@ func NewMacro(name string, argCount int, imp MacroImp) *Macro {
 	return &Macro{name: name, argCount: argCount, imp: imp}
 }
 
-func (self *Macro) Expand(gfoo *GFoo, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func (self *Macro) Expand(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
 	if args.Len() < self.argCount {
-		gfoo.Error(form.Pos(), "Not enough arguments: %v", self.name)
+		vm.Error(form.Pos(), "Not enough arguments: %v", self.name)
 	}
 	
-	return self.imp(gfoo, scope, form, args, out)
+	return self.imp(vm, scope, form, args, out)
 }

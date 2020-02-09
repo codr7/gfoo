@@ -12,7 +12,7 @@ func isId(c rune) bool {
 		c != '(' && c != ')' && c != '\'' && c != '"'
 }
 
-func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *VM) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
 	if err != nil {
@@ -49,7 +49,7 @@ func (self *GFoo) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	return nil, self.Error(*pos, "Unexpected input: %v", c)
 }
 
-func (self *GFoo) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
+func (self *VM) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
 	var out []Form
 	
 	for {
@@ -83,7 +83,7 @@ func (self *GFoo) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, erro
 	return out, nil
 }
 
-func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *VM) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	var err error
 	fpos := *pos
@@ -111,7 +111,7 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 			return nil, err
 		}
 
-		if !isId(c) || (c == '.' && pc != 0 && pc != '.') {
+		if !isId(c) || (c == '_' && pc != 0) || (c == '.' && pc != 0 && pc != '.') {
 			if err = in.UnreadRune(); err != nil {
 				return nil, err
 			}
@@ -146,7 +146,7 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	return NewId(fpos, buffer.String()), nil
 }
 
-func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	v := int64(0)
 	base := int64(10)
 	var err error
@@ -230,7 +230,7 @@ func (self *GFoo) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) 
 	return NewLiteral(fpos, &TInt64, v), nil
 }
 
-func (self *GFoo) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *VM) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
 	forms, err := self.parseForms(in, pos, ')')
@@ -242,7 +242,7 @@ func (self *GFoo) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewGroup(fpos, forms), nil
 }
 
-func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *VM) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
 	forms, err := self.parseForms(in, pos, ']')
@@ -254,7 +254,7 @@ func (self *GFoo) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewSliceForm(fpos, forms), nil
 }
 
-func (self *GFoo) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *VM) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	fpos := *pos
 	pos.column++

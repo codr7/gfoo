@@ -10,7 +10,7 @@ func NewReset(form Form) *Reset {
 	return o
 }
 
-func (self *Reset) Evaluate(gfoo *GFoo, scope *Scope) error {
-	gfoo.stack.Reset()
+func (self *Reset) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+	stack.Reset()
 	return nil
 }

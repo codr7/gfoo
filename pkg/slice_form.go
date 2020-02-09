@@ -10,8 +10,8 @@ func NewSliceForm(pos Pos, forms []Form) *SliceForm {
 	return f
 }
 
-func (self *SliceForm) Compile(gfoo *GFoo, scope *Scope, in *Forms, out []Op) ([]Op, error) {
-	ops, err := gfoo.Compile(self.forms, scope, nil)
+func (self *SliceForm) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+	ops, err := vm.Compile(self.forms, scope, nil)
 
 	if err != nil {
 		return out, err

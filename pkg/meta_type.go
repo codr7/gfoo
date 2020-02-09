@@ -4,10 +4,10 @@ import (
 	"io"
 )
 
-var TType MetaType
+var TMeta MetaType
 
 func init() {
-	TType.Init("Type")
+	TMeta.Init("Type")
 }
 
 type MetaType struct {
