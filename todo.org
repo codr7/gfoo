@@ -1,9 +1,6 @@
-* create packages core, parse, form, op & type
-** rename types: TString -> type.String
-** rename parsers: parseId -> parse.Id
-** rename forms: SliceForm -> form.Slice
 * remove GFoo.stack
 ** pass stack arg to Evaluate instead
+* rename GFoo to VM
 * add ScopeForm
 ** add parseScope {}
 ** compile/evaluate in separate Scope
