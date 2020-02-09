@@ -2,6 +2,8 @@
 ** rename types: TString -> type.String
 ** rename parsers: parseId -> parse.Id
 ** rename forms: SliceForm -> form.Slice
+* remove GFoo.stack
+** pass stack arg to Evaluate instead
 * add ScopeForm
 ** add parseScope {}
 ** compile/evaluate in separate Scope
