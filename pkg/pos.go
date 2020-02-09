@@ -13,4 +13,3 @@ type Pos struct {
 func NewPos(source string) Pos {
 	return Pos{source: source, line: MIN_LINE, column: MIN_COLUMN}
 }
-

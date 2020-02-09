@@ -87,26 +87,20 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	var err error
 	fpos := *pos
-
+	var pc rune
+	
 	if c > 0 {
 		pos.column++
 	}
 	
 	for {
-		if c > 0 {
-			if !isId(c) {
-				if err = in.UnreadRune(); err != nil {
-					return nil, err
-				}
-				
-				break
-			}
-			
+		if c > 0 {			
 			if _, err = buffer.WriteRune(c); err != nil {
 				return nil, err
 			}
 		}
 
+		pc = c
 		c, _, err = in.ReadRune()
 		
 		if err == io.EOF {
@@ -117,6 +111,14 @@ func (self *GFoo) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 			return nil, err
 		}
 
+		if !isId(c) || (c == '.' && pc != 0 && pc != '.') {
+			if err = in.UnreadRune(); err != nil {
+				return nil, err
+			}
+			
+			break
+		}
+		
 		pos.column++
 	}
 

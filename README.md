@@ -80,7 +80,7 @@ Rebinding identifiers within the same scope signals compile time errors.
 ```
   let: foo "bar"
 
-Error in 'repl', line 1, column 6: Duplicate binding: foo
+Error in 'repl', line 1, column 5: Duplicate binding: foo
 ```
 
 Specifying `_` as value pops it from the stack.
