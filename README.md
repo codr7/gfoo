@@ -99,6 +99,32 @@ Specifying `_` as value pops it from the stack.
 ["baz"]
 ```
 
+### numbers
+Numeric literals may be specified using decimal, hexadecimal or binary notation.
+
+```
+  42 0x2a 0b101010
+
+[42 42 42]
+```
+
+### slices
+Slices may be created by enclosing code in brackets,
+
+```
+  ['foo 'bar 'baz]
+  
+[['foo 'bar 'baz]]
+```
+
+or by quoting group forms.
+
+```
+  '(foo bar baz)
+  
+[['foo 'bar 'baz]]
+```
+
 ### license
 [MIT](https://github.com/codr7/gfoo/blob/master/LICENSE.txt)
 

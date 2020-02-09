@@ -24,11 +24,11 @@ func (self *Group) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, err
 }
 
 func (self *Group) Quote() Val {
-	v := make([]Val, len(self.forms))
+	out := make([]Val, len(self.forms))
 
 	for i, f := range self.forms {
-		v[i] = f.Quote()
+		out[i] = f.Quote()
 	}
 	
-	return NewVal(&TSlice, v)
+	return NewVal(&TSlice, NewSlice(out))
 }
