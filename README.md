@@ -16,7 +16,7 @@ Press Return on empty line to evaluate.
 ```
 
 ### syntax
-By default, arguments are expected to appear before function calls.
+By default, arguments are expected before operations.
 
 ```
   42 type
@@ -33,7 +33,7 @@ Trailing arguments may be enclosed in parens to get prefix/infix notation.
 ```
 
 ### the stack
-Literals, values of bindings and results of macros and methods are pushed on the stack.
+Literals, values of bindings and results from operations are pushed on the stack.
 
 ```
   1 2 3
