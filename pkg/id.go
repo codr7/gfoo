@@ -20,12 +20,12 @@ func (self *Id) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error)
 			return v.data.(*Macro).Expand(vm, scope, self, in, out)
 		}
 		
-		return append(out, NewPush(self, v.dataType, v.data)), nil
+		return append(out, NewPush(self, *v)), nil
 	}
 
 	return append(out, NewGet(self, self.name)), nil
 }
 
-func (self *Id) Quote() Val {
-	return NewVal(&TId, self.name)
+func (self *Id) Quote(vm *VM, scope *Scope) (Val, error) {
+	return NewVal(&TId, self.name), nil
 }

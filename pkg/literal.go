@@ -2,22 +2,20 @@ package gfoo
 
 type Literal struct {
 	FormBase
-	dataType Type
-	data interface{}
+	val Val
 }
 
-func NewLiteral(pos Pos, dataType Type, data interface{}) *Literal {
+func NewLiteral(pos Pos, val Val) *Literal {
 	f := new(Literal)
 	f.FormBase.Init(pos)
-	f.dataType = dataType
-	f.data = data
+	f.val = val
 	return f
 }
 
 func (self *Literal) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
-	return append(out, NewPush(self, self.dataType, self.data)), nil
+	return append(out, NewPush(self, self.val)), nil
 }
 
-func (self *Literal) Quote() Val {
-	return NewVal(self.dataType, self.data)
+func (self *Literal) Quote(vm *VM, scope *Scope) (Val, error) {
+	return self.val, nil
 }

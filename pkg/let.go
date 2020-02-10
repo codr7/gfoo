@@ -20,7 +20,7 @@ func (self *Let) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 		return vm.Error(p, "Missing value: %v", self.key)
 	}
 	
-	scope.Set(self.key, v.dataType, v.data)
+	scope.Set(self.key, *v)
 	return nil
 }
 

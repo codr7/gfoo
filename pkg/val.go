@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var NilVal Val
+
 type Val struct {
 	dataType Type
 	data interface{}
@@ -19,6 +21,10 @@ func NewVal(dataType Type, data interface{}) Val {
 func (self *Val) Init(dataType Type, data interface{}) {
 	self.dataType = dataType
 	self.data = data
+}
+
+func (self Val) Call(vm *VM, stack *Slice) error {
+	return self.dataType.Call(self, vm, stack)
 }
 
 func (self Val) Compare(other Val) Order {
@@ -42,7 +48,7 @@ func (self Val) Is(other Val) bool {
 }
 
 func (self Val) Literal(pos Pos) *Literal {
-	return NewLiteral(pos, self.dataType, self.data)
+	return NewLiteral(pos, self)
 }
 
 func (self Val) Unquote(pos Pos) Form {

@@ -17,6 +17,6 @@ func (self *Dup) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 		return vm.Error(self.form.Pos(), "Nothing to dup")
 	}
 
-	stack.Push(v.dataType, v.data)
+	stack.Push(*v)
 	return nil
 }

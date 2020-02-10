@@ -84,8 +84,8 @@ func (self *Slice) Pop() *Val {
 	return v
 }
 
-func (self *Slice) Push(dataType Type, data interface{}) {
-	self.items = append(self.items, NewVal(dataType, data))
+func (self *Slice) Push(val Val) {
+	self.items = append(self.items, val)
 }
 
 func (self *Slice) Reset() {

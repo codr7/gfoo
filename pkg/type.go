@@ -5,6 +5,7 @@ import (
 )
 
 type Type interface {
+	Call(target Val, vm *VM, stack *Slice) error
 	Compare(x, y interface{}) Order
 	Dump(val interface{}, out io.Writer) error
 	Name() string
@@ -17,6 +18,11 @@ type TypeBase struct {
 
 func (self *TypeBase) Init(name string) {
 	self.name = name
+}
+
+func (_ *TypeBase) Call(target Val, vm *VM, stack *Slice) error {
+	stack.Push(target)
+	return nil
 }
 
 func (self *TypeBase) Name() string {

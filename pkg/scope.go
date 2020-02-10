@@ -29,6 +29,6 @@ func (self *Scope) Get(key string) *Binding {
 	return nil
 }
 
-func (self *Scope) Set(key string, dataType Type, data interface{}) {
-	self.bindings[key] = NewBinding(self, dataType, data)
+func (self *Scope) Set(key string, val Val) {
+	self.bindings[key] = NewBinding(self, val)
 }

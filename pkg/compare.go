@@ -2,6 +2,7 @@ package gfoo
 
 import (
 	"strings"
+	"unsafe"
 )
 
 type Order = int
@@ -21,6 +22,20 @@ func CompareInt(x, y int) Order {
 		return Gt
 	}
 
+	return Eq
+}
+
+func ComparePointer(x, y unsafe.Pointer) Order {
+	xp, yp := uintptr(x), uintptr(y)
+	
+	if xp < yp {
+		return Lt
+	}
+	
+	if xp > yp {
+		return Gt
+	}
+	
 	return Eq
 }
 

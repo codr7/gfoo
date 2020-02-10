@@ -35,5 +35,5 @@ func (_ *Int64Type) Dump(val interface{}, out io.Writer) error {
 }
 
 func (self *Int64Type) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, self, val)
+	return NewLiteral(pos, NewVal(self, val))
 }

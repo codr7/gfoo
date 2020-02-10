@@ -23,12 +23,15 @@ func (self *Group) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, err
 	return vm.Compile(self.forms, scope, out)
 }
 
-func (self *Group) Quote() Val {
+func (self *Group) Quote(vm *VM, scope *Scope) (Val, error) {
 	out := make([]Val, len(self.forms))
-
+	var err error
+	
 	for i, f := range self.forms {
-		out[i] = f.Quote()
+		if out[i], err = f.Quote(vm, scope); err != nil {
+			return NilVal, err
+		}
 	}
 	
-	return NewVal(&TSlice, NewSlice(out))
+	return NewVal(&TSlice, NewSlice(out)), nil
 }

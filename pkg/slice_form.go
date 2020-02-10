@@ -1,13 +1,18 @@
 package gfoo
 
 type SliceForm struct {
-	Group
+	FormBase
+	forms []Form
 }
 
 func NewSliceForm(pos Pos, forms []Form) *SliceForm {
-	f := new(SliceForm)
-	f.Group.Init(pos, forms)
-	return f
+	return new(SliceForm).Init(pos, forms)
+}
+
+func (self *SliceForm) Init(pos Pos, forms []Form) *SliceForm {
+	self.FormBase.Init(pos)
+	self.forms = forms
+	return self
 }
 
 func (self *SliceForm) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
@@ -17,5 +22,21 @@ func (self *SliceForm) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op,
 		return out, err
 	}
 	
-	return append(out, NewPushSlice(self, ops)), nil
+	return append(out, NewSliceOp(self, ops)), nil
+}
+
+func (self *SliceForm) Quote(vm *VM, scope *Scope) (Val, error) {
+	ops, err := vm.Compile(self.forms, scope, nil)
+
+	if err != nil {
+		return NilVal, err
+	}
+
+	v := NewSlice(nil)
+	
+	if err = vm.Evaluate(ops, v, scope); err != nil {
+		return NilVal, err
+	}
+		
+	return NewVal(&TSlice, v), nil
 }

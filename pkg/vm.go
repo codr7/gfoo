@@ -24,6 +24,10 @@ func resetImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, err
 	return append(out, NewReset(form)), nil
 }
 
+func callImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error){
+	return append(out, NewCall(form, nil)), nil
+}
+	
 func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
 	key, ok := args.Pop().(*Id)
 
@@ -32,7 +36,7 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 	}
 
 	if found := scope.Get(key.name); found == nil {
-		scope.Set(key.name, nil, nil)
+		scope.Set(key.name, NilVal)
 	} else {
 		if found.scope == scope {
 			return out, vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
@@ -43,7 +47,7 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 	
 	if id, ok := val.(*Id); !ok || id.name != "_" {
 		var err error
-		
+
 		if out, err = val.Compile(vm, scope, &NilForms, out); err != nil {
 			return out, err
 		}
@@ -66,17 +70,18 @@ func NewVM() *VM {
 	vm.AddMacro("_", 0, dropImp)
 	vm.AddMacro("..", 0, dupImp)
 	vm.AddMacro("|", 0, resetImp)
+	vm.AddMacro("call", 0, callImp)
 	vm.AddMacro("let:", 0, letImp)
 	vm.AddMacro("type", 0, typeImp)
 	return vm
 }
 
 func (self *VM) AddConst(name string, dataType Type, data interface{}) {
-	self.rootScope.Set(name, dataType, data)
+	self.rootScope.Set(name, NewVal(dataType, data))
 }
 
 func (self *VM) AddMacro(name string, argCount int, imp MacroImp) {
-	self.rootScope.Set(name, &TMacro, NewMacro(name, argCount, imp))
+	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
 func (self *VM) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {

@@ -3,7 +3,7 @@ package gfoo
 type Form interface {
 	Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error)
 	Pos() Pos
-	Quote() Val
+	Quote(vm *VM, scope *Scope) (Val, error)
 }
 
 type FormBase struct {

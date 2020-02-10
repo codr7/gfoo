@@ -19,8 +19,7 @@ func (self *Get) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 		return vm.Error(self.form.Pos(), "Unknown identifier: %v", self.key)
 	}
 
-	v := &found.val
-	stack.Push(v.dataType, v.data)
+	stack.Push(found.val)
 	return nil
 }
 

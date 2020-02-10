@@ -42,5 +42,5 @@ func (_ *BoolType) Dump(val interface{}, out io.Writer) error {
 }
 
 func (self *BoolType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, self, val)
+	return NewLiteral(pos, NewVal(self, val))
 }

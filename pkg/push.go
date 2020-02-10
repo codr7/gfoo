@@ -2,19 +2,17 @@ package gfoo
 
 type Push struct {
 	OpBase
-	dataType Type
-	data interface{}
+	val Val
 }
 
-func NewPush(form Form, dataType Type, data interface{}) *Push {
+func NewPush(form Form, val Val) *Push {
 	o := new(Push)
 	o.OpBase.Init(form)
-	o.dataType = dataType
-	o.data = data
+	o.val = val
 	return o
 }
 
 func (self *Push) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
-	stack.Push(self.dataType, self.data)
+	stack.Push(self.val)
 	return nil
 }

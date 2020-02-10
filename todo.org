@@ -1,6 +1,5 @@
-* add ScopeForm
-** add parseScope {}
-** compile/evaluate in separate Scope
+* fix let: foo 42 foo
+* switch all Type methods from passing interface{} to Val
 * add Splat op
 ** add Type.Splat
 *** implement for Int
@@ -9,3 +8,4 @@
 *** implement for String
 **** add Char type
 ** add ... macro
+

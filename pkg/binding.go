@@ -5,9 +5,9 @@ type Binding struct {
 	scope *Scope
 }
 
-func NewBinding(scope *Scope, dataType Type, data interface{}) Binding {
+func NewBinding(scope *Scope, val Val) Binding {
 	var b Binding
 	b.scope = scope
-	b.val.Init(dataType, data)
+	b.val = val
 	return b
 }
