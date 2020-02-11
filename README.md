@@ -69,17 +69,31 @@ Identifiers may be bound to values in the current scope using `let:`.
 
 ```
   let: foo 42
+
+[]
   foo
 
 [42]
 ```
 
-Rebinding identifiers within the same scope signals compile time errors.
+Rebinding in the same scope results in a compile time error,
 
 ```
   let: foo "bar"
 
 Error in 'repl', line 1, column 5: Duplicate binding: foo
+```
+
+while derived scopes are allowed to override inherited bindings.
+
+```
+  {let: foo "bar" foo}
+
+["bar"]
+
+  foo
+
+["bar" 42]
 ```
 
 Specifying `_` as value pops it from the stack.
@@ -122,6 +136,23 @@ or by quoting group forms.
   '(foo bar baz)
   
 [['foo 'bar 'baz]]
+```
+
+### lambdas
+Lambdas may be created by quoting scopes,
+
+```
+  '{1 2 3}
+
+[Lambda(0xc0000483c0)]
+```
+
+and evaluated using `call`.
+
+```
+  call
+
+[1 2 3]
 ```
 
 ### license

@@ -13,7 +13,7 @@ func NewId(pos Pos, name string) *Id {
 }
 
 func (self *Id) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
-	if b := scope.Get(self.name); b != nil {
+	if b := scope.Get(self.name); b != nil && b.val != NilVal {
 		v := &b.val
 		
 		if v.dataType == &TMacro {

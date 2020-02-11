@@ -1,4 +1,3 @@
-* fix let: foo 42 foo
 * switch all Type methods from passing interface{} to Val
 * add Splat op
 ** add Type.Splat

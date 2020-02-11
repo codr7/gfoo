@@ -15,7 +15,7 @@ func NewGet(form Form, key string) *Get {
 func (self *Get) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 	found := scope.Get(self.key)
 
-	if found == nil || found.val.data == nil {
+	if found == nil || found.val == NilVal {
 		return vm.Error(self.form.Pos(), "Unknown identifier: %v", self.key)
 	}
 
