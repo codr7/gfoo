@@ -1,1 +1,1 @@
-go build -o dist/gfoo main.go
+go build -o dist/gfoo.exe main.go
