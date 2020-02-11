@@ -1,4 +1,3 @@
-* change Slice.Pop/Scope.Get to return by value with ok
 * rename GetType to TypeOp
 * --
 * add Splat op

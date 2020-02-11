@@ -16,7 +16,9 @@ func (self *Call) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 	t := self.target
 	
 	if t == nil {
-		t = stack.Pop()
+		if v, ok := stack.Pop(); ok {
+			t = &v
+		}
 	}
 
 	if t == nil {

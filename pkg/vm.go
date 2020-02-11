@@ -35,8 +35,10 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 		vm.Error(key.Pos(), "Expected id: %v", key)
 	}
 
-	if found := scope.Get(key.name); found == nil || found.scope != scope {
+	if found := scope.Get(key.name); found == nil {
 		scope.Set(key.name, NilVal)
+	} else if found.scope != scope {
+		found.Init(scope, NilVal)
 	} else {
 	        return out, vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
 	}
