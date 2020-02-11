@@ -1,5 +1,6 @@
 package gfoo
 
-var (
-	Version = [2]int{0, 2}
+const (
+	VersionMajor = 0
+	VersionMinor = 1
 )
