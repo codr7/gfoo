@@ -1,16 +1,16 @@
 package gfoo
 
-type GetType struct {
+type TypeOp struct {
 	OpBase
 }
 
-func NewGetType(form Form) *GetType {
-	o := new(GetType)
+func NewTypeOp(form Form) *TypeOp {
+	o := new(TypeOp)
 	o.OpBase.Init(form)
 	return o
 }
 
-func (self *GetType) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+func (self *TypeOp) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
 	v := stack.Peek()
 
 	if v == nil {

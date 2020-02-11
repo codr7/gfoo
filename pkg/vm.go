@@ -57,7 +57,7 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 }
 
 func typeImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
-	return append(out, NewGetType(form)), nil
+	return append(out, NewTypeOp(form)), nil
 }
 	
 func NewVM() *VM {

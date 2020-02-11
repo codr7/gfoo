@@ -1,5 +1,3 @@
-* rename GetType to TypeOp
-* --
 * add Splat op
 ** add Type.Splat
 *** implement for Int
