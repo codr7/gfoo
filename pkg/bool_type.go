@@ -14,8 +14,8 @@ type BoolType struct {
 	TypeBase
 }
 
-func (_ *BoolType) Compare(x, y interface{}) Order {
-	xv, yv := x.(bool), y.(bool)
+func (_ *BoolType) Compare(x, y Val) Order {
+	xv, yv := x.data.(bool), y.data.(bool)
 
 	if xv && !yv {
 		return Lt
@@ -28,10 +28,10 @@ func (_ *BoolType) Compare(x, y interface{}) Order {
 	return Eq
 }
 
-func (_ *BoolType) Dump(val interface{}, out io.Writer) error {
+func (_ *BoolType) Dump(val Val, out io.Writer) error {
 	var s string
 	
-	if val.(bool) {
+	if val.data.(bool) {
 		s = "T"
 	} else {
 		s = "F"
@@ -41,6 +41,6 @@ func (_ *BoolType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (self *BoolType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, NewVal(self, val))
+func (self *BoolType) Unquote(val Val, pos Pos) Form {
+	return NewLiteral(pos, val)
 }

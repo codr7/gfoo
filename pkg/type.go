@@ -6,10 +6,10 @@ import (
 
 type Type interface {
 	Call(target Val, vm *VM, stack *Slice) error
-	Compare(x, y interface{}) Order
-	Dump(val interface{}, out io.Writer) error
+	Compare(x, y Val) Order
+	Dump(val Val, out io.Writer) error
 	Name() string
-	Unquote(pos Pos, val interface{}) Form
+	Unquote(val Val, pos Pos) Form
 }
 
 type TypeBase struct {

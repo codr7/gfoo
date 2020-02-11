@@ -32,11 +32,11 @@ func (self Val) Compare(other Val) Order {
 		return strings.Compare(self.dataType.Name(), other.dataType.Name())
 	}
 
-	return self.dataType.Compare(self.data, other.data)
+	return self.dataType.Compare(self, other)
 }
 
 func (self Val) Dump(out io.Writer) error {
-	return self.dataType.Dump(self.data, out)
+	return self.dataType.Dump(self, out)
 }
 
 func (self Val) Is(other Val) bool {
@@ -52,5 +52,5 @@ func (self Val) Literal(pos Pos) *Literal {
 }
 
 func (self Val) Unquote(pos Pos) Form {
-	return self.dataType.Unquote(pos, self.data)
+	return self.dataType.Unquote(self, pos)
 }

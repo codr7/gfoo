@@ -14,14 +14,14 @@ type SliceType struct {
 	TypeBase
 }
 
-func (_ *SliceType) Compare(x, y interface{}) Order {
-	return x.(*Slice).Compare(*y.(*Slice))
+func (_ *SliceType) Compare(x, y Val) Order {
+	return x.data.(*Slice).Compare(*y.data.(*Slice))
 }
 
-func (_ *SliceType) Dump(val interface{}, out io.Writer) error {
-	return val.(*Slice).Dump(out)
+func (_ *SliceType) Dump(val Val, out io.Writer) error {
+	return val.data.(*Slice).Dump(out)
 }
 
-func (_ *SliceType) Unquote(pos Pos, val interface{}) Form {
-	return val.(*Slice).Unquote(pos)
+func (_ *SliceType) Unquote(val Val, pos Pos) Form {
+	return val.data.(*Slice).Unquote(pos)
 }

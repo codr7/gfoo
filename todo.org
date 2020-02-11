@@ -1,4 +1,6 @@
-* switch all Type methods from passing interface{} to Val
+* change Slice.Pop/Scope.Get to return by value with ok
+* rename GetType to TypeOp
+* --
 * add Splat op
 ** add Type.Splat
 *** implement for Int

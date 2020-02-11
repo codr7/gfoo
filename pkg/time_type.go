@@ -15,8 +15,8 @@ type TimeType struct {
 	TypeBase
 }
 
-func (_ *TimeType) Compare(x, y interface{}) Order {
-	xv, yv := x.(time.Time), y.(time.Time)
+func (_ *TimeType) Compare(x, y Val) Order {
+	xv, yv := x.data.(time.Time), y.data.(time.Time)
 	
 	if xv.Before(yv) {
 		return Lt
@@ -29,8 +29,8 @@ func (_ *TimeType) Compare(x, y interface{}) Order {
 	return Eq
 }
 
-func (_ *TimeType) Dump(val interface{}, out io.Writer) error {
-	t, err := val.(time.Time).MarshalText()
+func (_ *TimeType) Dump(val Val, out io.Writer) error {
+	t, err := val.data.(time.Time).MarshalText()
 
 	if err == nil {
 		_, err = out.Write(t)
@@ -39,6 +39,6 @@ func (_ *TimeType) Dump(val interface{}, out io.Writer) error {
 	return err
 }
 
-func (self *TimeType) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, NewVal(self, val))
+func (self *TimeType) Unquote(val Val, pos Pos) Form {
+	return NewLiteral(pos, val)
 }

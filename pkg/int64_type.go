@@ -15,8 +15,8 @@ type Int64Type struct {
 	TypeBase
 }
 
-func (_ *Int64Type) Compare(x, y interface{}) Order {
-	xv, yv := x.(int64), y.(int64)
+func (_ *Int64Type) Compare(x, y Val) Order {
+	xv, yv := x.data.(int64), y.data.(int64)
 
 	if xv < yv {
 		return Lt
@@ -29,11 +29,11 @@ func (_ *Int64Type) Compare(x, y interface{}) Order {
 	return Eq
 }
 
-func (_ *Int64Type) Dump(val interface{}, out io.Writer) error {
-	_, err := io.WriteString(out, strconv.FormatInt(val.(int64), 10))
+func (_ *Int64Type) Dump(val Val, out io.Writer) error {
+	_, err := io.WriteString(out, strconv.FormatInt(val.data.(int64), 10))
 	return err
 }
 
-func (self *Int64Type) Unquote(pos Pos, val interface{}) Form {
-	return NewLiteral(pos, NewVal(self, val))
+func (self *Int64Type) Unquote(val Val, pos Pos) Form {
+	return NewLiteral(pos, val)
 }
