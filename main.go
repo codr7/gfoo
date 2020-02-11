@@ -11,7 +11,7 @@ import (
 )
 
 func repl(vm *gfoo.VM) {
-	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VERSION_MAJOR, gfoo.VERSION_MINOR)
+	fmt.Printf("gfoo v%v.%v\n\n", gfoo.Version[0], gfoo.Version[1])
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
 
 	scanner := bufio.NewScanner(os.Stdin)

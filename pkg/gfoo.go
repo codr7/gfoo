@@ -1,6 +1,5 @@
 package gfoo
 
-const (
-	VERSION_MAJOR = 0
-	VERSION_MINOR = 1
+var (
+	Version = [2]int{0, 2}
 )
