@@ -6,18 +6,4 @@
 *** implement for String
 **** add Char type
 ** add ... macro
-* add coro
-** 1 pause: 2 3
-** add Coro type
-*** mutex/cond/stack/scope/ops
-*** resume in call method
-** add Pause error
-*** trap in vm.Evaluate
-**** add optional coro arg
-***** reuse if set
-***** else construct new Coro
-**** push Coro on stack if new
-**** else push pause value unless _
-** add Slice.Clone()
-** add bool child-arg to Scope.Clone()
-*** update binding.scope if !child && scope == self
+   
