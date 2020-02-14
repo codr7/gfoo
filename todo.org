@@ -1,7 +1,6 @@
-* change form constructors to take pos arg last
-* add pause
-** add pause: macro/op
-*** return error if scope.thread == nil
+* add pause: macro/op
+** error if scope.thread == nil
+** call to resume
 * --
 * add Splat op
 ** add Type.Splat
@@ -11,4 +10,3 @@
 *** implement for String
 **** add Char type
 ** add ... macro
-   

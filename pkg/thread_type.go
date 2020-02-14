@@ -30,5 +30,5 @@ func (_ *ThreadType) Dump(val Val, out io.Writer) error {
 }
 
 func (self *ThreadType) Unquote(val Val, pos Pos) Form {
-	return NewLiteral(pos, val)
+	return NewLiteral(val, pos)
 }

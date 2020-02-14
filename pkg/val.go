@@ -48,7 +48,7 @@ func (self Val) Is(other Val) bool {
 }
 
 func (self Val) Literal(pos Pos) *Literal {
-	return NewLiteral(pos, self)
+	return NewLiteral(self, pos)
 }
 
 func (self Val) Unquote(pos Pos) Form {

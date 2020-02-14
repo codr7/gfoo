@@ -21,5 +21,5 @@ func (_ *SymbolType) Dump(val Val, out io.Writer) error {
 }
 
 func (_ *SymbolType) Unquote(val Val, pos Pos) Form {
-	return NewId(pos, val.data.(string))
+	return NewId(val.data.(string), pos)
 }

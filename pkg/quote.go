@@ -5,11 +5,11 @@ type Quote struct {
 	form Form
 }
 
-func NewQuote(pos Pos, form Form) *Quote {
-	return new(Quote).Init(pos, form)
+func NewQuote(form Form, pos Pos) *Quote {
+	return new(Quote).Init(form, pos)
 }
 
-func (self *Quote) Init(pos Pos, form Form) *Quote {
+func (self *Quote) Init(form Form, pos Pos) *Quote {
 	self.FormBase.Init(pos)
 	self.form = form
 	return self

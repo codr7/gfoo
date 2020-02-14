@@ -5,11 +5,11 @@ type Group struct {
 	forms []Form
 }
 
-func NewGroup(pos Pos, forms []Form) *Group {
-	return new(Group).Init(pos, forms)
+func NewGroup(forms []Form, pos Pos) *Group {
+	return new(Group).Init(forms, pos)
 }
 
-func (self *Group) Init(pos Pos, forms []Form) *Group {
+func (self *Group) Init(forms []Form, pos Pos) *Group {
 	self.FormBase.Init(pos)
 	self.forms = forms
 	return self

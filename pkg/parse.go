@@ -31,7 +31,7 @@ func (self *VM) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 			return nil, err
 		}
 		
-		return NewQuote(fpos, f), nil
+		return NewQuote(f, fpos), nil
 	case '"':
 		return self.parseString(in, pos)
 	case '(':
@@ -96,7 +96,7 @@ func (self *VM) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 		return nil, err
 	}
 
-	return NewGroup(fpos, forms), nil
+	return NewGroup(forms, fpos), nil
 }
 
 func (self *VM) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
@@ -152,14 +152,14 @@ func (self *VM) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 				return nil, err
 			}
 
-			f.(*Group).AddForm(NewId(fpos, buffer.String()))
+			f.(*Group).AddForm(NewId(buffer.String(), fpos))
 			return f, nil
 		} else if err = in.UnreadRune(); err != nil {
 			return nil, err
 		}
 	}
 		
-	return NewId(fpos, buffer.String()), nil
+	return NewId(buffer.String(), fpos), nil
 }
 
 func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
@@ -185,7 +185,7 @@ func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	if c == '0' {
 		if c, _, err = in.ReadRune(); err != nil {
 			if err == io.EOF {
-				return NewLiteral(fpos, NewVal(&TInt64, v)), nil
+				return NewLiteral(NewVal(&TInt64, v), fpos), nil
 			}
 			
 			return nil, err
@@ -243,7 +243,7 @@ func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 		pos.column++
 	}
 	
-	return NewLiteral(fpos, NewVal(&TInt64, v)), nil
+	return NewLiteral(NewVal(&TInt64, v), fpos), nil
 }
 
 func (self *VM) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -255,7 +255,7 @@ func (self *VM) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 		return nil, err
 	}
 	
-	return NewScopeForm(fpos, forms), nil
+	return NewScopeForm(forms, fpos), nil
 }
 
 func (self *VM) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -267,7 +267,7 @@ func (self *VM) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 		return nil, err
 	}
 	
-	return NewSliceForm(fpos, forms), nil
+	return NewSliceForm(forms, fpos), nil
 }
 
 func (self *VM) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -297,7 +297,7 @@ func (self *VM) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 		}
 	}
 	
-	return NewLiteral(fpos, NewVal(&TString, buffer.String())), nil
+	return NewLiteral(NewVal(&TString, buffer.String()), fpos), nil
 }
 
 func skipSpace(in *bufio.Reader, pos *Pos) error {

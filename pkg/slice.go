@@ -99,5 +99,5 @@ func (self *Slice) Unquote(pos Pos) Form {
 		out[i] = v.Unquote(pos)
 	}
 
-	return NewGroup(pos, out)
+	return NewGroup(out, pos)
 }

@@ -5,11 +5,11 @@ type SliceForm struct {
 	forms []Form
 }
 
-func NewSliceForm(pos Pos, forms []Form) *SliceForm {
-	return new(SliceForm).Init(pos, forms)
+func NewSliceForm(forms []Form, pos Pos) *SliceForm {
+	return new(SliceForm).Init(forms, pos)
 }
 
-func (self *SliceForm) Init(pos Pos, forms []Form) *SliceForm {
+func (self *SliceForm) Init(forms []Form, pos Pos) *SliceForm {
 	self.FormBase.Init(pos)
 	self.forms = forms
 	return self

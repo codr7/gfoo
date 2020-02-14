@@ -9,11 +9,11 @@ type ScopeForm struct {
 	body []Form
 }
 
-func NewScopeForm(pos Pos, body []Form) *ScopeForm {
-	return new(ScopeForm).Init(pos, body)
+func NewScopeForm(body []Form, pos Pos) *ScopeForm {
+	return new(ScopeForm).Init(body, pos)
 }
 
-func (self *ScopeForm) Init(pos Pos, body []Form) *ScopeForm {
+func (self *ScopeForm) Init(body []Form, pos Pos) *ScopeForm {
 	self.FormBase.Init(pos)
 	self.body = body
 	return self
