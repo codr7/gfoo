@@ -1,3 +1,5 @@
+* move vm.Debug & methods to Scope
+** remove vm type
 * add pause: macro/op
 ** error if scope.thread == nil
 ** call to resume

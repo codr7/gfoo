@@ -23,8 +23,8 @@ func (self *Val) Init(dataType Type, data interface{}) {
 	self.data = data
 }
 
-func (self Val) Call(stack *Slice, scope *Scope) error {
-	return self.dataType.Call(self, stack, scope)
+func (self Val) Call(stack *Slice, scope *Scope, pos Pos) error {
+	return self.dataType.Call(self, stack, scope, pos)
 }
 
 func (self Val) Compare(other Val) Order {

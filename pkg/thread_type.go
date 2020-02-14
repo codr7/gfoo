@@ -16,8 +16,8 @@ type ThreadType struct {
 	TypeBase
 }
 
-func (_ *ThreadType) Call(target Val, stack *Slice, scope *Scope) error {
-	return target.data.(*Thread).Call(stack)
+func (_ *ThreadType) Call(target Val, stack *Slice, scope *Scope, pos Pos) error {
+	return target.data.(*Thread).Call(stack, pos)
 }
 
 func (_ *ThreadType) Compare(x, y Val) Order {

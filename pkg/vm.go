@@ -2,8 +2,6 @@ package gfoo
 
 import (
 	"bufio"
-	"errors"
-	"fmt"
 	"io"
 )
 
@@ -113,14 +111,13 @@ func (self *VM) AddMacro(name string, argCount int, imp MacroImp) {
 }
 
 func (self *VM) Error(pos Pos, spec string, args...interface{}) error {
-	msg := fmt.Sprintf("Error in '%v', line %v, column %v: %v ", 
-		pos.source, pos.line, pos.column, fmt.Sprintf(spec, args...))
-
+	err := NewError(pos, spec, args)
+	
 	if self.Debug {
-		panic(msg)
+		panic(err.Error())
 	}
 
-	return errors.New(msg)
+	return err
 }
 
 func (self *VM) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {

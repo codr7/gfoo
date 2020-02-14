@@ -16,7 +16,7 @@ type LambdaType struct {
 	TypeBase
 }
 
-func (_ *LambdaType) Call(target Val, stack *Slice, scope *Scope) error {
+func (_ *LambdaType) Call(target Val, stack *Slice, scope *Scope, pos Pos) error {
 	return target.data.(*Lambda).Call(stack)
 }
 
