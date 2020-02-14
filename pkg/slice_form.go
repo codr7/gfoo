@@ -15,7 +15,7 @@ func (self *SliceForm) Init(pos Pos, forms []Form) *SliceForm {
 	return self
 }
 
-func (self *SliceForm) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *SliceForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	ops, err := vm.Compile(self.forms, scope, nil)
 
 	if err != nil {

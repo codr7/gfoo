@@ -48,7 +48,7 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 	if id, ok := val.(*Id); !ok || id.name != "_" {
 		var err error
 
-		if out, err = val.Compile(vm, scope, &NilForms, out); err != nil {
+		if out, err = val.Compile(&NilForms, out, vm, scope); err != nil {
 			return out, err
 		}
 	}
@@ -90,7 +90,7 @@ func (self *VM) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
 	inForms.Init(in)
 	
 	for f := inForms.Pop(); f != nil; f = inForms.Pop() {
-		if out, err = f.Compile(self, scope, &inForms, out); err != nil {
+		if out, err = f.Compile(&inForms, out, self, scope); err != nil {
 			return out, err
 		}
 	}

@@ -12,7 +12,7 @@ func NewLiteral(pos Pos, val Val) *Literal {
 	return f
 }
 
-func (self *Literal) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *Literal) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return append(out, NewPush(self, self.val)), nil
 }
 

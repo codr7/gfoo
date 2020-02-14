@@ -15,7 +15,7 @@ func (self *Quote) Init(pos Pos, form Form) *Quote {
 	return self
 }
 
-func (self *Quote) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *Quote) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	v, err := self.form.Quote(vm, scope)
 
 	if err != nil {

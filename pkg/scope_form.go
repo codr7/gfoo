@@ -19,7 +19,7 @@ func (self *ScopeForm) Init(pos Pos, forms []Form) *ScopeForm {
 	return self
 }
 
-func (self *ScopeForm) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *ScopeForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	ops, err := vm.Compile(self.forms, scope.Clone(), nil)
 
 	if err != nil {

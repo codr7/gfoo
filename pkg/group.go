@@ -19,7 +19,7 @@ func (self *Group) AddForm(form Form) {
 	self.forms = append(self.forms, form)
 }
 
-func (self *Group) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *Group) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return vm.Compile(self.forms, scope, out)
 }
 

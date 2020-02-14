@@ -1,7 +1,7 @@
 package gfoo
 
 type Form interface {
-	Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error)
+	Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error)
 	Pos() Pos
 	Quote(vm *VM, scope *Scope) (Val, error)
 }

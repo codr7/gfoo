@@ -12,7 +12,7 @@ func NewId(pos Pos, name string) *Id {
 	return f
 }
 
-func (self *Id) Compile(vm *VM, scope *Scope, in *Forms, out []Op) ([]Op, error) {
+func (self *Id) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	if b := scope.Get(self.name); b != nil && b.val != NilVal {
 		v := &b.val
 		
