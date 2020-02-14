@@ -10,11 +10,11 @@ func NewTypeOp(form Form) *TypeOp {
 	return o
 }
 
-func (self *TypeOp) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+func (self *TypeOp) Evaluate(stack *Slice, scope *Scope) error {
 	v := stack.Peek()
 
 	if v == nil {
-		return vm.Error(self.form.Pos(), "Missing value")
+		return scope.vm.Error(self.form.Pos(), "Missing value")
 	}
 
 	v.data, v.dataType = v.dataType, &TMeta

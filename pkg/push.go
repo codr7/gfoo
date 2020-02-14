@@ -12,7 +12,7 @@ func NewPush(form Form, val Val) *Push {
 	return o
 }
 
-func (self *Push) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+func (self *Push) Evaluate(stack *Slice, scope *Scope) error {
 	stack.Push(self.val)
 	return nil
 }

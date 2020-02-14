@@ -17,6 +17,6 @@ func (self *Lambda) Init(forms []Form, ops []Op, scope *Scope) *Lambda {
 	return self
 }
 
-func (self *Lambda) Call(vm *VM, stack *Slice) error {
-	return vm.Evaluate(self.ops, stack, self.scope.Clone(true))
+func (self *Lambda) Call(stack *Slice) error {
+	return self.scope.Clone(true).Evaluate(self.ops, stack)
 }

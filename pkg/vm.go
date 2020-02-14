@@ -137,16 +137,6 @@ func (self *VM) Error(pos Pos, spec string, args...interface{}) error {
 	return errors.New(msg)
 }
 
-func (self *VM) Evaluate(ops []Op, stack *Slice, scope *Scope) error {
-	for _, o := range ops {
-		if err := o.Evaluate(self, stack, scope); err != nil {
-			return err
-		}
-	}
-	
-	return nil
-}
-
 func (self *VM) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
 	var f Form
 	var err error

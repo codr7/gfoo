@@ -1,11 +1,8 @@
-* add thread
+* move vm.Compile to scope.Compile
+* change form constructors to take pos arg last
+* add pause
 ** add pause: macro/op
 *** return error if scope.thread == nil
-* move vm.Evaluate to scope.Evaluate
-* move vm.Compile to scope.Compile
-* remove vm arg from Op.Evaluate
-* change type.call to take stack/scope args
-* change form constructors to take pos arg last
 * --
 * add Splat op
 ** add Type.Splat

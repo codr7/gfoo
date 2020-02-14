@@ -10,9 +10,9 @@ func NewDrop(form Form) *Drop {
 	return o
 }
 
-func (self *Drop) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+func (self *Drop) Evaluate(stack *Slice, scope *Scope) error {
 	if _, ok := stack.Pop(); !ok {
-		return vm.Error(self.form.Pos(), "Nothing to drop")
+		return scope.vm.Error(self.form.Pos(), "Nothing to drop")
 	}
 	
 	return nil

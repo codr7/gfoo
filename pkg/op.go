@@ -1,7 +1,7 @@
 package gfoo
 
 type Op interface {
-	Evaluate(vm *VM, stack *Slice, scope *Scope) error
+	Evaluate(stack *Slice, scope *Scope) error
 }
 
 type OpBase struct {

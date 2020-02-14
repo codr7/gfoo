@@ -31,6 +31,16 @@ func (self *Scope) Clone(child bool) *Scope {
 	return out
 }
 
+func (self *Scope) Evaluate(ops []Op, stack *Slice) error {
+	for _, o := range ops {
+		if err := o.Evaluate(stack, self); err != nil {
+			return err
+		}
+	}
+	
+	return nil
+}
+
 func (self *Scope) Get(key string) *Binding {
 	if found, ok := self.bindings[key]; ok {
 		return &found

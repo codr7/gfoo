@@ -5,7 +5,7 @@ import (
 )
 
 type Type interface {
-	Call(target Val, vm *VM, stack *Slice) error
+	Call(target Val, stack *Slice, scope *Scope) error
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
 	Name() string
@@ -20,7 +20,7 @@ func (self *TypeBase) Init(name string) {
 	self.name = name
 }
 
-func (_ *TypeBase) Call(target Val, vm *VM, stack *Slice) error {
+func (_ *TypeBase) Call(target Val, stack *Slice, scope *Scope) error {
 	stack.Push(target)
 	return nil
 }

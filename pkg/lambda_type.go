@@ -16,8 +16,8 @@ type LambdaType struct {
 	TypeBase
 }
 
-func (_ *LambdaType) Call(target Val, vm *VM, stack *Slice) error {
-	return target.data.(*Lambda).Call(vm, stack)
+func (_ *LambdaType) Call(target Val, stack *Slice, scope *Scope) error {
+	return target.data.(*Lambda).Call(stack)
 }
 
 func (_ *LambdaType) Compare(x, y Val) Order {

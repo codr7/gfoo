@@ -24,7 +24,7 @@ func NewThread(body []Op, scope *Scope) *Thread {
 func (self *Thread) Start() {
 	go func() {
 		self.mutex.Lock()
-		self.err = self.scope.vm.Evaluate(self.body, &self.stack, &self.scope)
+		self.err = self.scope.Evaluate(self.body, &self.stack)
 		self.done = true
 		self.mutex.Unlock()
 	}()

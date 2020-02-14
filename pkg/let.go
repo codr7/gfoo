@@ -12,12 +12,12 @@ func NewLet(form Form, key string) *Let {
 	return o
 }
 
-func (self *Let) Evaluate(vm *VM, stack *Slice, scope *Scope) error {
+func (self *Let) Evaluate(stack *Slice, scope *Scope) error {
 	p := self.form.Pos()
 	v, ok := stack.Pop()
 
 	if !ok {
-		return vm.Error(p, "Missing value: %v", self.key)
+		return scope.vm.Error(p, "Missing value: %v", self.key)
 	}
 	
 	scope.Set(self.key, v)

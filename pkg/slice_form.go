@@ -34,7 +34,7 @@ func (self *SliceForm) Quote(scope *Scope) (Val, error) {
 
 	v := NewSlice(nil)
 	
-	if err = scope.vm.Evaluate(ops, v, scope); err != nil {
+	if err = scope.Evaluate(ops, v); err != nil {
 		return NilVal, err
 	}
 		

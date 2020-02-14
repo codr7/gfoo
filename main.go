@@ -51,7 +51,7 @@ func repl(vm *gfoo.VM) {
 				continue
 			}
 
-			if err = vm.Evaluate(ops, stack, vm.RootScope()); err != nil {
+			if err = vm.RootScope().Evaluate(ops, stack); err != nil {
 				fmt.Println(err)
 				continue
 			}
