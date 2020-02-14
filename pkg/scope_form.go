@@ -19,8 +19,8 @@ func (self *ScopeForm) Init(pos Pos, forms []Form) *ScopeForm {
 	return self
 }
 
-func (self *ScopeForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
-	ops, err := vm.Compile(self.forms, scope.Clone(), nil)
+func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	ops, err := scope.vm.Compile(self.forms, scope.Clone(), nil)
 
 	if err != nil {
 		return out, err
@@ -29,9 +29,9 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op,
 	return append(out, NewScopeOp(self, ops)), nil
 }
 
-func (self *ScopeForm) Quote(vm *VM, scope *Scope) (Val, error) {
+func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
 	scope = scope.Clone()
-	ops, err := vm.Compile(self.forms, scope, nil)
+	ops, err := scope.vm.Compile(self.forms, scope, nil)
 
 	if err != nil {
 		return NilVal, err

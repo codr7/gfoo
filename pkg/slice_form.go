@@ -15,8 +15,8 @@ func (self *SliceForm) Init(pos Pos, forms []Form) *SliceForm {
 	return self
 }
 
-func (self *SliceForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
-	ops, err := vm.Compile(self.forms, scope, nil)
+func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	ops, err := scope.vm.Compile(self.forms, scope, nil)
 
 	if err != nil {
 		return out, err
@@ -25,8 +25,8 @@ func (self *SliceForm) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op,
 	return append(out, NewSliceOp(self, ops)), nil
 }
 
-func (self *SliceForm) Quote(vm *VM, scope *Scope) (Val, error) {
-	ops, err := vm.Compile(self.forms, scope, nil)
+func (self *SliceForm) Quote(scope *Scope) (Val, error) {
+	ops, err := scope.vm.Compile(self.forms, scope, nil)
 
 	if err != nil {
 		return NilVal, err
@@ -34,7 +34,7 @@ func (self *SliceForm) Quote(vm *VM, scope *Scope) (Val, error) {
 
 	v := NewSlice(nil)
 	
-	if err = vm.Evaluate(ops, v, scope); err != nil {
+	if err = scope.vm.Evaluate(ops, v, scope); err != nil {
 		return NilVal, err
 	}
 		

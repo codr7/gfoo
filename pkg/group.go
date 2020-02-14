@@ -19,16 +19,16 @@ func (self *Group) AddForm(form Form) {
 	self.forms = append(self.forms, form)
 }
 
-func (self *Group) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
-	return vm.Compile(self.forms, scope, out)
+func (self *Group) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return scope.vm.Compile(self.forms, scope, out)
 }
 
-func (self *Group) Quote(vm *VM, scope *Scope) (Val, error) {
+func (self *Group) Quote(scope *Scope) (Val, error) {
 	out := make([]Val, len(self.forms))
 	var err error
 	
 	for i, f := range self.forms {
-		if out[i], err = f.Quote(vm, scope); err != nil {
+		if out[i], err = f.Quote(scope); err != nil {
 			return NilVal, err
 		}
 	}

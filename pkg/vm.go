@@ -12,27 +12,27 @@ type VM struct {
 	rootScope Scope
 }
 
-func dropImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func dropImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
 
-func dupImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func dupImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
 }
 
-func resetImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func resetImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewReset(form)), nil
 }
 
-func callImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error){
+func callImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil)), nil
 }
 	
-func letImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func letImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	key, ok := args.Pop().(*Id)
 
 	if !ok {
-		vm.Error(key.Pos(), "Expected id: %v", key)
+		scope.vm.Error(key.Pos(), "Expected id: %v", key)
 	}
 
 	if found := scope.Get(key.name); found == nil {
@@ -40,7 +40,7 @@ func letImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error
 	} else if found.scope != scope {
 		found.Init(scope, NilVal)
 	} else {
-	        return out, vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
+	        return out, scope.vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
 	}
 	
 	val := args.Pop()
@@ -48,7 +48,7 @@ func letImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error
 	if id, ok := val.(*Id); !ok || id.name != "_" {
 		var err error
 
-		if out, err = val.Compile(&NilForms, out, vm, scope); err != nil {
+		if out, err = val.Compile(&NilForms, out, scope); err != nil {
 			return out, err
 		}
 	}
@@ -56,13 +56,13 @@ func letImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error
 	return append(out, NewLet(form, key.name)), nil
 }
 
-func typeImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func typeImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewTypeOp(form)), nil
 }
 	
 func NewVM() *VM {
 	vm := new(VM)
-	vm.rootScope.Init()
+	vm.rootScope.Init(vm)
 	
 	vm.AddConst("T", &TBool, true)
 	vm.AddConst("F", &TBool, false)
@@ -90,7 +90,7 @@ func (self *VM) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
 	inForms.Init(in)
 	
 	for f := inForms.Pop(); f != nil; f = inForms.Pop() {
-		if out, err = f.Compile(&inForms, out, self, scope); err != nil {
+		if out, err = f.Compile(&inForms, out, scope); err != nil {
 			return out, err
 		}
 	}

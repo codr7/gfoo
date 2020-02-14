@@ -12,12 +12,12 @@ func NewId(pos Pos, name string) *Id {
 	return f
 }
 
-func (self *Id) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	if b := scope.Get(self.name); b != nil && b.val != NilVal {
 		v := &b.val
 		
 		if v.dataType == &TMacro {
-			return v.data.(*Macro).Expand(self, in, out, vm, scope)
+			return v.data.(*Macro).Expand(self, in, out, scope)
 		}
 		
 		return append(out, NewPush(self, *v)), nil
@@ -26,6 +26,6 @@ func (self *Id) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error)
 	return append(out, NewGet(self, self.name)), nil
 }
 
-func (self *Id) Quote(vm *VM, scope *Scope) (Val, error) {
+func (self *Id) Quote(scope *Scope) (Val, error) {
 	return NewVal(&TId, self.name), nil
 }

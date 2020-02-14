@@ -12,10 +12,10 @@ func NewLiteral(pos Pos, val Val) *Literal {
 	return f
 }
 
-func (self *Literal) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
+func (self *Literal) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPush(self, self.val)), nil
 }
 
-func (self *Literal) Quote(vm *VM, scope *Scope) (Val, error) {
+func (self *Literal) Quote(scope *Scope) (Val, error) {
 	return self.val, nil
 }
