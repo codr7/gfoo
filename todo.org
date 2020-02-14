@@ -1,5 +1,3 @@
-* move vm.Debug/Error() to Scope
-** copy Debug in Scope.Copy if child
 * switch scope/stack arg order
 ** grep stack *Slice, scope
 ** grep stack, scope

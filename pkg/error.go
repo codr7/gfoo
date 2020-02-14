@@ -11,3 +11,14 @@ func NewError(pos Pos, spec string, args...interface{}) error {
 
 	return errors.New(msg)
 }
+
+func (self *Scope) Error(pos Pos, spec string, args...interface{}) error {
+	err := NewError(pos, spec, args)
+	
+	if self.Debug {
+		panic(err.Error())
+	}
+
+	return err
+}
+

@@ -22,7 +22,7 @@ func (self *Call) Evaluate(stack *Slice, scope *Scope) error {
 	}
 
 	if t == nil {
-		scope.vm.Error(self.form.Pos(), "Missing call target")
+		scope.Error(self.form.Pos(), "Missing call target")
 	}
 	
 	return t.Call(stack, scope, self.form.Pos())

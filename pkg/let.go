@@ -17,7 +17,7 @@ func (self *Let) Evaluate(stack *Slice, scope *Scope) error {
 	v, ok := stack.Pop()
 
 	if !ok {
-		return scope.vm.Error(p, "Missing value: %v", self.key)
+		return scope.Error(p, "Missing value: %v", self.key)
 	}
 	
 	scope.Set(self.key, v)

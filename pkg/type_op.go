@@ -14,7 +14,7 @@ func (self *TypeOp) Evaluate(stack *Slice, scope *Scope) error {
 	v := stack.Peek()
 
 	if v == nil {
-		return scope.vm.Error(self.form.Pos(), "Missing value")
+		return scope.Error(self.form.Pos(), "Missing value")
 	}
 
 	v.data, v.dataType = v.dataType, &TMeta

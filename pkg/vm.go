@@ -1,12 +1,6 @@
 package gfoo
 
-import (
-	"bufio"
-	"io"
-)
-
 type VM struct {
-	Debug bool	
 	rootScope Scope
 }
 
@@ -30,7 +24,7 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	key, ok := in.Pop().(*Id)
 
 	if !ok {
-		scope.vm.Error(key.Pos(), "Expected id: %v", key)
+		scope.Error(key.Pos(), "Expected id: %v", key)
 	}
 
 	if found := scope.Get(key.name); found == nil {
@@ -38,7 +32,7 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	} else if found.scope != scope {
 		found.Init(scope, NilVal)
 	} else {
-	        return out, scope.vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
+	        return out, scope.Error(key.Pos(), "Duplicate binding: %v", key.name) 
 	}
 	
 	val := in.Pop()
@@ -87,7 +81,7 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	
 func NewVM() *VM {
 	vm := new(VM)
-	vm.rootScope.Init(vm, nil)
+	vm.rootScope.Init(nil)
 	
 	vm.AddConst("T", &TBool, true)
 	vm.AddConst("F", &TBool, false)
@@ -108,39 +102,6 @@ func (self *VM) AddConst(name string, dataType Type, data interface{}) {
 
 func (self *VM) AddMacro(name string, argCount int, imp MacroImp) {
 	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
-}
-
-func (self *VM) Error(pos Pos, spec string, args...interface{}) error {
-	err := NewError(pos, spec, args)
-	
-	if self.Debug {
-		panic(err.Error())
-	}
-
-	return err
-}
-
-func (self *VM) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
-	var f Form
-	var err error
-	
-	for {
-		if err = skipSpace(in, pos); err == nil {
-			f, err = self.parseForm(in, pos)
-		}
-
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {			
-			return out, err
-		}
-
-		out = append(out, f)
-	}
-	
-	return out, nil
 }
 
 func (self *VM) RootScope() *Scope {

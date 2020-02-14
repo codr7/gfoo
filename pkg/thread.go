@@ -17,7 +17,7 @@ type Thread struct {
 func NewThread(body []Op, scope *Scope) *Thread {
 	t := new(Thread)
 	t.body = body
-	t.scope.Init(scope.vm, scope.thread)
+	t.scope.Init(t)
 	scope.Copy(&t.scope, false)
 	return t
 }

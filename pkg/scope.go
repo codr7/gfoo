@@ -1,15 +1,19 @@
 package gfoo
 
+import (
+	"bufio"
+	"io"
+)
+
 type Bindings = map[string]Binding
 
 type Scope struct {
-	vm *VM
 	thread *Thread
 	bindings Bindings
+	Debug bool
 }
 
-func (self *Scope) Init(vm *VM, thread *Thread) *Scope {
-	self.vm = vm
+func (self *Scope) Init(thread *Thread) *Scope {
 	self.thread = thread
 	self.bindings = make(Bindings)
 	return self
@@ -30,6 +34,10 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 }
 
 func (self *Scope) Copy(out *Scope, child bool) {
+	if child {
+		out.Debug = self.Debug
+	}
+	
 	for k, b := range self.bindings {
 		if !child && b.scope == self {
 			b.scope = out
@@ -40,7 +48,7 @@ func (self *Scope) Copy(out *Scope, child bool) {
 }
 
 func (self *Scope) Clone(child bool) *Scope {
-	out := new(Scope).Init(self.vm, self.thread)
+	out := new(Scope).Init(self.thread)
 	self.Copy(out, child)
 	return out
 }
@@ -61,6 +69,29 @@ func (self *Scope) Get(key string) *Binding {
 	}
 
 	return nil
+}
+
+func (self *Scope) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
+	var f Form
+	var err error
+	
+	for {
+		if err = skipSpace(in, pos); err == nil {
+			f, err = self.parseForm(in, pos)
+		}
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {			
+			return out, err
+		}
+
+		out = append(out, f)
+	}
+	
+	return out, nil
 }
 
 func (self *Scope) Set(key string, val Val) {

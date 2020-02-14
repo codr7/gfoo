@@ -40,7 +40,7 @@ func repl(vm *gfoo.VM) {
 			pos := gfoo.NewPos("repl")
 			var forms []gfoo.Form
 			
-			if forms, err = vm.Parse(in, &pos, nil); err != nil {
+			if forms, err = scope.Parse(in, &pos, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}

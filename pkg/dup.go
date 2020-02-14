@@ -14,7 +14,7 @@ func (self *Dup) Evaluate(stack *Slice, scope *Scope) error {
 	v := stack.Peek()
 	
 	if v == nil {
-		return scope.vm.Error(self.form.Pos(), "Nothing to dup")
+		return scope.Error(self.form.Pos(), "Nothing to dup")
 	}
 
 	stack.Push(*v)

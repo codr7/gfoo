@@ -12,7 +12,7 @@ func NewDrop(form Form) *Drop {
 
 func (self *Drop) Evaluate(stack *Slice, scope *Scope) error {
 	if _, ok := stack.Pop(); !ok {
-		return scope.vm.Error(self.form.Pos(), "Nothing to drop")
+		return scope.Error(self.form.Pos(), "Nothing to drop")
 	}
 	
 	return nil

@@ -16,7 +16,7 @@ func (self *Get) Evaluate(stack *Slice, scope *Scope) error {
 	found := scope.Get(self.key)
 
 	if found == nil || found.val == NilVal {
-		return scope.vm.Error(self.form.Pos(), "Unknown identifier: %v", self.key)
+		return scope.Error(self.form.Pos(), "Unknown identifier: %v", self.key)
 	}
 
 	stack.Push(found.val)

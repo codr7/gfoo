@@ -14,7 +14,7 @@ func isId(c rune) bool {
 		c != '\'' && c != '"'
 }
 
-func (self *VM) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
 	if err != nil {
@@ -53,7 +53,7 @@ func (self *VM) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	return nil, self.Error(*pos, "Unexpected input: %v", c)
 }
 
-func (self *VM) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
+func (self *Scope) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
 	var out []Form
 	
 	for {
@@ -87,7 +87,7 @@ func (self *VM) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error)
 	return out, nil
 }
 
-func (self *VM) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
 	forms, err := self.parseForms(in, pos, ')')
@@ -99,7 +99,7 @@ func (self *VM) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewGroup(forms, fpos), nil
 }
 
-func (self *VM) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	var err error
 	fpos := *pos
@@ -162,7 +162,7 @@ func (self *VM) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	return NewId(buffer.String(), fpos), nil
 }
 
-func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *Scope) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	v := int64(0)
 	base := int64(10)
 	var err error
@@ -246,7 +246,7 @@ func (self *VM) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	return NewLiteral(NewVal(&TInt64, v), fpos), nil
 }
 
-func (self *VM) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
 	forms, err := self.parseForms(in, pos, '}')
@@ -258,7 +258,7 @@ func (self *VM) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewScopeForm(forms, fpos), nil
 }
 
-func (self *VM) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
 	forms, err := self.parseForms(in, pos, ']')
@@ -270,7 +270,7 @@ func (self *VM) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewSliceForm(forms, fpos), nil
 }
 
-func (self *VM) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	fpos := *pos
 	pos.column++
