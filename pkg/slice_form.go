@@ -16,7 +16,7 @@ func (self *SliceForm) Init(pos Pos, forms []Form) *SliceForm {
 }
 
 func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	ops, err := scope.vm.Compile(self.forms, scope, nil)
+	ops, err := scope.Compile(self.forms, nil)
 
 	if err != nil {
 		return out, err
@@ -26,7 +26,7 @@ func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 }
 
 func (self *SliceForm) Quote(scope *Scope) (Val, error) {
-	ops, err := scope.vm.Compile(self.forms, scope, nil)
+	ops, err := scope.Compile(self.forms, nil)
 
 	if err != nil {
 		return NilVal, err

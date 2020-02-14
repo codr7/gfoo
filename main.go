@@ -17,6 +17,7 @@ func repl(vm *gfoo.VM) {
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
 	stack := gfoo.NewSlice(nil)
+	scope := vm.RootScope()
 	
 	for {
 		fmt.Print("  ")
@@ -46,12 +47,12 @@ func repl(vm *gfoo.VM) {
 
 			var ops []gfoo.Op
 			
-			if ops, err = vm.Compile(forms, vm.RootScope(), nil); err != nil {
+			if ops, err = scope.Compile(forms, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			if err = vm.RootScope().Evaluate(ops, stack); err != nil {
+			if err = scope.Evaluate(ops, stack); err != nil {
 				fmt.Println(err)
 				continue
 			}

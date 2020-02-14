@@ -20,7 +20,7 @@ func (self *Group) AddForm(form Form) {
 }
 
 func (self *Group) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return scope.vm.Compile(self.forms, scope, out)
+	return scope.Compile(self.forms, out)
 }
 
 func (self *Group) Quote(scope *Scope) (Val, error) {

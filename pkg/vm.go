@@ -76,7 +76,7 @@ func threadImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	
 	var bodyOps []Op
 	
-	if bodyOps, err = scope.vm.Compile(bodyForms, scope, nil); err != nil {
+	if bodyOps, err = scope.Compile(bodyForms, nil); err != nil {
 		return out, err
 	}
 	
@@ -110,20 +110,6 @@ func (self *VM) AddConst(name string, dataType Type, data interface{}) {
 
 func (self *VM) AddMacro(name string, argCount int, imp MacroImp) {
 	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
-}
-
-func (self *VM) Compile(in []Form, scope *Scope, out []Op) ([]Op, error) {
-	var err error
-	var inForms Forms
-	inForms.Init(in)
-	
-	for f := inForms.Pop(); f != nil; f = inForms.Pop() {
-		if out, err = f.Compile(&inForms, out, scope); err != nil {
-			return out, err
-		}
-	}
-	
-	return out, nil
 }
 
 func (self *VM) Error(pos Pos, spec string, args...interface{}) error {

@@ -1,4 +1,3 @@
-* move vm.Compile to scope.Compile
 * change form constructors to take pos arg last
 * add pause
 ** add pause: macro/op

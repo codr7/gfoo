@@ -15,6 +15,20 @@ func (self *Scope) Init(vm *VM, thread *Thread) *Scope {
 	return self
 }
 
+func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
+	var err error
+	var inForms Forms
+	inForms.Init(in)
+	
+	for f := inForms.Pop(); f != nil; f = inForms.Pop() {
+		if out, err = f.Compile(&inForms, out, self); err != nil {
+			return out, err
+		}
+	}
+	
+	return out, nil
+}
+
 func (self *Scope) Copy(out *Scope, child bool) {
 	for k, b := range self.bindings {
 		if !child && b.scope == self {
