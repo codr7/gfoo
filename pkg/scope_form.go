@@ -6,21 +6,21 @@ import (
 
 type ScopeForm struct {
 	FormBase
-	forms []Form
+	body []Form
 }
 
-func NewScopeForm(pos Pos, forms []Form) *ScopeForm {
-	return new(ScopeForm).Init(pos, forms)
+func NewScopeForm(pos Pos, body []Form) *ScopeForm {
+	return new(ScopeForm).Init(pos, body)
 }
 
-func (self *ScopeForm) Init(pos Pos, forms []Form) *ScopeForm {
+func (self *ScopeForm) Init(pos Pos, body []Form) *ScopeForm {
 	self.FormBase.Init(pos)
-	self.forms = forms
+	self.body = body
 	return self
 }
 
 func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	ops, err := scope.vm.Compile(self.forms, scope.Clone(), nil)
+	ops, err := scope.vm.Compile(self.body, scope.Clone(true), nil)
 
 	if err != nil {
 		return out, err
@@ -30,12 +30,12 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 }
 
 func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
-	scope = scope.Clone()
-	ops, err := scope.vm.Compile(self.forms, scope, nil)
+	scope = scope.Clone(true)
+	ops, err := scope.vm.Compile(self.body, scope, nil)
 
 	if err != nil {
 		return NilVal, err
 	}
 
-	return NewVal(&TLambda, NewLambda(self.forms, ops, scope)), nil
+	return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
 }

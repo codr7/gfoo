@@ -84,8 +84,8 @@ func (self *Slice) Pop() (Val, bool) {
 	return v, true
 }
 
-func (self *Slice) Push(val Val) {
-	self.items = append(self.items, val)
+func (self *Slice) Push(vals...Val) {
+	self.items = append(self.items, vals...)
 }
 
 func (self *Slice) Reset() {

@@ -56,13 +56,40 @@ func letImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewLet(form, key.name)), nil
 }
 
+func threadImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
+	arg := args.Pop()
+	var argOps []Op
+	var err error
+	
+	if argOps, err = arg.Compile(&NilForms, nil, scope); err != nil {
+		return out, err
+	}
+
+	body := args.Pop()
+	var bodyForms []Form
+
+	if f, ok := body.(*ScopeForm); ok {
+		bodyForms = f.body
+	} else {
+		bodyForms = append(bodyForms, body)
+	}
+	
+	var bodyOps []Op
+	
+	if bodyOps, err = scope.vm.Compile(bodyForms, scope, nil); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
+}
+
 func typeImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewTypeOp(form)), nil
 }
 	
 func NewVM() *VM {
 	vm := new(VM)
-	vm.rootScope.Init(vm)
+	vm.rootScope.Init(vm, nil)
 	
 	vm.AddConst("T", &TBool, true)
 	vm.AddConst("F", &TBool, false)
@@ -71,6 +98,7 @@ func NewVM() *VM {
 	vm.AddMacro("..", 0, dupImp)
 	vm.AddMacro("|", 0, resetImp)
 	vm.AddMacro("call", 0, callImp)
+	vm.AddMacro("thread:", 1, threadImp)
 	vm.AddMacro("let:", 0, letImp)
 	vm.AddMacro("type", 0, typeImp)
 	return vm

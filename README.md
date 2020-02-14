@@ -155,6 +155,19 @@ and evaluated using `call`.
 [1 2 3]
 ```
 
+### threads
+Threads are implemented using Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
+
+```
+  thread: (1 2 3) {4 5 6}
+
+[Thread(0xc0000a2000)]
+
+  call
+
+[1 2 3 4 5 6]
+```
+
 ### license
 [MIT](https://github.com/codr7/gfoo/blob/master/LICENSE.txt)
 
