@@ -1,14 +1,19 @@
-* move vm.Debug & methods to Scope
-** remove vm type
-* add pause: macro/op
-** error if scope.thread == nil
-** call to resume
+* move vm.Debug/Error() to Scope
+** copy Debug in Scope.Copy if child
 * switch scope/stack arg order
 ** grep stack *Slice, scope
 ** grep stack, scope
+* add pause: macro/op
+** error if scope.thread == nil
+** call to resume
 * add user macros
-** Push result forms to in
-* --
+** bind args
+*** require scope body
+
+macro: swap (a b) {b a}
+
+** use existing Macro type
+** push result forms to in
 * add Splat op
 ** add Type.Splat
 *** implement for Int
