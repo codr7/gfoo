@@ -12,23 +12,23 @@ type VM struct {
 	rootScope Scope
 }
 
-func dropImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func dropImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
 
-func dupImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func dupImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
 }
 
-func resetImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func resetImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return append(out, NewReset(form)), nil
 }
 
-func callImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error){
+func callImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil)), nil
 }
 	
-func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func letImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	key, ok := args.Pop().(*Id)
 
 	if !ok {
@@ -56,7 +56,7 @@ func letImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error
 	return append(out, NewLet(form, key.name)), nil
 }
 
-func typeImp(vm *VM, scope *Scope, form Form, args *Forms, out []Op) ([]Op, error) {
+func typeImp(form Form, args *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error) {
 	return append(out, NewTypeOp(form)), nil
 }
 	

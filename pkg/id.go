@@ -17,7 +17,7 @@ func (self *Id) Compile(in *Forms, out []Op, vm *VM, scope *Scope) ([]Op, error)
 		v := &b.val
 		
 		if v.dataType == &TMacro {
-			return v.data.(*Macro).Expand(vm, scope, self, in, out)
+			return v.data.(*Macro).Expand(self, in, out, vm, scope)
 		}
 		
 		return append(out, NewPush(self, *v)), nil
