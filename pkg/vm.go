@@ -12,24 +12,24 @@ type VM struct {
 	rootScope Scope
 }
 
-func dropImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
+func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
 
-func dupImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
+func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
 }
 
-func resetImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
+func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewReset(form)), nil
 }
 
-func callImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error){
+func callImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil)), nil
 }
 	
-func letImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
-	key, ok := args.Pop().(*Id)
+func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	key, ok := in.Pop().(*Id)
 
 	if !ok {
 		scope.vm.Error(key.Pos(), "Expected id: %v", key)
@@ -43,7 +43,7 @@ func letImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	        return out, scope.vm.Error(key.Pos(), "Duplicate binding: %v", key.name) 
 	}
 	
-	val := args.Pop()
+	val := in.Pop()
 	
 	if id, ok := val.(*Id); !ok || id.name != "_" {
 		var err error
@@ -56,8 +56,8 @@ func letImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewLet(form, key.name)), nil
 }
 
-func threadImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
-	arg := args.Pop()
+func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	arg := in.Pop()
 	var argOps []Op
 	var err error
 	
@@ -65,7 +65,7 @@ func threadImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, err
 	}
 
-	body := args.Pop()
+	body := in.Pop()
 	var bodyForms []Form
 
 	if f, ok := body.(*ScopeForm); ok {
@@ -83,7 +83,7 @@ func threadImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
-func typeImp(form Form, args *Forms, out []Op, scope *Scope) ([]Op, error) {
+func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewTypeOp(form)), nil
 }
 	

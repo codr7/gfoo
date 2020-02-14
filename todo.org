@@ -1,6 +1,11 @@
 * add pause: macro/op
 ** error if scope.thread == nil
 ** call to resume
+* switch scope/stack arg order
+** grep stack *Slice, scope
+** grep stack, scope
+* add user macros
+** Push result forms to in
 * --
 * add Splat op
 ** add Type.Splat
