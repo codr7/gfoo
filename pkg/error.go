@@ -13,7 +13,7 @@ func NewError(pos Pos, spec string, args...interface{}) error {
 }
 
 func (self *Scope) Error(pos Pos, spec string, args...interface{}) error {
-	err := NewError(pos, spec, args)
+	err := NewError(pos, spec, args...)
 	
 	if self.Debug {
 		panic(err.Error())
