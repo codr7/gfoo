@@ -29,6 +29,6 @@ func (_ *ThreadType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (self *ThreadType) Unquote(val Val, pos Pos) Form {
+func (self *ThreadType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

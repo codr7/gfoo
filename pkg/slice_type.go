@@ -22,6 +22,6 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
-func (_ *SliceType) Unquote(val Val, pos Pos) Form {
-	return val.data.(*Slice).Unquote(pos)
+func (_ *SliceType) Unquote(val Val, scope *Scope, pos Pos) Form {
+	return val.data.(*Slice).Unquote(scope, pos)
 }

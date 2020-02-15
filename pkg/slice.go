@@ -89,11 +89,11 @@ func (self *Slice) Reset() {
 	self.items = nil
 }
 
-func (self *Slice) Unquote(pos Pos) Form {
+func (self *Slice) Unquote(scope *Scope, pos Pos) Form {
 	out := make([]Form, len(self.items))
 
 	for i, v := range self.items {
-		out[i] = v.Unquote(pos)
+		out[i] = v.Unquote(scope, pos)
 	}
 
 	return NewGroup(out, pos)

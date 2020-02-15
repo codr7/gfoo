@@ -165,6 +165,31 @@ Macro arguments are bound to quoted forms following the macro call in specified 
 [2 1]
 ```
 
+Identifiers prefixed with `$` are converted into unique symbols,
+
+```
+  '$foo
+
+['$foo11]
+  '$foo
+
+['$foo11 '$foo11]
+```
+
+which avoids capturing identifiers at the point of expansion without creating additional scopes.
+
+```
+  macro: swap () {'(let: $x () let: $y () $x $y)}
+  1 2 swap
+
+[2 1]
+
+  swap
+
+[1 2]
+```
+
+
 ### threads
 Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the result.
 

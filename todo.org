@@ -7,22 +7,12 @@ scope = scope.Clone()
 ops, err := scope.Compile(self.body, nil)
 return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
 
-* gensym vars prefixed with $ in macro body
-** create on first access & get from scope in Id quote
-*** add scope.Unique(prefix) string
-**** use len(bindings) to generate name
-** add to readme
-
-  macro: swap () {'(let: $x () let: $y () $x $y)}
-  1 2 swap
-
 * add Unquote like Quote using @
 ** return form as is in Quote
 
 let: foo 42 '(let: bar @foo)
 
 * --
-* lazy alloc scope bindings
 * add pairs
 ** a b,
 ** add pair form

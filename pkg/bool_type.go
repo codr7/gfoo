@@ -41,6 +41,6 @@ func (_ *BoolType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (self *BoolType) Unquote(val Val, pos Pos) Form {
+func (self *BoolType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

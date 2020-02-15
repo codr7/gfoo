@@ -2,6 +2,7 @@ package gfoo
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 )
 
@@ -103,4 +104,14 @@ func (self *Scope) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error)
 
 func (self *Scope) Set(key string, val Val) {
 	self.bindings[key] = NewBinding(self, val)
+}
+
+func (self *Scope) Unique(key string) string {
+	if b, ok := self.bindings[key]; ok && b.val.data != nil {
+		return b.val.data.(string)
+	}
+
+	out := fmt.Sprintf("%v%v", key, len(self.bindings))
+	self.Set(key, NewVal(&TString, out))
+	return out
 }

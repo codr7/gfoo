@@ -105,13 +105,15 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			
 			stack.Push(v)
 		}
+
+		scope = scope.Clone()
 		
-		if err := scope.Clone().Evaluate(bodyOps, &stack); err != nil {
+		if err := scope.Evaluate(bodyOps, &stack); err != nil {
 			return out, err
 		}
 
 		for _, v := range stack.items {
-			in.Push(v.Unquote(form.Pos()))
+			in.Push(v.Unquote(scope, form.Pos()))
 		}
 
 		return out, nil

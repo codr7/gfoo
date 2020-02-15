@@ -39,6 +39,6 @@ func (_ *TimeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (self *TimeType) Unquote(val Val, pos Pos) Form {
+func (self *TimeType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

@@ -9,7 +9,7 @@ type Type interface {
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
 	Name() string
-	Unquote(val Val, pos Pos) Form
+	Unquote(val Val, scope *Scope, pos Pos) Form
 }
 
 type TypeBase struct {

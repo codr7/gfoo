@@ -23,9 +23,21 @@ func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return append(out, NewPush(self, *v)), nil
 	}
 
-	return append(out, NewGet(self, self.name)), nil
+	n := self.name
+	
+	if n[0] == '$' {
+		n = scope.Unique(n)
+	}
+	
+	return append(out, NewGet(self, n)), nil
 }
 
 func (self *Id) Quote(scope *Scope) (Val, error) {
-	return NewVal(&TId, self.name), nil
+	n := self.name
+	
+	if n[0] == '$' {
+		n = scope.Unique(n)
+	}
+
+	return NewVal(&TId, n), nil
 }

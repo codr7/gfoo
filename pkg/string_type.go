@@ -24,6 +24,6 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (self *StringType) Unquote(val Val, pos Pos) Form {
+func (self *StringType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

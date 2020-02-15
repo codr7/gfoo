@@ -51,6 +51,6 @@ func (self Val) Literal(pos Pos) *Literal {
 	return NewLiteral(self, pos)
 }
 
-func (self Val) Unquote(pos Pos) Form {
-	return self.dataType.Unquote(self, pos)
+func (self Val) Unquote(scope *Scope, pos Pos) Form {
+	return self.dataType.Unquote(self, scope, pos)
 }

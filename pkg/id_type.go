@@ -20,6 +20,12 @@ func (_ *SymbolType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *SymbolType) Unquote(val Val, pos Pos) Form {
-	return NewId(val.data.(string), pos)
+func (_ *SymbolType) Unquote(val Val, scope *Scope, pos Pos) Form {
+	n := val.data.(string)
+	
+	if n[0] == '$' {
+		n = scope.Unique(n)
+	}
+
+	return NewId(n, pos)
 }
