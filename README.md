@@ -31,8 +31,8 @@ Trailing arguments may be enclosed in parens to get prefix/infix notation.
 [String]
 ```
 
-### the stack
-Literals, values of bindings and results from operations are pushed on the stack.
+### stacks
+Literals, values of bindings and results from operations are pushed on a stack.
 
 ```
   1 2 3
@@ -56,7 +56,7 @@ and dropped using `_`.
 [1 2 3]
 ```
 
-`|` may be used to reset the stack.
+`|` may be used to drop all items.
 
 ```
   1 2 3 | 4 5 6
@@ -84,7 +84,7 @@ Rebinding in the same scope results in a compile time error,
 Error in 'repl', line 1, column 5: Duplicate binding: foo
 ```
 
-while derived scopes are allowed to override inherited bindings.
+while child scopes are allowed to override inherited bindings.
 
 ```
   {let: foo "bar" foo}
@@ -156,7 +156,7 @@ and evaluated using `call`.
 ```
 
 ### threads
-Threads are implemented using Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
+Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
 
 ```
   thread: (1 2 3) {4 5 6}
