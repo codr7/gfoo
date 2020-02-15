@@ -139,7 +139,7 @@ or by quoting groups.
 ```
 
 ### lambdas
-Lambdas may be created using `lambda:`,
+Lambdas may be created using `lambda:`;
 
 ```
   lambda: (x y) {x y 3}
@@ -147,7 +147,7 @@ Lambdas may be created using `lambda:`,
 [Lambda(0xc0000483c0)]
 ```
 
-and evaluated using `call`.
+and evaluated using `call`, or `call:` which pushes specified arguments after the target is popped.
 
 ```
   call: (1 2)
