@@ -13,7 +13,7 @@ func NewThreadOp(form Form, args []Op, body []Op) *ThreadOp {
 	return o
 }
 
-func (self *ThreadOp) Evaluate(stack *Slice, scope *Scope) error {
+func (self *ThreadOp) Evaluate(scope *Scope, stack *Slice) error {
 	t := NewThread(self.body, scope)
 	
 	if err := scope.Evaluate(self.args, &t.stack); err != nil {

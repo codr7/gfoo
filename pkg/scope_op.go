@@ -16,7 +16,7 @@ func NewScopeOp(form Form, body []Op) *ScopeOp {
 	return o
 }
 
-func (self *ScopeOp) Evaluate(stack *Slice, scope *Scope) error {
+func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
 	return scope.Clone().Evaluate(self.body, stack)
 }
 

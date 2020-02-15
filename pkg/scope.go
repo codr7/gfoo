@@ -49,7 +49,7 @@ func (self *Scope) Clone() *Scope {
 
 func (self *Scope) Evaluate(ops []Op, stack *Slice) error {
 	for _, o := range ops {
-		if err := o.Evaluate(stack, self); err != nil {
+		if err := o.Evaluate(self, stack); err != nil {
 			return err
 		}
 	}

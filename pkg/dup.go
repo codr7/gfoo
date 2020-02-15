@@ -10,7 +10,7 @@ func NewDup(form Form) *Dup {
 	return o
 }
 
-func (self *Dup) Evaluate(stack *Slice, scope *Scope) error {
+func (self *Dup) Evaluate(scope *Scope, stack *Slice) error {
 	v := stack.Peek()
 	
 	if v == nil {

@@ -12,7 +12,7 @@ func NewCall(form Form, target *Val) *Call {
 	return o
 }
 
-func (self *Call) Evaluate(stack *Slice, scope *Scope) error {
+func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
 	t := self.target
 	
 	if t == nil {
@@ -25,5 +25,5 @@ func (self *Call) Evaluate(stack *Slice, scope *Scope) error {
 		scope.Error(self.form.Pos(), "Missing call target")
 	}
 	
-	return t.Call(stack, scope, self.form.Pos())
+	return t.Call(scope, stack, self.form.Pos())
 }

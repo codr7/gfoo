@@ -10,7 +10,7 @@ func NewTypeOp(form Form) *TypeOp {
 	return o
 }
 
-func (self *TypeOp) Evaluate(stack *Slice, scope *Scope) error {
+func (self *TypeOp) Evaluate(scope *Scope, stack *Slice) error {
 	v := stack.Peek()
 
 	if v == nil {

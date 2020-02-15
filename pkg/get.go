@@ -12,7 +12,7 @@ func NewGet(form Form, key string) *Get {
 	return o
 }
 
-func (self *Get) Evaluate(stack *Slice, scope *Scope) error {
+func (self *Get) Evaluate(scope *Scope, stack *Slice) error {
 	found := scope.Get(self.key)
 
 	if found == nil || found.val == NilVal {

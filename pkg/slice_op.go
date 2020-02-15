@@ -12,7 +12,7 @@ func NewSliceOp(form Form, ops []Op) *SliceOp {
 	return o
 }
 
-func (self *SliceOp) Evaluate(stack *Slice, scope *Scope) error {
+func (self *SliceOp) Evaluate(scope *Scope, stack *Slice) error {
 	i := stack.Len()
 
 	if err := scope.Evaluate(self.ops, stack); err != nil {

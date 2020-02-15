@@ -16,7 +16,7 @@ type ThreadType struct {
 	TypeBase
 }
 
-func (_ *ThreadType) Call(target Val, stack *Slice, scope *Scope, pos Pos) error {
+func (_ *ThreadType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
 	return target.data.(*Thread).Call(stack, pos)
 }
 
