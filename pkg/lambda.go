@@ -1,22 +1,20 @@
 package gfoo
 
 type Lambda struct {
-	forms []Form
-	ops []Op
+	body []Op
 	scope *Scope
 }
 
-func NewLambda(forms []Form, ops []Op, scope *Scope) *Lambda {
-	return new(Lambda).Init(forms, ops, scope)
+func NewLambda(body []Op, scope *Scope) *Lambda {
+	return new(Lambda).Init(body, scope)
 }
 
-func (self *Lambda) Init(forms []Form, ops []Op, scope *Scope) *Lambda {
-	self.forms = forms
-	self.ops = ops
+func (self *Lambda) Init(body []Op, scope *Scope) *Lambda {
+	self.body = body
 	self.scope = scope
 	return self
 }
 
 func (self *Lambda) Call(stack *Slice) error {
-	return self.scope.Clone().Evaluate(self.ops, stack)
+	return self.scope.Clone().Evaluate(self.body, stack)
 }
