@@ -1,3 +1,6 @@
+* add tests
+** add scope.Load(path)
+** call on args in main
 * add pairs
 ** a b,
 ** add pair form
