@@ -139,10 +139,10 @@ or by quoting groups.
 ```
 
 ### lambdas
-Lambdas may be created using `lambda:`;
+Lambdas may be created using `\:`;
 
 ```
-  lambda: (x y) {x y 3}
+  \: (x y) {x y 3}
 
 [Lambda(0xc0000483c0)]
 ```

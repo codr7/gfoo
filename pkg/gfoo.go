@@ -47,9 +47,9 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	f = in.Pop()
-	var bodyForm *ScopeForm
+	var body *ScopeForm
 
-	if bodyForm, ok = f.(*ScopeForm); !ok {
+	if body, ok = f.(*ScopeForm); !ok {
 		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
 	}
 	
@@ -69,7 +69,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	scope = scope.Clone()
 	var err error
 	
-	if bodyOps, err = scope.Compile(bodyForm.body, bodyOps); err != nil {
+	if bodyOps, err = scope.Compile(body.body, bodyOps); err != nil {
 		return out, err
 	}
 
@@ -187,26 +187,31 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	arg := in.Pop()
+	f := in.Pop()
+	var args *Group
+	var ok bool
+	
+	if args, ok = f.(*Group); !ok {
+		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+	}
+
 	var argOps []Op
 	var err error
 	
-	if argOps, err = arg.Compile(NewForms(nil), nil, scope); err != nil {
+	if argOps, err = args.Compile(NewForms(nil), nil, scope); err != nil {
 		return out, err
 	}
 
-	body := in.Pop()
-	var bodyForms []Form
-
-	if f, ok := body.(*ScopeForm); ok {
-		bodyForms = f.body
-	} else {
-		bodyForms = append(bodyForms, body)
+	f = in.Pop()
+	var body *ScopeForm
+	
+	if body, ok = f.(*ScopeForm); !ok {
+		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
 	}
 	
 	var bodyOps []Op
 	
-	if bodyOps, err = scope.Compile(bodyForms, nil); err != nil {
+	if bodyOps, err = scope.Compile(body.body, nil); err != nil {
 		return out, err
 	}
 	
@@ -229,9 +234,10 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("|", 0, resetImp)
+	self.AddMacro("\\:", 2, lambdaImp)
+
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 0, callArgsImp)
-	self.AddMacro("lambda:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
 	self.AddMacro("pause:", 1, pauseImp)

@@ -28,6 +28,8 @@ method: foo (a Any, b Any) {...}
 *** return clone
 ** add new(Scope) method
 *** return empty scope
+** add dot access
+*** foo.let: bar 42
 * add Splat op
 ** add Type.Splat
 *** implement for Int
