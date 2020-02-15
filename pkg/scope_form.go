@@ -30,12 +30,5 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 }
 
 func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
-	scope = scope.Clone()
-	ops, err := scope.Compile(self.body, nil)
-
-	if err != nil {
-		return NilVal, err
-	}
-
-	return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
+	return NewVal(&TScope, self), nil
 }

@@ -69,5 +69,6 @@ func repl(g *gfoo.Scope) {
 
 func main() {
 	g := gfoo.New()
+	g.Debug = true
 	repl(g)
 }

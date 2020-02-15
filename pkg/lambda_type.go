@@ -30,5 +30,5 @@ func (_ *LambdaType) Dump(val Val, out io.Writer) error {
 }
 
 func (self *LambdaType) Unquote(val Val, pos Pos) Form {
-	return NewGroup(val.data.(*Lambda).forms, pos)
+	return NewLiteral(val, pos)
 }

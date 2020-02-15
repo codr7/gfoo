@@ -152,7 +152,7 @@ func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 				return nil, err
 			}
 
-			f.(*Group).AddForm(NewId(buffer.String(), fpos))
+			f.(*Group).Push(NewId(buffer.String(), fpos))
 			return f, nil
 		} else if err = in.UnreadRune(); err != nil {
 			return nil, err

@@ -1,11 +1,39 @@
-* add user macros
-** bind args
-*** require scope body
-** use existing Macro type
-** push result forms to in
+* add lambda: macro
+** arg list + body
+** update readme
 
-macro: swap (a b) {b a}
+scope = scope.Clone()
+ops, err := scope.Compile(self.body, nil)
+return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
 
+* add Unquote like Quote using @
+** return form as is in Quote
+* lazy alloc scope bindings
+* add quote macro/op
+** quote top of stack
+* add pairs
+** a b,
+** add pair form
+* add Trait/TraitBase
+** use as parent for Type/TypeBase
+** add TAny
+* add function/method
+** trait/index/val args
+** trait/index rets
+** add function/method types
+** add dispatch op
+** always run in separate scope
+*** peel of scope body like thread
+
+method: foo (a b) {...}
+method: foo (a Any, b Any) {...}
+
+* add first class scopes
+** add Scope type
+** add scope macro
+*** return clone
+** add new(Scope) method
+*** return empty scope
 * add Splat op
 ** add Type.Splat
 *** implement for Int

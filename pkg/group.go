@@ -2,32 +2,32 @@ package gfoo
 
 type Group struct {
 	FormBase
-	forms []Form
+	body []Form
 }
 
-func NewGroup(forms []Form, pos Pos) *Group {
-	return new(Group).Init(forms, pos)
+func NewGroup(body []Form, pos Pos) *Group {
+	return new(Group).Init(body, pos)
 }
 
-func (self *Group) Init(forms []Form, pos Pos) *Group {
+func (self *Group) Init(body []Form, pos Pos) *Group {
 	self.FormBase.Init(pos)
-	self.forms = forms
+	self.body = body
 	return self
 }
 
-func (self *Group) AddForm(form Form) {
-	self.forms = append(self.forms, form)
+func (self *Group) Push(form Form) {
+	self.body = append(self.body, form)
 }
 
 func (self *Group) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return scope.Compile(self.forms, out)
+	return scope.Compile(self.body, out)
 }
 
 func (self *Group) Quote(scope *Scope) (Val, error) {
-	out := make([]Val, len(self.forms))
+	out := make([]Val, len(self.body))
 	var err error
 	
-	for i, f := range self.forms {
+	for i, f := range self.body {
 		if out[i], err = f.Quote(scope); err != nil {
 			return NilVal, err
 		}
