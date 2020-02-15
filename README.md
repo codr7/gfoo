@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.1
+gfoo v0.2
 
 Press Return on empty line to evaluate.
 
@@ -96,14 +96,14 @@ while derived scopes are allowed to override inherited bindings.
 ["bar" 42]
 ```
 
-Specifying `_` as value pops it from the stack.
+Specifying the empty group as value pops the stack.
 
 ```
   "baz"
   
 ["baz"]
 
-  let: bar _
+  let: bar ()
 
 []
 
@@ -130,7 +130,7 @@ Slices may be created by enclosing code in brackets,
 [['foo 'bar 'baz]]
 ```
 
-or by quoting group forms.
+or by quoting groups.
 
 ```
   '(foo bar baz)

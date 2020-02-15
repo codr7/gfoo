@@ -1,9 +1,8 @@
+* remove Scope child arg
+** create normal child scope in thread
 * switch scope/stack arg order
 ** grep stack *Slice, scope
 ** grep stack, scope
-* add NilForm
-** create instead of Id in parseId if _
-** update letImp
 * add pause: macro/op
 ** error if scope.thread == nil
 ** call to resume
