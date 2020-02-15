@@ -18,7 +18,7 @@ func NewThread(body []Op, scope *Scope) *Thread {
 	t := new(Thread)
 	t.body = body
 	t.scope.Init(t)
-	scope.Copy(&t.scope, false)
+	scope.Copy(&t.scope)
 	return t
 }
 

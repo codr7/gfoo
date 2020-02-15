@@ -8,9 +8,9 @@ import (
 type Bindings = map[string]Binding
 
 type Scope struct {
+	Debug bool
 	thread *Thread
 	bindings Bindings
-	Debug bool
 }
 
 func (self *Scope) Init(thread *Thread) *Scope {
@@ -33,23 +33,17 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 	return out, nil
 }
 
-func (self *Scope) Copy(out *Scope, child bool) {
-	if child {
-		out.Debug = self.Debug
-	}
+func (self *Scope) Copy(out *Scope) {
+	out.Debug = self.Debug
 	
 	for k, b := range self.bindings {
-		if !child && b.scope == self {
-			b.scope = out
-		}
-		
 		out.bindings[k] = b
 	}
 }
 
-func (self *Scope) Clone(child bool) *Scope {
+func (self *Scope) Clone() *Scope {
 	out := new(Scope).Init(self.thread)
-	self.Copy(out, child)
+	self.Copy(out)
 	return out
 }
 

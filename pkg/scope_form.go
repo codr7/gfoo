@@ -20,7 +20,7 @@ func (self *ScopeForm) Init(body []Form, pos Pos) *ScopeForm {
 }
 
 func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	ops, err := scope.Clone(true).Compile(self.body, nil)
+	ops, err := scope.Clone().Compile(self.body, nil)
 
 	if err != nil {
 		return out, err
@@ -30,7 +30,7 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 }
 
 func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
-	scope = scope.Clone(true)
+	scope = scope.Clone()
 	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
