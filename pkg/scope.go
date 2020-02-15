@@ -19,6 +19,14 @@ func (self *Scope) Init(thread *Thread) *Scope {
 	return self
 }
 
+func (self *Scope) AddConst(name string, dataType Type, data interface{}) {
+	self.Set(name, NewVal(dataType, data))
+}
+
+func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
+	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
+}
+
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 	var err error
 	var inForms Forms

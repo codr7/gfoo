@@ -10,14 +10,13 @@ import (
 	"strings"
 )
 
-func repl(vm *gfoo.VM) {
+func repl(g *gfoo.Scope) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VersionMajor, gfoo.VersionMinor)
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
 
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
 	stack := gfoo.NewSlice(nil)
-	scope := vm.RootScope()
 	
 	for {
 		fmt.Print("  ")
@@ -40,19 +39,19 @@ func repl(vm *gfoo.VM) {
 			pos := gfoo.NewPos("repl")
 			var forms []gfoo.Form
 			
-			if forms, err = scope.Parse(in, &pos, nil); err != nil {
+			if forms, err = g.Parse(in, &pos, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
 			var ops []gfoo.Op
 			
-			if ops, err = scope.Compile(forms, nil); err != nil {
+			if ops, err = g.Compile(forms, nil); err != nil {
 				fmt.Println(err)
 				continue
 			}
 
-			if err = scope.Evaluate(ops, stack); err != nil {
+			if err = g.Evaluate(ops, stack); err != nil {
 				fmt.Println(err)
 				continue
 			}
@@ -69,6 +68,6 @@ func repl(vm *gfoo.VM) {
 }
 
 func main() {
-	vm := gfoo.NewVM()
-	repl(vm)
+	g := gfoo.New()
+	repl(g)
 }
