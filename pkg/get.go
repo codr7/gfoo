@@ -6,10 +6,10 @@ type Get struct {
 }
 
 func NewGet(form Form, key string) *Get {
-	o := new(Get)
-	o.OpBase.Init(form)
-	o.key = key
-	return o
+	g := new(Get)
+	g.OpBase.Init(form)
+	g.key = key
+	return g
 }
 
 func (self *Get) Evaluate(scope *Scope, stack *Slice) error {

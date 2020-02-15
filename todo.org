@@ -1,6 +1,3 @@
-* add pause: macro/op
-** error if scope.thread == nil
-** call to resume
 * add user macros
 ** bind args
 *** require scope body

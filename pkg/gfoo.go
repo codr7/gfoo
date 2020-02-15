@@ -20,7 +20,7 @@ func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 func callImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil)), nil
 }
-	
+
 func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	key, ok := in.Pop().(*Id)
 
@@ -44,6 +44,18 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	return append(out, NewLet(form, key.name)), nil
+}
+
+func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	result := in.Pop()
+	var resultOps []Op
+	var err error
+	
+	if resultOps, err = result.Compile(&NilForms, nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewPause(form, resultOps)), nil
 }
 
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -90,8 +102,9 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("call", 0, callImp)
+	self.AddMacro("let:", 2, letImp)
+	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("thread:", 1, threadImp)
-	self.AddMacro("let:", 0, letImp)
 	self.AddMacro("type", 0, typeImp)
 	return self
 }

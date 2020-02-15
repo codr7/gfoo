@@ -168,6 +168,20 @@ Threads are implemented using Goroutines, which means they are preemptive yet mo
 [1 2 3 4 5 6]
 ```
 
+Threads may be paused until next call, which returns the specified argument.
+
+```
+  thread: () {1 pause: 2 3}
+
+[Thread(0xc0000a2000)]
+  .. call
+
+[Thread(0xc0000a2000) 2]
+  _ call
+
+[1 3]
+```
+
 ### license
 [MIT](https://github.com/codr7/gfoo/blob/master/LICENSE.txt)
 

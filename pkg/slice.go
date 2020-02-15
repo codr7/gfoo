@@ -15,6 +15,10 @@ func NewSlice(items []Val) *Slice {
 	return s
 }
 
+func (self *Slice) Clear() {
+	self.items = nil
+}
+
 func (self Slice) Compare(other Slice) Order {
 	xl, yl := len(self.items), len(other.items)
 	
@@ -25,13 +29,6 @@ func (self Slice) Compare(other Slice) Order {
 	}
 	
 	return CompareInt(xl, yl)
-}
-
-func (self *Slice) Cut(i int) []Val {
-	out := make([]Val, len(self.items)-i)
-	copy(out, self.items[i:])
-	self.items = self.items[:i]
-	return out
 }
 
 func (self Slice) Dump(out io.Writer) error {

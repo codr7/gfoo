@@ -13,13 +13,13 @@ func NewSliceOp(form Form, ops []Op) *SliceOp {
 }
 
 func (self *SliceOp) Evaluate(scope *Scope, stack *Slice) error {
-	i := stack.Len()
-
-	if err := scope.Evaluate(self.ops, stack); err != nil {
+	s := NewSlice(nil)
+	
+	if err := scope.Evaluate(self.ops, s); err != nil {
 		return err
 	}
 
-	stack.Push(NewVal(&TSlice, NewSlice(stack.Cut(i))))
+	stack.Push(NewVal(&TSlice, s))
 	return nil
 }
 
