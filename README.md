@@ -156,7 +156,7 @@ and evaluated using `call`.
 ```
 
 ### threads
-Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
+Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the result.
 
 ```
   thread: (1 2 3) {4 5 6}
@@ -168,7 +168,7 @@ Threads are implemented as Goroutines, which means they are preemptive yet more 
 [1 2 3 4 5 6]
 ```
 
-Threads may be paused until next call, which returns the specified argument.
+Threads may be paused until next call, which then returns the specified argument.
 
 ```
   thread: () {1 pause: 2 3}
