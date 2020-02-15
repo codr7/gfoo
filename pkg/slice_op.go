@@ -2,20 +2,20 @@ package gfoo
 
 type SliceOp struct {
 	OpBase
-	ops []Op
+	body []Op
 }
 
-func NewSliceOp(form Form, ops []Op) *SliceOp {
+func NewSliceOp(form Form, body []Op) *SliceOp {
 	o := new(SliceOp)
 	o.OpBase.Init(form)
-	o.ops = ops
+	o.body = body
 	return o
 }
 
 func (self *SliceOp) Evaluate(scope *Scope, stack *Slice) error {
 	s := NewSlice(nil)
 	
-	if err := scope.Evaluate(self.ops, s); err != nil {
+	if err := scope.Evaluate(self.body, s); err != nil {
 		return err
 	}
 

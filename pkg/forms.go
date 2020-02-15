@@ -1,21 +1,21 @@
 package gfoo
 
-var NilForms Forms
-
-func init() {
-	NilForms.Init(nil)
-}
-
 type Forms struct {
 	items []Form
 }
 
-func (self *Forms) Init(items []Form) {
+func NewForms(items []Form) *Forms {
+	return new(Forms).Init(items)
+}
+
+func (self *Forms) Init(items []Form) *Forms {
 	self.items = items
 
 	for i, j := 0, len(self.items)-1; i < j; i, j = i+1, j-1 {
 		self.items[i], self.items[j] = self.items[j], self.items[i]
 	}
+
+	return self
 }
 
 func (self *Forms) Len() int {

@@ -139,10 +139,10 @@ or by quoting groups.
 ```
 
 ### lambdas
-Lambdas may be created by quoting scopes,
+Lambdas may be created using `lambda:`,
 
 ```
-  '{1 2 3}
+  lambda: (x y) {x y 3}
 
 [Lambda(0xc0000483c0)]
 ```
@@ -150,7 +150,7 @@ Lambdas may be created by quoting scopes,
 and evaluated using `call`.
 
 ```
-  call
+  call: (1 2)
 
 [1 2 3]
 ```

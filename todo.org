@@ -1,16 +1,3 @@
-* add lambda: macro
-** arg list + body
-** update readme
-
-scope = scope.Clone()
-ops, err := scope.Compile(self.body, nil)
-return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
-
-* add Unquote like Quote using @
-** return form as is in Quote
-
-let: foo 42 '(let: bar @foo)
-
 * add pairs
 ** a b,
 ** add pair form
@@ -33,8 +20,6 @@ let: foo 42 '(let: bar @foo)
 method: foo (a b) {...}
 method: foo (a Any, b Any) {...}
 
-* add quote macro/op
-** quote top of stack
 * add first class scopes
 ** add scope macro
 *** return clone

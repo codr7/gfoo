@@ -12,7 +12,7 @@ func NewLet(form Form, key string) *Let {
 	return o
 }
 
-func (self *Let) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Let) Evaluate(scope *Scope, stack *Slice) error {	
 	p := self.form.Pos()
 	v, ok := stack.Pop()
 

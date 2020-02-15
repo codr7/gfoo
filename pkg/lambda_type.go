@@ -17,7 +17,7 @@ type LambdaType struct {
 }
 
 func (_ *LambdaType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	return target.data.(*Lambda).Call(stack)
+	return target.data.(*Lambda).Call(stack, pos)
 }
 
 func (_ *LambdaType) Compare(x, y Val) Order {

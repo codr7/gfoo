@@ -1,20 +1,25 @@
 package gfoo
 
 type Lambda struct {
+	argCount int
 	body []Op
 	scope *Scope
 }
 
-func NewLambda(body []Op, scope *Scope) *Lambda {
-	return new(Lambda).Init(body, scope)
+func NewLambda(argCount int, body []Op, scope *Scope) *Lambda {
+	return new(Lambda).Init(argCount, body, scope)
 }
 
-func (self *Lambda) Init(body []Op, scope *Scope) *Lambda {
+func (self *Lambda) Init(argCount int, body []Op, scope *Scope) *Lambda {
 	self.body = body
 	self.scope = scope
 	return self
 }
 
-func (self *Lambda) Call(stack *Slice) error {
+func (self *Lambda) Call(stack *Slice, pos Pos) error {
+	if l := stack.Len(); l < self.argCount {
+		self.scope.Error(pos, "Not enough arguments: %v (%v)", l, self.argCount)
+	}
+	
 	return self.scope.Clone().Evaluate(self.body, stack)
 }
