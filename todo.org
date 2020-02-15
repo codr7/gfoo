@@ -1,19 +1,36 @@
 * add lambda: macro
 ** arg list + body
+** remove Lambda.forms
 ** update readme
 
 scope = scope.Clone()
 ops, err := scope.Compile(self.body, nil)
 return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
 
+* gensym vars prefixed with $ in macro body
+** create on first access & get from scope in Id quote
+*** add scope.Unique(prefix) string
+**** use len(bindings) to generate name
+** add to readme
+
+  macro: swap () {'(let: $x () let: $y () $x $y)}
+  1 2 swap
+
 * add Unquote like Quote using @
 ** return form as is in Quote
+
+let: foo 42 '(let: bar @foo)
+
+* --
 * lazy alloc scope bindings
-* add quote macro/op
-** quote top of stack
 * add pairs
 ** a b,
 ** add pair form
+* add loop/break
+** add loop: macro/op
+** add break error
+*** Error at....: Break outside of loop
+*** handle in Loop.Evaluate
 * add Trait/TraitBase
 ** use as parent for Type/TypeBase
 ** add TAny
@@ -28,8 +45,9 @@ return NewVal(&TLambda, NewLambda(self.body, ops, scope)), nil
 method: foo (a b) {...}
 method: foo (a Any, b Any) {...}
 
+* add quote macro/op
+** quote top of stack
 * add first class scopes
-** add Scope type
 ** add scope macro
 *** return clone
 ** add new(Scope) method
