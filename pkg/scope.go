@@ -79,13 +79,13 @@ func (self *Scope) Get(key string) *Binding {
 	return nil
 }
 
-func (self *Scope) Parse(in *bufio.Reader, pos *Pos, out []Form) ([]Form, error) {
+func (self *Scope) Parse(in *bufio.Reader, out []Form, pos *Pos) ([]Form, error) {
 	var f Form
 	var err error
 	
 	for {
-		if err = skipSpace(in, pos); err == nil {
-			f, err = self.parseForm(in, pos)
+		if err = SkipSpace(in, pos); err == nil {
+			f, err = self.ParseForm(in, pos)
 		}
 
 		if err == io.EOF {

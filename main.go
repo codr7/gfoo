@@ -39,7 +39,7 @@ func repl(g *gfoo.Scope) {
 			pos := gfoo.NewPos("repl")
 			var forms []gfoo.Form
 			
-			if forms, err = g.Parse(in, &pos, nil); err != nil {
+			if forms, err = g.Parse(in, nil, &pos); err != nil {
 				fmt.Println(err)
 				continue
 			}

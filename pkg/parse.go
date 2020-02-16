@@ -8,56 +8,17 @@ import (
 	"unicode"
 )
 
-func isId(c rune) bool {
+func IsId(c rune) bool {
 	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
 		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']' &&
 		c != '\'' && c != '"'
 }
 
-func (self *Scope) parseForm(in *bufio.Reader, pos *Pos) (Form, error) {
-	c, _, err := in.ReadRune()
-	
-	if err != nil {
-		return nil, err
-	}
-
-	switch c {
-	case '\'':
-		fpos := *pos
-		pos.column++
-		var f Form
-
-		if f, err = self.parseForm(in, pos); err != nil {
-			return nil, err
-		}
-		
-		return NewQuote(f, fpos), nil
-	case '"':
-		return self.parseString(in, pos)
-	case '(':
-		return self.parseGroup(in, pos)
-	case '{':
-		return self.parseScope(in, pos)
-	case '[':
-		return self.parseSlice(in, pos)
-	default:
-		if unicode.IsDigit(c) {
-			return self.parseNumber(in, c, pos)
-		}
-
-		if isId(c) {
-			return self.parseId(in, c, pos)
-		}
-	}
-
-	return nil, self.Error(*pos, "Unexpected input: %v", c)
-}
-
-func (self *Scope) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, error) {
+func (self *Scope) ParseBody(in *bufio.Reader, end rune, pos *Pos) ([]Form, error) {
 	var out []Form
 	
 	for {
-		if err := skipSpace(in, pos); err != nil {
+		if err := SkipSpace(in, pos); err != nil {
 			return nil, err
 		}
 		
@@ -77,7 +38,7 @@ func (self *Scope) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, err
 
 		var f Form
 
-		if f, err = self.parseForm(in, pos); err != nil {
+		if f, err = self.ParseForm(in, pos); err != nil {
 			return nil, err
 		}
 
@@ -87,19 +48,58 @@ func (self *Scope) parseForms(in *bufio.Reader, pos *Pos, end rune) ([]Form, err
 	return out, nil
 }
 
-func (self *Scope) parseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
+	c, _, err := in.ReadRune()
+	
+	if err != nil {
+		return nil, err
+	}
+
+	switch c {
+	case '\'':
+		fpos := *pos
+		pos.column++
+		var f Form
+
+		if f, err = self.ParseForm(in, pos); err != nil {
+			return nil, err
+		}
+		
+		return NewQuote(f, fpos), nil
+	case '"':
+		return self.ParseString(in, pos)
+	case '(':
+		return self.ParseGroup(in, pos)
+	case '{':
+		return self.ParseScope(in, pos)
+	case '[':
+		return self.ParseSlice(in, pos)
+	default:
+		if unicode.IsDigit(c) {
+			return self.ParseNumber(in, c, pos)
+		}
+
+		if IsId(c) {
+			return self.ParseId(in, c, pos)
+		}
+	}
+
+	return nil, self.Error(*pos, "Unexpected input: %v", c)
+}
+
+func (self *Scope) ParseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
-	forms, err := self.parseForms(in, pos, ')')
+	body, err := self.ParseBody(in, ')', pos)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return NewGroup(forms, fpos), nil
+	return NewGroup(body, fpos), nil
 }
 
-func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	var err error
 	fpos := *pos
@@ -127,7 +127,7 @@ func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 			return nil, err
 		}
 
-		if !isId(c) || (c == '_' && pc != 0) || (c == '.' && pc != 0 && pc != '.') {
+		if !IsId(c) || (c == '_' && pc != 0) || (c == '.' && pc != 0 && pc != '.') {
 			if err = in.UnreadRune(); err != nil {
 				return nil, err
 			}
@@ -149,7 +149,7 @@ func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 			if c == '(' {
 				var f Form
 				
-				if f, err = self.parseGroup(in, pos); err != nil {
+				if f, err = self.ParseGroup(in, pos); err != nil {
 					return nil, err
 				}
 				
@@ -164,7 +164,7 @@ func (self *Scope) parseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	return NewId(buffer.String(), fpos), nil
 }
 
-func (self *Scope) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
+func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 	v := int64(0)
 	base := int64(10)
 	var err error
@@ -248,31 +248,31 @@ func (self *Scope) parseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	return NewLiteral(NewVal(&TInt64, v), fpos), nil
 }
 
-func (self *Scope) parseScope(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) ParseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
-	forms, err := self.parseForms(in, pos, '}')
+	body, err := self.ParseBody(in, '}', pos)
 
 	if err != nil {
 		return nil, err
 	}
 	
-	return NewScopeForm(forms, fpos), nil
+	return NewScopeForm(body, fpos), nil
 }
 
-func (self *Scope) parseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) ParseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
-	forms, err := self.parseForms(in, pos, ']')
+	body, err := self.ParseBody(in, ']', pos)
 
 	if err != nil {
 		return nil, err
 	}
 	
-	return NewSliceForm(forms, fpos), nil
+	return NewSliceForm(body, fpos), nil
 }
 
-func (self *Scope) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
+func (self *Scope) ParseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	var buffer strings.Builder
 	fpos := *pos
 	pos.column++
@@ -302,7 +302,7 @@ func (self *Scope) parseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	return NewLiteral(NewVal(&TString, buffer.String()), fpos), nil
 }
 
-func skipSpace(in *bufio.Reader, pos *Pos) error {
+func SkipSpace(in *bufio.Reader, pos *Pos) error {
 	for {
 		c, _, err := in.ReadRune()
 		
