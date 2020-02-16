@@ -18,8 +18,9 @@ type Thread struct {
 func NewThread(body []Op, scope *Scope) *Thread {
 	t := new(Thread)
 	t.body = body
-	t.scope.Init(t)
+	t.scope.Init()
 	scope.Copy(&t.scope)
+	t.scope.thread = t
 	t.resume = sync.NewCond(&t.mutex)
 	return t
 }

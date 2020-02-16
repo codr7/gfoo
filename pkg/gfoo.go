@@ -227,7 +227,7 @@ func New() *Scope {
 }
 
 func (self *Scope) InitRoot() *Scope {
-	self.Init(nil)
+	self.Init()
 	self.AddConst("T", &TBool, true)
 	self.AddConst("F", &TBool, false)
 

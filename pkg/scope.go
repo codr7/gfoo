@@ -14,8 +14,7 @@ type Scope struct {
 	bindings Bindings
 }
 
-func (self *Scope) Init(thread *Thread) *Scope {
-	self.thread = thread
+func (self *Scope) Init() *Scope {
 	self.bindings = make(Bindings)
 	return self
 }
@@ -49,6 +48,7 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 
 func (self *Scope) Copy(out *Scope) {
 	out.Debug = self.Debug
+	out.thread = self.thread
 	
 	for k, b := range self.bindings {
 		out.bindings[k] = b
@@ -56,7 +56,7 @@ func (self *Scope) Copy(out *Scope) {
 }
 
 func (self *Scope) Clone() *Scope {
-	out := new(Scope).Init(self.thread)
+	out := new(Scope).Init()
 	self.Copy(out)
 	return out
 }

@@ -24,12 +24,19 @@ method: foo (a b) {...}
 method: foo (a Any, b Any) {...}
 
 * add first class scopes
-** add scope macro
+** add scope method
 *** return clone
 ** add new(Scope) method
 *** return empty scope
-** add dot access
-*** foo.let: bar 42
+** add scope: macro
+*** add ScopeOp.pop bool
+** add dot access in Id
+*** pop scope if first char == '.' and second char != '.'
+
+let: foo new(scope) 
+foo.let: bar 42 
+foo scope: {bar}
+
 * add Splat op
 ** add Type.Splat
 *** implement for Int
