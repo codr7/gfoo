@@ -237,7 +237,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("\\:", 2, lambdaImp)
 
  	self.AddMacro("call", 0, callImp)
- 	self.AddMacro("call:", 0, callArgsImp)
+ 	self.AddMacro("call:", 1, callArgsImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
 	self.AddMacro("pause:", 1, pauseImp)
