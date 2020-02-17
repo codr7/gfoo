@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.3
+gfoo v0.4
 
 Press Return on empty line to evaluate.
 
@@ -155,7 +155,7 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 [1 2 3]
 ```
 
-### branching
+### branches
 `if:` and `else:` may be used to conditionally execute code.
 
 ```
