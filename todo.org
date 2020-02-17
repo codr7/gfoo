@@ -1,18 +1,14 @@
 * add Loop op
 ** add Break error
 *** trap in Loop.Evaluate
-** change macro example to implement while
+* add unquote support
+** add while macro example
 * add tests
 ** add scope.Load(path)
 ** call on args in main
 * add pairs
 ** a b,
 ** add pair form
-* add loop/break
-** add loop: macro/op
-** add break error
-*** Error at....: Break outside of loop
-*** handle in Loop.Evaluate
 * add Trait/TraitBase
 ** use as parent for Type/TypeBase
 ** add TAny

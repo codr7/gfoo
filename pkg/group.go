@@ -23,6 +23,16 @@ func (self *Group) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return scope.Compile(self.body, out)
 }
 
+func (self *Group) Do(action func(Form) error) error {
+	for _, f := range self.body {
+		if err := f.Do(action); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (self *Group) Quote(scope *Scope) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error

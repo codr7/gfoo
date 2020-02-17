@@ -142,13 +142,12 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	f = in.Pop()
-	var bodyForm *ScopeForm
+	var body *ScopeForm
 
-	if bodyForm, ok = f.(*ScopeForm); !ok {
+	if body, ok = f.(*ScopeForm); !ok {
 		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
 	}
 
-	body := bodyForm.body
 	var bodyOps []Op
 
 	for i := len(args.body)-1; i >= 0; i-- {
@@ -165,7 +164,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var err error
 	macroScope := scope.Clone()
 	
-	if bodyOps, err = macroScope.Compile(body, bodyOps); err != nil {
+	if bodyOps, err = body.Compile(NewForms(nil), bodyOps, macroScope); err != nil {
 		return out, err
 	}
 	
@@ -189,7 +188,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		}
 
 		for _, v := range stack.items {
-			in.Push(v.Unquote(macroScope, form.Pos()))
+			in.Push(v.Unquote(scope, form.Pos()))
 		}
 
 		return out, nil

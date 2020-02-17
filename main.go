@@ -53,7 +53,6 @@ func repl(g *gfoo.Scope) {
 
 			if err = g.Evaluate(ops, stack); err != nil {
 				fmt.Println(err)
-				continue
 			}
 
 			if err := stack.Dump(os.Stdout); err != nil {
@@ -69,6 +68,5 @@ func repl(g *gfoo.Scope) {
 
 func main() {
 	g := gfoo.New()
-	g.Debug = true
 	repl(g)
 }

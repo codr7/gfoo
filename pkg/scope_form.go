@@ -29,6 +29,16 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 	return append(out, NewScopeOp(self, ops)), nil
 }
 
+func (self *ScopeForm) Do(action func(Form) error) error {
+	for _, f := range self.body {
+		if err := f.Do(action); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
 	return NewVal(&TScope, self), nil
 }

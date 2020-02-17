@@ -5,27 +5,27 @@ import (
 	"io"
 )
 
-var TId SymbolType
+var TId IdType
 
 func init() {
 	TId.Init("Id")
 }
 
-type SymbolType struct {
+type IdType struct {
 	StringType
 }
 
-func (_ *SymbolType) Dump(val Val, out io.Writer) error {
+func (_ *IdType) Dump(val Val, out io.Writer) error {
 	_, err := fmt.Fprintf(out, "'%v", val.data.(string))
 	return err
 }
 
-func (_ *SymbolType) Unquote(val Val, scope *Scope, pos Pos) Form {
+func (_ *IdType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	n := val.data.(string)
 	
 	if n[0] == '$' {
 		n = scope.Unique(n)
 	}
-
+	
 	return NewId(n, pos)
 }

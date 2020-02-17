@@ -25,6 +25,10 @@ func (self *Quote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPush(self, v)), nil
 }
 
+func (self *Quote) Do(action func(Form) error) error {
+	return self.form.Do(action)
+}
+
 func (self *Quote) Quote(scope *Scope) (Val, error) {
 	return self.form.Quote(scope)
 }

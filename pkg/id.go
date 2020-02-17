@@ -23,21 +23,13 @@ func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return append(out, NewPush(self, *v)), nil
 	}
 
-	n := self.name
-	
-	if n[0] == '$' {
-		n = scope.Unique(n)
-	}
-	
-	return append(out, NewGet(self, n)), nil
+	return append(out, NewGet(self, self.name)), nil
+}
+
+func (self *Id) Do(action func(Form) error) error {
+	return action(self)
 }
 
 func (self *Id) Quote(scope *Scope) (Val, error) {
-	n := self.name
-	
-	if n[0] == '$' {
-		n = scope.Unique(n)
-	}
-
-	return NewVal(&TId, n), nil
+	return NewVal(&TId, self.name), nil
 }

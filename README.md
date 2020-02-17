@@ -175,48 +175,40 @@ All values have boolean representations; non-zero integers are true; empty strin
 ```
 
 ### macros
-Macro arguments are bound to forms following the macro call in specified order, resulting values on the stack are unquoted and added to the form stream.
+Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have identifiers ending with `:`. Macros expand to the unquoted contents of the stack.
 
 ```
-  macro: swap () {'{let: x () let: y () x y}}
-  1 2 swap
+  macro: foo () {'(let: bar 42)}
+  foo
 
-[2 1]
+[]
+  bar
+
+[42]
+  foo
+
+Error in 'repl', line 1, column 0: Duplicate binding: bar
 ```
 
-Identifiers prefixed with `$` are converted into unique symbols,
+Identifiers may be prefixed with `$` to avoid capturing bindings at the point of expansion.
 
 ```
-  '$foo
+  macro: foo () {'(let: $bar 42)}
+  foo
 
-['$foo11]
-  '$foo
+[]
 
-['$foo11 '$foo11]
-```
+  bar
 
-which avoids capturing identifiers at the point of expansion without creating additional scopes.
+Error in 'repl', line 1, column 0: Unknown identifier: bar
+[]
+  $bar
 
-```
-  macro: swap () {'(let: x () let: y () x y)}
-  1 2 swap
+Error in 'repl', line 1, column 0: Unknown identifier: $bar
+[]
+  foo
 
-[2 1]
-
-  swap
-
-Error in 'repl', line 1, column 0: Duplicate binding: x
-```
-
-```
-  macro: swap () {'(let: $x () let: $y () $x $y)}
-  1 2 swap
-
-[2 1]
-
-  swap
-
-[1 2]
+[]
 ```
 
 ### threads

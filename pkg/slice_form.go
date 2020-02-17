@@ -2,21 +2,21 @@ package gfoo
 
 type SliceForm struct {
 	FormBase
-	forms []Form
+	body []Form
 }
 
-func NewSliceForm(forms []Form, pos Pos) *SliceForm {
-	return new(SliceForm).Init(forms, pos)
+func NewSliceForm(body []Form, pos Pos) *SliceForm {
+	return new(SliceForm).Init(body, pos)
 }
 
-func (self *SliceForm) Init(forms []Form, pos Pos) *SliceForm {
+func (self *SliceForm) Init(body []Form, pos Pos) *SliceForm {
 	self.FormBase.Init(pos)
-	self.forms = forms
+	self.body = body
 	return self
 }
 
 func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	ops, err := scope.Compile(self.forms, nil)
+	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
 		return out, err
@@ -25,8 +25,18 @@ func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 	return append(out, NewSliceOp(self, ops)), nil
 }
 
+func (self *SliceForm) Do(action func(Form) error) error {
+	for _, f := range self.body {
+		if err := f.Do(action); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (self *SliceForm) Quote(scope *Scope) (Val, error) {
-	ops, err := scope.Compile(self.forms, nil)
+	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
 		return NilVal, err

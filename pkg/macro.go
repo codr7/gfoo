@@ -1,7 +1,5 @@
 package gfoo
 
-import (
-)
 
 type MacroImp = func(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error)
 
