@@ -156,7 +156,7 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 ```
 
 ### branches
-`if:` and `else:` may be used to conditionally execute code.
+`if:` and `else:` may be used to conditionally evaluate code.
 
 ```
   T if: 'is-true
