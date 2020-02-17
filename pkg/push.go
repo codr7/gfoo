@@ -6,10 +6,10 @@ type Push struct {
 }
 
 func NewPush(form Form, val Val) *Push {
-	o := new(Push)
-	o.OpBase.Init(form)
-	o.val = val
-	return o
+	op := new(Push)
+	op.OpBase.Init(form)
+	op.val = val
+	return op
 }
 
 func (self *Push) Evaluate(scope *Scope, stack *Slice) error {

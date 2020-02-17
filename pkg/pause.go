@@ -6,10 +6,10 @@ type Pause struct {
 }
 
 func NewPause(form Form, result []Op) *Pause {
-	p := new(Pause)
-	p.OpBase.Init(form)
-	p.result = result
-	return p
+	op := new(Pause)
+	op.OpBase.Init(form)
+	op.result = result
+	return op
 }
 
 func (self *Pause) Evaluate(scope *Scope, stack *Slice) error {

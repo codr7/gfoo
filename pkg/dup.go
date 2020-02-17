@@ -5,9 +5,9 @@ type Dup struct {
 }
 
 func NewDup(form Form) *Dup {
-	o := new(Dup)
-	o.OpBase.Init(form)
-	return o
+	op := new(Dup)
+	op.OpBase.Init(form)
+	return op
 }
 
 func (self *Dup) Evaluate(scope *Scope, stack *Slice) error {

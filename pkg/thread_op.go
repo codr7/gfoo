@@ -6,11 +6,11 @@ type ThreadOp struct {
 }
 
 func NewThreadOp(form Form, args []Op, body []Op) *ThreadOp {
-	o := new(ThreadOp)
-	o.OpBase.Init(form)
-	o.args = args
-	o.body = body
-	return o
+	op := new(ThreadOp)
+	op.OpBase.Init(form)
+	op.args = args
+	op.body = body
+	return op
 }
 
 func (self *ThreadOp) Evaluate(scope *Scope, stack *Slice) error {

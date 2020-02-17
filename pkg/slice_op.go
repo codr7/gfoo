@@ -6,10 +6,10 @@ type SliceOp struct {
 }
 
 func NewSliceOp(form Form, body []Op) *SliceOp {
-	o := new(SliceOp)
-	o.OpBase.Init(form)
-	o.body = body
-	return o
+	op := new(SliceOp)
+	op.OpBase.Init(form)
+	op.body = body
+	return op
 }
 
 func (self *SliceOp) Evaluate(scope *Scope, stack *Slice) error {

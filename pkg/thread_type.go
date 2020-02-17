@@ -16,6 +16,10 @@ type ThreadType struct {
 	TypeBase
 }
 
+func (_ *ThreadType) Bool(val Val) bool {
+	return !val.data.(*Thread).done
+}
+
 func (_ *ThreadType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
 	return target.data.(*Thread).Call(stack, pos)
 }

@@ -15,6 +15,11 @@ type TimeType struct {
 	TypeBase
 }
 
+func (_ *TimeType) Bool(val Val) bool {
+	var zero time.Time
+	return val.data.(time.Time) != zero
+}
+
 func (_ *TimeType) Compare(x, y Val) Order {
 	xv, yv := x.data.(time.Time), y.data.(time.Time)
 	

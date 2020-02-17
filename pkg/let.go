@@ -6,10 +6,10 @@ type Let struct {
 }
 
 func NewLet(form Form, key string) *Let {
-	o := new(Let)
-	o.OpBase.Init(form)
-	o.key = key
-	return o
+	op := new(Let)
+	op.OpBase.Init(form)
+	op.key = key
+	return op
 }
 
 func (self *Let) Evaluate(scope *Scope, stack *Slice) error {	

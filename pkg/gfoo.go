@@ -6,7 +6,7 @@ import (
 
 const (
 	VersionMajor = 0
-	VersionMinor = 3
+	VersionMinor = 4
 )
 
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -35,6 +35,30 @@ func callArgsImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	}
 	
 	return append(out, NewCall(form, nil, argOps)), nil
+}
+
+func elseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	body := in.Pop()
+	var bodyOps []Op
+	var err error
+	
+	if bodyOps, err = body.Compile(NewForms(nil), nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewBranch(form, nil, bodyOps)), nil
+}
+
+func ifImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	body := in.Pop()
+	var bodyOps []Op
+	var err error
+	
+	if bodyOps, err = body.Compile(NewForms(nil), nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewBranch(form, bodyOps, nil)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -238,6 +262,8 @@ func (self *Scope) InitRoot() *Scope {
 
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
+	self.AddMacro("else:", 1, elseImp)
+	self.AddMacro("if:", 1, ifImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
 	self.AddMacro("pause:", 1, pauseImp)

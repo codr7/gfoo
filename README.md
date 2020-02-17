@@ -155,6 +155,25 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 [1 2 3]
 ```
 
+### branching
+`if:` and `else:` may be used to conditionally execute code.
+
+```
+  T if: 'is-true
+  F else: 'is-false
+
+['is-true 'is-false]
+```
+
+All values have boolean representations; non-zero integers are true; empty strings and slices false etc.
+
+```
+  42 if: 'is-true
+  "" else: 'is-false
+  
+['is-true 'is-false]
+```
+
 ### macros
 Macro arguments are bound to forms following the macro call in specified order, resulting values on the stack are unquoted and added to the form stream.
 

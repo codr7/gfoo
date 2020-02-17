@@ -7,11 +7,11 @@ type Call struct {
 }
 
 func NewCall(form Form, target *Val, args []Op) *Call {
-	o := new(Call)
-	o.OpBase.Init(form)
-	o.target = target
-	o.args = args
-	return o
+	op := new(Call)
+	op.OpBase.Init(form)
+	op.target = target
+	op.args = args
+	return op
 }
 
 func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
@@ -24,7 +24,7 @@ func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
 	}
 
 	if t == nil {
-		scope.Error(self.form.Pos(), "Missing call target")
+		scope.Error(self.form.Pos(), "Missing target")
 	}
 
 	if err := scope.Evaluate(self.args, stack); err != nil {

@@ -5,9 +5,9 @@ type TypeOp struct {
 }
 
 func NewTypeOp(form Form) *TypeOp {
-	o := new(TypeOp)
-	o.OpBase.Init(form)
-	return o
+	op := new(TypeOp)
+	op.OpBase.Init(form)
+	return op
 }
 
 func (self *TypeOp) Evaluate(scope *Scope, stack *Slice) error {

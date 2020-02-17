@@ -14,6 +14,10 @@ type SliceType struct {
 	TypeBase
 }
 
+func (_ *SliceType) Bool(val Val) bool {
+	return val.data.(*Slice).Len() != 0
+}
+
 func (_ *SliceType) Compare(x, y Val) Order {
 	return x.data.(*Slice).Compare(*y.data.(*Slice))
 }

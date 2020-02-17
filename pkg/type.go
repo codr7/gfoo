@@ -5,6 +5,7 @@ import (
 )
 
 type Type interface {
+	Bool(val Val) bool
 	Call(target Val, scope *Scope, stack *Slice, pos Pos) error
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
@@ -18,6 +19,10 @@ type TypeBase struct {
 
 func (self *TypeBase) Init(name string) {
 	self.name = name
+}
+
+func (_ *TypeBase) Bool(val Val) bool {
+	return true
 }
 
 func (_ *TypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {

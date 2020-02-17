@@ -1,3 +1,7 @@
+* add Loop op
+** add Break error
+*** trap in Loop.Evaluate
+** change macro example to implement while
 * add tests
 ** add scope.Load(path)
 ** call on args in main

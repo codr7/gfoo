@@ -5,9 +5,9 @@ type Reset struct {
 }
 
 func NewReset(form Form) *Reset {
-	o := new(Reset)
-	o.OpBase.Init(form)
-	return o
+	op := new(Reset)
+	op.OpBase.Init(form)
+	return op
 }
 
 func (self *Reset) Evaluate(scope *Scope, stack *Slice) error {

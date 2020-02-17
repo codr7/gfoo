@@ -23,6 +23,10 @@ func (self *Val) Init(dataType Type, data interface{}) {
 	self.data = data
 }
 
+func (self Val) Bool() bool {
+	return self.dataType.Bool(self)
+}
+
 func (self Val) Call(scope *Scope, stack *Slice, pos Pos) error {
 	return self.dataType.Call(self, scope, stack, pos)
 }

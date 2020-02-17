@@ -14,6 +14,10 @@ type BoolType struct {
 	TypeBase
 }
 
+func (_ *BoolType) Bool(val Val) bool {
+	return val.data.(bool)
+}
+
 func (_ *BoolType) Compare(x, y Val) Order {
 	xv, yv := x.data.(bool), y.data.(bool)
 

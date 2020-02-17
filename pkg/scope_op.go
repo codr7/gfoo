@@ -10,10 +10,10 @@ type ScopeOp struct {
 }
 
 func NewScopeOp(form Form, body []Op) *ScopeOp {
-	o := new(ScopeOp)
-	o.OpBase.Init(form)
-	o.body = body
-	return o
+	op := new(ScopeOp)
+	op.OpBase.Init(form)
+	op.body = body
+	return op
 }
 
 func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {

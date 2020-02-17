@@ -5,9 +5,9 @@ type Drop struct {
 }
 
 func NewDrop(form Form) *Drop {
-	o := new(Drop)
-	o.OpBase.Init(form)
-	return o
+	op := new(Drop)
+	op.OpBase.Init(form)
+	return op
 }
 
 func (self *Drop) Evaluate(scope *Scope, stack *Slice) error {

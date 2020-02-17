@@ -15,6 +15,10 @@ type Int64Type struct {
 	TypeBase
 }
 
+func (_ *Int64Type) Bool(val Val) bool {
+	return val.data.(int64) != 0
+}
+
 func (_ *Int64Type) Compare(x, y Val) Order {
 	xv, yv := x.data.(int64), y.data.(int64)
 

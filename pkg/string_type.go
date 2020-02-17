@@ -15,6 +15,10 @@ type StringType struct {
 	TypeBase
 }
 
+func (_ *StringType) Bool(val Val) bool {
+	return len(val.data.(string)) != 0
+}
+
 func (_ *StringType) Compare(x, y Val) Order {
 	return CompareString(x.data.(string), y.data.(string))
 }
