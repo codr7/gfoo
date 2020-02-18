@@ -10,9 +10,12 @@ type Slice struct {
 }
 
 func NewSlice(items []Val) *Slice {
-	s := new(Slice)
-	s.items = items
-	return s
+	return new(Slice).Init(items)
+}
+
+func (self *Slice) Init(items []Val) *Slice {
+	self.items = items
+	return self
 }
 
 func (self *Slice) Clear() {
@@ -73,7 +76,7 @@ func (self *Slice) Pop() (Val, bool) {
 	i := len(self.items)
 	
 	if i == 0 {
-		return NilVal, false
+		return Nil, false
 	}
 
 	v := self.items[i-1]

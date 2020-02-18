@@ -33,13 +33,13 @@ func (self *Group) Do(action func(Form) error) error {
 	return nil
 }
 
-func (self *Group) Quote(scope *Scope) (Val, error) {
+func (self *Group) Quote(scope *Scope, pos Pos) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error
 	
 	for i, f := range self.body {
-		if out[i], err = f.Quote(scope); err != nil {
-			return NilVal, err
+		if out[i], err = f.Quote(scope, pos); err != nil {
+			return Nil, err
 		}
 	}
 	

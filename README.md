@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.4
+gfoo v0.5
 
 Press Return on empty line to evaluate.
 
@@ -156,33 +156,44 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 ```
 
 ### branches
-`if:` and `else:` may be used to conditionally evaluate code.
+`?:` may be used to conditionally evaluate code.
 
 ```
-  T if: 'is-true
-  F else: 'is-false
+  T ?: 'ok 'fail
+  F ?: 'fail 'ok
 
-['is-true 'is-false]
+['ok 'ok]
+```
+
+`if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module, and may be used to when there is only one branch.
+
+```
+  load("lib/abc.gf")
+  T if: 'ok
+  F else: 'ok
+
+['ok 'ok]
 ```
 
 All values have boolean representations; non-zero integers are true; empty strings and slices false etc.
 
 ```
-  42 if: 'is-true
-  "" else: 'is-false
+  42 if: 'ok
+  "" else: 'ok
   
-['is-true 'is-false]
+['ok 'ok]
 ```
 
 ### macros
-Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have identifiers ending with `:`. Macros expand to the unquoted contents of the stack.
+Macros are called before compilation and expand to the unquoted contents of their stacks.
 
 ```
-  macro: foo () {'(let: bar 42)}
-  foo
+  macro: foo () {
+    '(let: bar 42)
+  }
 
 []
-  bar
+  foo bar
 
 [42]
   foo
@@ -193,12 +204,12 @@ Error in 'repl', line 1, column 0: Duplicate binding: bar
 Identifiers may be prefixed with `$` to avoid capturing bindings at the point of expansion.
 
 ```
-  macro: foo () {'(let: $bar 42)}
-  foo
+  macro: foo () {
+    '(let: $bar 42)
+  }
 
 []
-
-  bar
+  foo bar
 
 Error in 'repl', line 1, column 0: Unknown identifier: bar
 []
@@ -208,6 +219,25 @@ Error in 'repl', line 1, column 0: Unknown identifier: $bar
 []
   foo
 
+[]
+```
+
+Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have names ending with `:`. Values may be spliced into quoted forms using `@`
+
+```
+  macro: while: (cond body) {
+    '(loop: (@cond else: break @body))
+  }
+
+[]
+
+  3 while: () {
+    say(..) --
+  }
+
+3
+2
+1
 []
 ```
 

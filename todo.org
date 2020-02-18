@@ -1,11 +1,20 @@
-* add Loop op
-** add Break error
-*** trap in Loop.Evaluate
-* add unquote support
-** add while macro example
+* add method
+** add method type
+** compile id to call
+** add --/++ methods
 * add tests
 ** add scope.Load(path)
+** add load method
 ** call on args in main
+* add Loop op
+** add Break/Next error
+*** trap in Loop.Evaluate
+** add while macro to lib/abc
+
+macro: while: (cond body) {
+  '(loop: (@cond else: break @body))
+}
+
 * add pairs
 ** a b,
 ** add pair form

@@ -66,6 +66,16 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 		}
 		
 		return NewQuote(f, fpos), nil
+	case '@':
+		fpos := *pos
+		pos.column++
+		var f Form
+
+		if f, err = self.ParseForm(in, pos); err != nil {
+			return nil, err
+		}
+		
+		return NewUnquote(f, fpos), nil
 	case '"':
 		return self.ParseString(in, pos)
 	case '(':

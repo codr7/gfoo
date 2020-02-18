@@ -23,6 +23,10 @@ func (self *Forms) Len() int {
 }
 
 func (self *Forms) Pop() Form {
+	if self == nil {
+		return nil
+	}
+	
 	i := len(self.items)
 	
 	if i == 0 {

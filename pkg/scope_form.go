@@ -39,6 +39,6 @@ func (self *ScopeForm) Do(action func(Form) error) error {
 	return nil
 }
 
-func (self *ScopeForm) Quote(scope *Scope) (Val, error) {
+func (self *ScopeForm) Quote(scope *Scope, pos Pos) (Val, error) {
 	return NewVal(&TScope, self), nil
 }

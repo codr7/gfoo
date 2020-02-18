@@ -6,7 +6,7 @@ import (
 
 const (
 	VersionMajor = 0
-	VersionMinor = 4
+	VersionMinor = 5
 )
 
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -21,6 +21,25 @@ func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewReset(form)), nil
 }
 
+func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	var trueOps []Op
+	var err error
+	
+	if trueOps, err = f.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+
+	f = in.Pop()
+	var falseOps []Op
+
+	if falseOps, err = f.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+
+	return append(out, NewBranch(form, trueOps, falseOps)), nil
+}
+
 func callImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil, nil)), nil
 }
@@ -30,35 +49,11 @@ func callArgsImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var argOps []Op
 	var err error
 	
-	if argOps, err = arg.Compile(NewForms(nil), nil, scope); err != nil {
+	if argOps, err = arg.Compile(nil, nil, scope); err != nil {
 		return out, err
 	}
 	
 	return append(out, NewCall(form, nil, argOps)), nil
-}
-
-func elseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	body := in.Pop()
-	var bodyOps []Op
-	var err error
-	
-	if bodyOps, err = body.Compile(NewForms(nil), nil, scope); err != nil {
-		return out, err
-	}
-	
-	return append(out, NewBranch(form, nil, bodyOps)), nil
-}
-
-func ifImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	body := in.Pop()
-	var bodyOps []Op
-	var err error
-	
-	if bodyOps, err = body.Compile(NewForms(nil), nil, scope); err != nil {
-		return out, err
-	}
-	
-	return append(out, NewBranch(form, bodyOps, nil)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -109,9 +104,9 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	if found := scope.Get(id.name); found == nil {
-		scope.Set(id.name, NilVal)
+		scope.Set(id.name, Nil)
 	} else if found.scope != scope {
-		found.Init(scope, NilVal)
+		found.Init(scope, Nil)
 	} else {
 	        return out, scope.Error(id.Pos(), "Duplicate binding: %v", id.name) 
 	}
@@ -119,7 +114,7 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	val := in.Pop()
 	var err error
 	
-	if out, err = val.Compile(NewForms(nil), out, scope); err != nil {
+	if out, err = val.Compile(nil, out, scope); err != nil {
 		return out, err
 	}
 	
@@ -164,7 +159,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var err error
 	macroScope := scope.Clone()
 	
-	if bodyOps, err = body.Compile(NewForms(nil), bodyOps, macroScope); err != nil {
+	if bodyOps, err = body.Compile(nil, bodyOps, macroScope); err != nil {
 		return out, err
 	}
 	
@@ -172,9 +167,10 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		var stack Slice
 
 		for i := 0; i < len(args.body); i++ {
+			f := in.Pop()
 			var v Val
 			
-			if v, err = in.Pop().Quote(scope); err != nil {
+			if v, err = f.Quote(scope, f.Pos()); err != nil {
 				return out, err
 			}
 			
@@ -202,7 +198,7 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var resultOps []Op
 	var err error
 	
-	if resultOps, err = result.Compile(NewForms(nil), nil, scope); err != nil {
+	if resultOps, err = result.Compile(nil, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -221,7 +217,7 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var argOps []Op
 	var err error
 	
-	if argOps, err = args.Compile(NewForms(nil), nil, scope); err != nil {
+	if argOps, err = args.Compile(nil, nil, scope); err != nil {
 		return out, err
 	}
 
@@ -259,10 +255,9 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 
+	self.AddMacro("?:", 2, branchImp)
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
-	self.AddMacro("else:", 1, elseImp)
-	self.AddMacro("if:", 1, ifImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
 	self.AddMacro("pause:", 1, pauseImp)

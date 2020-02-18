@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var NilVal Val
+var Nil Val
 
 type Val struct {
 	dataType Type

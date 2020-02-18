@@ -16,19 +16,13 @@ func (self *Quote) Init(form Form, pos Pos) *Quote {
 }
 
 func (self *Quote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	v, err := self.form.Quote(scope)
-
-	if err != nil {
-		return out, err
-	}
-	
-	return append(out, NewPush(self, v)), nil
+	return append(out, NewQuoteOp(self.form)), nil
 }
 
 func (self *Quote) Do(action func(Form) error) error {
 	return self.form.Do(action)
 }
 
-func (self *Quote) Quote(scope *Scope) (Val, error) {
-	return self.form.Quote(scope)
+func (self *Quote) Quote(scope *Scope, pos Pos) (Val, error) {
+	return self.form.Quote(scope, pos)
 }

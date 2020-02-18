@@ -13,7 +13,7 @@ func NewId(name string, pos Pos) *Id {
 }
 
 func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	if b := scope.Get(self.name); b != nil && b.val != NilVal {
+	if b := scope.Get(self.name); b != nil && b.val != Nil {
 		v := &b.val
 		
 		if v.dataType == &TMacro {
@@ -30,6 +30,6 @@ func (self *Id) Do(action func(Form) error) error {
 	return action(self)
 }
 
-func (self *Id) Quote(scope *Scope) (Val, error) {
+func (self *Id) Quote(scope *Scope, pos Pos) (Val, error) {
 	return NewVal(&TId, self.name), nil
 }

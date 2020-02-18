@@ -20,6 +20,6 @@ func (self *Literal) Do(action func(Form) error) error {
 	return action(self)
 }
 
-func (self *Literal) Quote(scope *Scope) (Val, error) {
+func (self *Literal) Quote(scope *Scope, pos Pos) (Val, error) {
 	return self.val, nil
 }

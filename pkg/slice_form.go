@@ -35,17 +35,17 @@ func (self *SliceForm) Do(action func(Form) error) error {
 	return nil
 }
 
-func (self *SliceForm) Quote(scope *Scope) (Val, error) {
+func (self *SliceForm) Quote(scope *Scope, pos Pos) (Val, error) {
 	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
-		return NilVal, err
+		return Nil, err
 	}
 
 	v := NewSlice(nil)
 	
 	if err = scope.Evaluate(ops, v); err != nil {
-		return NilVal, err
+		return Nil, err
 	}
 		
 	return NewVal(&TSlice, v), nil
