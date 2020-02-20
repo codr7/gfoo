@@ -9,18 +9,6 @@ const (
 	VersionMinor = 5
 )
 
-func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewDrop(form)), nil
-}
-
-func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewDup(form)), nil
-}
-
-func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewReset(form)), nil
-}
-
 func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	var trueOps []Op
@@ -54,6 +42,14 @@ func callArgsImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	}
 	
 	return append(out, NewCall(form, nil, argOps)), nil
+}
+
+func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewDrop(form)), nil
+}
+
+func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewDup(form)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -193,6 +189,10 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return out, nil
 }
 
+func pairImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewPairOp(form)), nil
+}
+
 func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	result := in.Pop()
 	var resultOps []Op
@@ -203,6 +203,10 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	return append(out, NewPause(form, resultOps)), nil
+}
+
+func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewReset(form)), nil
 }
 
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -250,17 +254,17 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddConst("T", &TBool, true)
 	self.AddConst("F", &TBool, false)
 
-	self.AddMacro("_", 0, dropImp)
-	self.AddMacro("..", 0, dupImp)
-	self.AddMacro("|", 0, resetImp)
-	self.AddMacro("\\:", 2, lambdaImp)
-
 	self.AddMacro("?:", 2, branchImp)
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
+	self.AddMacro("_", 0, dropImp)
+	self.AddMacro("..", 0, dupImp)
+	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
+	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
+	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("thread:", 1, threadImp)
 	self.AddMacro("type", 0, typeImp)
 	return self

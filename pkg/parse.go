@@ -10,8 +10,8 @@ import (
 
 func IsId(c rune) bool {
 	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
-		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']' &&
-		c != '\'' && c != '"'
+		c != '\'' && c != '@' && c != '"' &&
+		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']'
 }
 
 func (self *Scope) ParseBody(in *bufio.Reader, end rune, pos *Pos) ([]Form, error) {
@@ -57,25 +57,9 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 
 	switch c {
 	case '\'':
-		fpos := *pos
-		pos.column++
-		var f Form
-
-		if f, err = self.ParseForm(in, pos); err != nil {
-			return nil, err
-		}
-		
-		return NewQuote(f, fpos), nil
+		return self.ParseQuote(in, pos)
 	case '@':
-		fpos := *pos
-		pos.column++
-		var f Form
-
-		if f, err = self.ParseForm(in, pos); err != nil {
-			return nil, err
-		}
-		
-		return NewUnquote(f, fpos), nil
+		return self.ParseUnquote(in, pos)
 	case '"':
 		return self.ParseString(in, pos)
 	case '(':
@@ -137,7 +121,10 @@ func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 			return nil, err
 		}
 
-		if !IsId(c) || (c == '_' && pc != 0) || (c == '.' && pc != 0 && pc != '.') {
+		if !IsId(c) ||
+			(c == ',' && pc != 0) ||
+ 			(c == '_' && pc != 0) ||
+			(c == '.' && pc != 0 && pc != '.') {
 			if err = in.UnreadRune(); err != nil {
 				return nil, err
 			}
@@ -258,6 +245,19 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	return NewLiteral(NewVal(&TInt64, v), fpos), nil
 }
 
+func (self *Scope) ParseQuote(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	var f Form
+	var err error
+	
+	if f, err = self.ParseForm(in, pos); err != nil {
+		return nil, err
+	}
+	
+	return NewQuote(f, fpos), nil
+}
+
 func (self *Scope) ParseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 	fpos := *pos
 	pos.column++
@@ -310,6 +310,19 @@ func (self *Scope) ParseString(in *bufio.Reader, pos *Pos) (Form, error) {
 	}
 	
 	return NewLiteral(NewVal(&TString, buffer.String()), fpos), nil
+}
+
+func (self *Scope) ParseUnquote(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	var f Form
+	var err error
+	
+	if f, err = self.ParseForm(in, pos); err != nil {
+		return nil, err
+	}
+	
+	return NewUnquote(f, fpos), nil
 }
 
 func SkipSpace(in *bufio.Reader, pos *Pos) error {

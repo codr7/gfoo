@@ -1,11 +1,22 @@
 * add method
 ** add method type
 ** compile id to call
-** add --/++ methods
+** convert TypeOp/type macro to method
 * add tests
 ** add scope.Load(path)
 ** add load method
 ** call on args in main
+* add String interpolation
+** read form following @ & print last value
+** add Writer type
+** add Type.Print(Val, Writer) error
+** add Type.String() string
+** add print method
+** use bytes.Buffer
+** compile form, call: Print with buffer, call: Print with buffer/string, call: String with buffer 
+
+let foo 42 "@(foo)bar"
+
 * add Loop op
 ** add Break/Next error
 *** trap in Loop.Evaluate
@@ -15,9 +26,6 @@ macro: while: (cond body) {
   '(loop: (@cond else: break @body))
 }
 
-* add pairs
-** a b,
-** add pair form
 * add Trait/TraitBase
 ** use as parent for Type/TypeBase
 ** add TAny
