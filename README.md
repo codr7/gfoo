@@ -121,6 +121,15 @@ Numeric literals may be specified using decimal, hexadecimal or binary notation.
 [42 42 42]
 ```
 
+### pairs
+Pairs allow treating two values as one, and may be created using `,`.
+
+```
+  1 2,
+
+[1 2,]
+```
+
 ### slices
 Slices may be created by enclosing code in brackets,
 
