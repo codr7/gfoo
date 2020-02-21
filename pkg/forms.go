@@ -9,10 +9,10 @@ func NewForms(items []Form) *Forms {
 }
 
 func (self *Forms) Init(items []Form) *Forms {
-	self.items = items
+	self.items = make([]Form, len(items))
 
-	for i, j := 0, len(self.items)-1; i < j; i, j = i+1, j-1 {
-		self.items[i], self.items[j] = self.items[j], self.items[i]
+	for i, j := 0, len(items)-1; j >= 0; i, j = i+1, j-1 {
+		self.items[i] = items[j]
 	}
 
 	return self

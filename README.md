@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.5
+gfoo v0.6
 
 Press Return on empty line to evaluate.
 
@@ -275,6 +275,15 @@ Threads may be paused until next call, which then returns the specified argument
   _ call
 
 [1 3]
+```
+
+### tests
+Conditions may be asserted using `check:`, which signals an error describing the condition and incoming stack on failure.
+
+```
+  T check: is(F)
+
+Error in 'repl', line 1, column 2: Check failed: (F is) [T]
 ```
 
 ### license

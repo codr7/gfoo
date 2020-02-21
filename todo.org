@@ -1,6 +1,7 @@
 * finish Method.Call
+** add Type.Isa(parent)
 ** walk function.methods from back to front
-* convert Int64 to big
+* convert Int64 to big.Int
 * add String interpolation
 ** read form following @ & print last value
 ** add Writer type
@@ -20,20 +21,6 @@ let foo 42 "@(foo)bar"
 macro: while: (cond body) {
   '(loop: (@cond else: break @body))
 }
-
-* add Trait/TraitBase
-** use as parent for Type/TypeBase
-** add TAny
-* add function/method
-** trait/index/val args
-** trait/index rets
-** add function/method types
-** add dispatch op
-** always run in separate scope
-*** peel of scope body like thread
-
-method: foo (a b) {...}
-method: foo (a Any, b Any) {...}
 
 * add first class scopes
 ** add scope method
