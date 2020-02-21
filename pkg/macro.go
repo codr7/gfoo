@@ -1,6 +1,5 @@
 package gfoo
 
-
 type MacroImp = func(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error)
 
 type Macro struct {

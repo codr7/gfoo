@@ -7,6 +7,7 @@ import (
 type Type interface {
 	Bool(val Val) bool
 	Call(target Val, scope *Scope, stack *Slice, pos Pos) error
+	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
 	Name() string
@@ -28,6 +29,10 @@ func (_ *TypeBase) Bool(val Val) bool {
 func (_ *TypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(target)
 	return nil
+}
+
+func (self *TypeBase) Clone(val Val) interface{} {
+	return val.data
 }
 
 func (self *TypeBase) Name() string {

@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"io"
+)
+
 type Id struct {
 	FormBase
 	name string
@@ -29,6 +33,12 @@ func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 func (self *Id) Do(action func(Form) error) error {
 	return action(self)
 }
+
+func (self *Id) Dump(out io.Writer) error {
+	_, err := io.WriteString(out, self.name)
+	return err
+}
+
 
 func (self *Id) Quote(scope *Scope, pos Pos) (Val, error) {
 	return NewVal(&TId, self.name), nil

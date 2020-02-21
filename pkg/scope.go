@@ -3,6 +3,7 @@ package gfoo
 import (
 	"bufio"
 	"io"
+	"os"
 )
 
 type Bindings = map[string]Binding
@@ -29,6 +30,24 @@ func (self *Scope) AddConst(name string, dataType Type, data interface{}) bool {
 
 func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) bool {
 	return self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
+}
+
+func (self *Scope) AddMethod(name string, imp MethodImp) *Method {
+	var f *Function
+	b := self.Get(name)
+	
+	if b == nil {
+		f = NewFunction(name)
+		self.Set(name, NewVal(&TFunction, f))
+	} else {
+		f = b.val.data.(*Function)
+	}
+
+	return f.AddMethod(imp)
+}
+
+func (self *Scope) AddType(val Type) bool {
+	return self.AddConst(val.Name(), &TMeta, val)
 }
 
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
@@ -73,6 +92,35 @@ func (self *Scope) Evaluate(ops []Op, stack *Slice) error {
 func (self *Scope) Get(key string) *Binding {
 	if found, ok := self.bindings[key]; ok {
 		return &found
+	}
+
+	return nil
+}
+
+func (self *Scope) Load(path string, stack *Slice) error {
+	var file *os.File
+	var err error
+
+	if file, err = os.Open(path); err != nil {
+		return err
+	}
+
+	in := bufio.NewReader(file)
+	pos := NewPos(path)
+	var forms []Form
+	
+	if forms, err = self.Parse(in, nil, &pos); err != nil {
+		return err
+	}
+	
+	var ops []Op
+	
+	if ops, err = self.Compile(forms, nil); err != nil {
+		return err
+	}
+	
+	if err = self.Evaluate(ops, stack); err != nil {
+		return err
 	}
 
 	return nil

@@ -1,0 +1,1 @@
+check: ("foo" type is(String))

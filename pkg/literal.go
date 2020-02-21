@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"io"
+)
+
 type Literal struct {
 	FormBase
 	val Val
@@ -18,6 +22,10 @@ func (self *Literal) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 func (self *Literal) Do(action func(Form) error) error {
 	return action(self)
+}
+
+func (self *Literal) Dump(out io.Writer) error {
+	return self.val.Dump(out)
 }
 
 func (self *Literal) Quote(scope *Scope, pos Pos) (Val, error) {

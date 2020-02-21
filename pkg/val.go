@@ -31,6 +31,10 @@ func (self Val) Call(scope *Scope, stack *Slice, pos Pos) error {
 	return self.dataType.Call(self, scope, stack, pos)
 }
 
+func (self Val) Clone() Val {
+	return NewVal(self.dataType, self.dataType.Clone(self))
+}
+
 func (self Val) Compare(other Val) Order {
 	if self.dataType != other.dataType {
 		return strings.Compare(self.dataType.Name(), other.dataType.Name())

@@ -336,6 +336,7 @@ func SkipSpace(in *bufio.Reader, pos *Pos) error {
 		switch c {
 		case ' ':
 			pos.column++
+		case '\r':
 		case '\n':
 			pos.line++
 			pos.column = MIN_COLUMN

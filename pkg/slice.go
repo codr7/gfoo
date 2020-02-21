@@ -1,8 +1,9 @@
 package gfoo
 
 import (
-	"io"
 	"fmt"
+	"io"
+	"strings"
 )
 
 type Slice struct {
@@ -20,6 +21,16 @@ func (self *Slice) Init(items []Val) *Slice {
 
 func (self *Slice) Clear() {
 	self.items = nil
+}
+
+func (self *Slice) Clone() *Slice {
+	out := make([]Val, len(self.items))
+
+	for i, v := range self.items {
+		out[i] = v.Clone()
+	}
+
+	return NewSlice(out)
 }
 
 func (self Slice) Compare(other Slice) Order {
@@ -90,6 +101,12 @@ func (self *Slice) Push(vals...Val) {
 
 func (self *Slice) Reset() {
 	self.items = nil
+}
+
+func (self *Slice) String() string {
+	var out strings.Builder
+	self.Dump(&out)
+	return out.String()
 }
 
 func (self *Slice) Unquote(scope *Scope, pos Pos) Form {

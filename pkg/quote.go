@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"io"
+)
+
 type Quote struct {
 	FormBase
 	form Form
@@ -21,6 +25,10 @@ func (self *Quote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 func (self *Quote) Do(action func(Form) error) error {
 	return self.form.Do(action)
+}
+
+func (self *Quote) Dump(out io.Writer) error {
+	return self.form.Dump(out)
 }
 
 func (self *Quote) Quote(scope *Scope, pos Pos) (Val, error) {

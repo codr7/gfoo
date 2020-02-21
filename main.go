@@ -10,13 +10,12 @@ import (
 	"strings"
 )
 
-func repl(g *gfoo.Scope) {
+func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VersionMajor, gfoo.VersionMinor)
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
 
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
-	stack := gfoo.NewSlice(nil)
 	
 	for {
 		fmt.Print("  ")
@@ -68,5 +67,15 @@ func repl(g *gfoo.Scope) {
 
 func main() {
 	g := gfoo.New()
-	repl(g)
+	stack := gfoo.NewSlice(nil)
+
+	if len(os.Args) == 1 {
+		repl(g, stack)
+	} else {
+		for _, path := range os.Args[1:] {
+			if err := g.Load(path, stack); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}	
 }

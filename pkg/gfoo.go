@@ -1,9 +1,5 @@
 package gfoo
 
-import (
-	//"fmt"
-)
-
 const (
 	VersionMajor = 0
 	VersionMinor = 5
@@ -44,12 +40,28 @@ func callArgsImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCall(form, nil, argOps)), nil
 }
 
+func checkImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	cond := in.Pop()
+	var condOps []Op
+	var err error
+	
+	if condOps, err = cond.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewCheck(form, cond, condOps)), nil
+}
+
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
 
 func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
+}
+
+func isImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewIs(form)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -244,21 +256,31 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewTypeOp(form)), nil
 }
-	
+
+func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	path, _ := stack.Pop()
+	return scope.Load(path.data.(string), stack)
+}
+
 func New() *Scope {
 	return new(Scope).InitRoot()
 }
 
 func (self *Scope) InitRoot() *Scope {
 	self.Init()
+	self.AddType(&TBool)
+	self.AddType(&TString)
+
 	self.AddConst("T", &TBool, true)
 	self.AddConst("F", &TBool, false)
 
 	self.AddMacro("?:", 2, branchImp)
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
+	self.AddMacro("check:", 1, checkImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
+	self.AddMacro("is", 0, isImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
@@ -267,6 +289,8 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("thread:", 1, threadImp)
 	self.AddMacro("type", 0, typeImp)
+
+	self.AddMethod("load", loadImp)
 	return self
 }
 

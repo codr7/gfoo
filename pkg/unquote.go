@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"io"
+)
+
 type Unquote struct {
 	FormBase
 	form Form
@@ -21,6 +25,10 @@ func (self *Unquote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 func (self *Unquote) Do(action func(Form) error) error {
 	return self.form.Do(action)
+}
+
+func (self *Unquote) Dump(out io.Writer) error {
+	return self.form.Dump(out)
 }
 
 func (self *Unquote) Quote(scope *Scope, pos Pos) (Val, error) {

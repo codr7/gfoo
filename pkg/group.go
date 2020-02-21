@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"io"
+)
+
 type Group struct {
 	FormBase
 	body []Form
@@ -30,6 +34,23 @@ func (self *Group) Do(action func(Form) error) error {
 		}
 	}
 
+	return nil
+}
+
+func (self *Group) Dump(out io.Writer) error {
+ 	io.WriteString(out, "(")
+	
+	for i, f := range self.body {
+		if i > 0 {
+			io.WriteString(out, " ")
+		}
+
+		if err := f.Dump(out); err != nil {
+			return err
+		}
+	}
+
+	io.WriteString(out, ")")
 	return nil
 }
 
