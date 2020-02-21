@@ -14,6 +14,10 @@ type MethodType struct {
 	TypeBase
 }
 
+func (_ *MethodType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
+	return target.data.(*Method).Call(stack, pos)
+}
+
 func (_ *MethodType) Compare(x, y Val) Order {
 	return CompareString(x.data.(*Method).Name(), y.data.(*Method).Name())
 }

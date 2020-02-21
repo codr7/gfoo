@@ -19,11 +19,15 @@ func NewId(name string, pos Pos) *Id {
 func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	if b := scope.Get(self.name); b != nil && b.val != Nil {
 		v := &b.val
-		
-		if v.dataType == &TMacro {
+
+		switch (v.dataType) {
+		case &TMacro:
 			return v.data.(*Macro).Expand(self, in, out, scope)
+		case &TMethod:
+			v := NewVal(&TMethod, v.data.(*Method));
+			return append(out, NewCall(self, &v, nil)), nil
 		}
-		
+
 		return append(out, NewPush(self, *v)), nil
 	}
 

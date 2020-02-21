@@ -43,7 +43,7 @@ func (self *Scope) AddMethod(name string, imp MethodImp) *Method {
 		f = b.val.data.(*Function)
 	}
 
-	return f.AddMethod(imp)
+	return f.AddMethod(imp, self)
 }
 
 func (self *Scope) AddType(val Type) bool {

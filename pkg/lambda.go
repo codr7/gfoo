@@ -17,8 +17,8 @@ func (self *Lambda) Init(argCount int, body []Op, scope *Scope) *Lambda {
 }
 
 func (self *Lambda) Call(stack *Slice, pos Pos) error {
-	if l := stack.Len(); l < self.argCount {
-		self.scope.Error(pos, "Not enough arguments: %v (%v)", l, self.argCount)
+	if sl := stack.Len(); sl < self.argCount {
+		self.scope.Error(pos, "Not enough arguments: %v (%v)", sl, self.argCount)
 	}
 	
 	return self.scope.Clone().Evaluate(self.body, stack)

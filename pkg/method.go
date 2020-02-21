@@ -11,11 +11,13 @@ type Method struct {
 	arguments []Argument
 	results []Result
 	imp MethodImp
+	scope *Scope
 }
 
-func (self *Method) Init(function *Function, imp MethodImp) *Method{
+func (self *Method) Init(function *Function, imp MethodImp, scope *Scope) *Method{
 	self.function = function
 	self.imp = imp
+	self.scope = scope.Clone()
 	return self
 }
 
@@ -46,4 +48,12 @@ func (self *Method) Name() string {
 
 	name.WriteRune('>')
 	return name.String()
+}
+
+func (self *Method) Call(stack *Slice, pos Pos) error {
+	if sl, ac := stack.Len(), len(self.arguments); sl < ac {
+		self.scope.Error(pos, "Not enough arguments: %v (%v)", sl, ac)
+	}
+	
+	return self.imp(stack, self.scope.Clone(), pos)
 }
