@@ -6,12 +6,8 @@ import (
 
 var TBool BoolType
 
-func init() {
-	TBool.Init("Bool")
-}
-
 type BoolType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *BoolType) Bool(val Val) bool {

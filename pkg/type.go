@@ -1,39 +1,48 @@
 package gfoo
 
-import (
-	"io"
-)
-
 type Type interface {
-	Bool(val Val) bool
-	Call(target Val, scope *Scope, stack *Slice, pos Pos) error
-	Clone(val Val) interface{}
-	Compare(x, y Val) Order
-	Dump(val Val, out io.Writer) error
+	DirectParents() []Type
 	Name() string
-	Unquote(val Val, scope *Scope, pos Pos) Form
 }
 
 type TypeBase struct {
+ 	directParents []Type
 	name string
+	parents map[Type]Type
 }
 
-func (self *TypeBase) Init(name string) {
+func NewType(name string, parents...Type) Type {
+	return new(TypeBase).Init(name, parents)
+}
+
+func (self *TypeBase) Init(name string, parents []Type) *TypeBase {
 	self.name = name
+	self.parents = make(map[Type]Type)
+	
+	for _, p := range parents {
+		self.Derive(p)
+	}
+	
+	return self
 }
 
-func (_ *TypeBase) Bool(val Val) bool {
-	return true
+func (self *TypeBase) derive(parent, direct Type) {
+	for _, p := range parent.DirectParents() {
+		self.derive(p, direct)
+	}
+
+	self.parents[parent] = direct
 }
 
-func (_ *TypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(target)
-	return nil
+func (self *TypeBase) Derive(parent Type) {
+	self.derive(parent, parent)
+	self.directParents = append(self.directParents, parent)
 }
 
-func (self *TypeBase) Clone(val Val) interface{} {
-	return val.data
+func (self *TypeBase) DirectParents() []Type {
+	return self.directParents
 }
+
 
 func (self *TypeBase) Name() string {
 	return self.name

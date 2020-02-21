@@ -8,6 +8,7 @@ import (
 type Argument struct {
 	id string
 	index int
+	valType Type
 	val Val
 }
 
@@ -16,7 +17,7 @@ func AIndex(id string, index int) Argument {
 }
 
 func AType(id string, valType Type) Argument {
-	return Argument{id: id, index: -1, val: NewVal(valType, nil)}
+	return Argument{id: id, index: -1, valType: valType}
 }
 
 func AVal(id string, val Val) Argument {
@@ -25,14 +26,12 @@ func AVal(id string, val Val) Argument {
 
 func (self Argument) Dump(out io.Writer) error {
 	if self.index == -1 {
-		if self.val.data == nil {
-			if t := self.val.dataType; t != nil {
-				if _, err := io.WriteString(out, t.Name()); err != nil {
-					return err
-				}
+		if self.valType == nil {
+			if err := self.val.Dump(out); err != nil {
+				return err
 			}
 		} else {
-			if err := self.val.Dump(out); err != nil {
+			if _, err := io.WriteString(out, self.valType.Name()); err != nil {
 				return err
 			}
 		}

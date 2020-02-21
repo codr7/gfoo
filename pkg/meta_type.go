@@ -6,12 +6,8 @@ import (
 
 var TMeta MetaType
 
-func init() {
-	TMeta.Init("Type")
-}
-
 type MetaType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *MetaType) Compare(x, y Val) Order {

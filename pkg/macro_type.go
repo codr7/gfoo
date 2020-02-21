@@ -7,12 +7,8 @@ import (
 
 var TMacro MacroType
 
-func init() {
-	TMacro.Init("Macro")
-}
-
 type MacroType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *MacroType) Compare(x, y Val) Order {

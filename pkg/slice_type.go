@@ -11,7 +11,7 @@ func init() {
 }
 
 type SliceType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *SliceType) Bool(val Val) bool {

@@ -7,12 +7,8 @@ import (
 
 var TInt64 Int64Type
 
-func init() {
-	TInt64.Init("Int64")
-}
-
 type Int64Type struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *Int64Type) Bool(val Val) bool {

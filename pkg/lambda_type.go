@@ -8,12 +8,8 @@ import (
 
 var TLambda LambdaType
 
-func init() {
-	TLambda.Init("Lambda")
-}
-
 type LambdaType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *LambdaType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {

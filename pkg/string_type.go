@@ -7,12 +7,8 @@ import (
 
 var TString StringType
 
-func init() {
-	TString.Init("String")
-}
-
 type StringType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *StringType) Bool(val Val) bool {

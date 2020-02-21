@@ -12,7 +12,7 @@ func init() {
 }
 
 type TimeType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *TimeType) Bool(val Val) bool {

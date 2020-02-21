@@ -5,6 +5,21 @@ const (
 	VersionMinor = 5
 )
 
+func Init() {
+	TAny.Init("Any")
+	TBool.Init("Bool", &TAny)
+	TFunction.Init("Function", &TAny)
+	TId.Init("Id", &TAny)
+	TInt64.Init("Int64", &TAny)
+	TLambda.Init("Lambda", &TAny)
+	TMacro.Init("Macro", &TAny)
+	TMeta.Init("Type", &TAny)
+	TMethod.Init("Method", &TAny)
+	TPair.Init("Pair", &TAny)
+	TScope.Init("Scope", &TAny)
+	TString.Init("String", &TAny)
+}
+
 func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	var trueOps []Op
@@ -268,7 +283,17 @@ func New() *Scope {
 
 func (self *Scope) InitRoot() *Scope {
 	self.Init()
+	self.AddType(&TAny)
 	self.AddType(&TBool)
+	self.AddType(&TFunction)
+	self.AddType(&TId)
+	self.AddType(&TInt64)
+	self.AddType(&TLambda)
+	self.AddType(&TMacro)
+	self.AddType(&TMeta)
+	self.AddType(&TMethod)
+	self.AddType(&TPair)
+	self.AddType(&TScope)
 	self.AddType(&TString)
 
 	self.AddConst("T", &TBool, true)

@@ -6,12 +6,8 @@ import (
 
 var TPair PairType
 
-func init() {
-	TPair.Init("Pair")
-}
-
 type PairType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *PairType) Compare(x, y Val) Order {

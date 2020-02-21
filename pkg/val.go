@@ -8,17 +8,17 @@ import (
 var Nil Val
 
 type Val struct {
-	dataType Type
+	dataType ValType
 	data interface{}
 }
 
-func NewVal(dataType Type, data interface{}) Val {
+func NewVal(dataType ValType, data interface{}) Val {
 	var v Val
 	v.Init(dataType, data)
 	return v
 }
 
-func (self *Val) Init(dataType Type, data interface{}) {
+func (self *Val) Init(dataType ValType, data interface{}) {
 	self.dataType = dataType
 	self.data = data
 }

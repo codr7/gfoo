@@ -7,10 +7,6 @@ import (
 
 var TId IdType
 
-func init() {
-	TId.Init("Id")
-}
-
 type IdType struct {
 	StringType
 }

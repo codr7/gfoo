@@ -6,12 +6,8 @@ import (
 
 var TMethod MethodType
 
-func init() {
-	TMethod.Init("Method")
-}
-
 type MethodType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *MethodType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {

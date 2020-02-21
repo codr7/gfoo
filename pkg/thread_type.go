@@ -13,7 +13,7 @@ func init() {
 }
 
 type ThreadType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *ThreadType) Bool(val Val) bool {

@@ -21,7 +21,7 @@ func (self *Scope) Init() *Scope {
 	return self
 }
 
-func (self *Scope) AddConst(name string, dataType Type, data interface{}) {
+func (self *Scope) AddConst(name string, dataType ValType, data interface{}) {
 	self.Set(name, NewVal(dataType, data))
 }
 

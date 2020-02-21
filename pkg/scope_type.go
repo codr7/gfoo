@@ -8,12 +8,8 @@ import (
 
 var TScope ScopeType
 
-func init() {
-	TScope.Init("Scope")
-}
-
 type ScopeType struct {
-	TypeBase
+	ValTypeBase
 }
 
 func (_ *ScopeType) Compare(x, y Val) Order {

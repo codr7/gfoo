@@ -66,6 +66,7 @@ func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 }
 
 func main() {
+	gfoo.Init()
 	g := gfoo.New()
 	stack := gfoo.NewSlice(nil)
 
