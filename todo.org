@@ -1,7 +1,5 @@
-* finish functions
-** add dispatch op
-*** walk function.methods from back to front
-** compile id to dispatch if TFunction
+* finish Method.Call
+** walk function.methods from back to front
 * convert Int64 to big
 * add String interpolation
 ** read form following @ & print last value

@@ -290,7 +290,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("thread:", 1, threadImp)
 	self.AddMacro("type", 0, typeImp)
 
-	self.AddMethod("load", loadImp)
+	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
 	return self
 }
 

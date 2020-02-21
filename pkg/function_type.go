@@ -15,6 +15,10 @@ type FunctionType struct {
 	TypeBase
 }
 
+func (_ *FunctionType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
+	return target.data.(*Function).Call(scope, stack, pos)
+}
+
 func (_ *FunctionType) Compare(x, y Val) Order {
 	return CompareString(x.data.(*Function).name, y.data.(*Function).name)
 }

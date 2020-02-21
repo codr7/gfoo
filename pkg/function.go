@@ -14,9 +14,14 @@ func (self *Function) Init(name string) *Function {
 	return self
 }
 
-func (self *Function) AddMethod(imp MethodImp, scope *Scope) *Method {
-	m := new(Method).Init(self, imp, scope)
+func (self *Function) AddMethod(arguments, results []Argument, imp MethodImp, scope *Scope) *Method {
+	m := new(Method).Init(self, arguments, results, imp, scope)
 	self.methods = append(self.methods, m)
 	return m
 }
+
+func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
+	return scope.Error(pos, "Function not applicable: %v %v", self.name, stack)
+}
+
 

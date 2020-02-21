@@ -3,6 +3,7 @@ package gfoo
 import (
 	"bufio"
 	"io"
+	"path"
 	"os"
 )
 
@@ -11,6 +12,7 @@ type Bindings = map[string]Binding
 type Scope struct {
 	Debug bool
 	thread *Thread
+	loadPath string
 	bindings Bindings
 }
 
@@ -19,35 +21,31 @@ func (self *Scope) Init() *Scope {
 	return self
 }
 
-func (self *Scope) AddConst(name string, dataType Type, data interface{}) bool {
-	if found := self.Get(name); found != nil {
-		return false
-	}
-
+func (self *Scope) AddConst(name string, dataType Type, data interface{}) {
 	self.Set(name, NewVal(dataType, data))
-	return true
 }
 
-func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) bool {
-	return self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
+func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
+	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
-func (self *Scope) AddMethod(name string, imp MethodImp) *Method {
+func (self *Scope) AddMethod(name string, arguments, results []Argument, imp MethodImp) {
 	var f *Function
 	b := self.Get(name)
 	
 	if b == nil {
 		f = NewFunction(name)
-		self.Set(name, NewVal(&TFunction, f))
+		self.AddConst(name, &TFunction, f)
 	} else {
 		f = b.val.data.(*Function)
 	}
 
-	return f.AddMethod(imp, self)
+	m := f.AddMethod(arguments, results, imp, self)
+	self.AddConst(m.Name(), &TMethod, m)
 }
 
-func (self *Scope) AddType(val Type) bool {
-	return self.AddConst(val.Name(), &TMeta, val)
+func (self *Scope) AddType(val Type) {
+	self.AddConst(val.Name(), &TMeta, val)
 }
 
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
@@ -67,6 +65,7 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 func (self *Scope) Copy(out *Scope) {
 	out.Debug = self.Debug
 	out.thread = self.thread
+	out.loadPath = self.loadPath
 	
 	for k, b := range self.bindings {
 		out.bindings[k] = b
@@ -97,16 +96,24 @@ func (self *Scope) Get(key string) *Binding {
 	return nil
 }
 
-func (self *Scope) Load(path string, stack *Slice) error {
+func (self *Scope) Load(filePath string, stack *Slice) error {
 	var file *os.File
 	var err error
 
-	if file, err = os.Open(path); err != nil {
+	prevLoadPath := self.loadPath
+	filePath = path.Join(self.loadPath, filePath)
+	self.loadPath = path.Dir(filePath)
+		
+	defer func() {
+		self.loadPath = prevLoadPath
+	}()
+	
+	if file, err = os.Open(filePath); err != nil {
 		return err
 	}
 
 	in := bufio.NewReader(file)
-	pos := NewPos(path)
+	pos := NewPos(filePath)
 	var forms []Form
 	
 	if forms, err = self.Parse(in, nil, &pos); err != nil {

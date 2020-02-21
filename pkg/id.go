@@ -21,11 +21,12 @@ func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		v := &b.val
 
 		switch (v.dataType) {
+		case &TFunction:
+			return self.compileFunction(v.data.(*Function), out)
 		case &TMacro:
 			return v.data.(*Macro).Expand(self, in, out, scope)
 		case &TMethod:
-			v := NewVal(&TMethod, v.data.(*Method));
-			return append(out, NewCall(self, &v, nil)), nil
+			return self.compileMethod(v.data.(*Method), out)
 		}
 
 		return append(out, NewPush(self, *v)), nil
@@ -46,4 +47,18 @@ func (self *Id) Dump(out io.Writer) error {
 
 func (self *Id) Quote(scope *Scope, pos Pos) (Val, error) {
 	return NewVal(&TId, self.name), nil
+}
+
+func (self *Id) compileFunction(f *Function, out []Op) ([]Op, error) {	
+	if len(f.methods) == 1 {
+		return self.compileMethod(f.methods[0], out)
+	}
+	
+	v := NewVal(&TFunction, f)
+	return append(out, NewCall(self, &v, nil)), nil
+}
+
+func (self *Id) compileMethod(m *Method, out []Op) ([]Op, error) {
+	v := NewVal(&TMethod, m)
+	return append(out, NewCall(self, &v, nil)), nil
 }

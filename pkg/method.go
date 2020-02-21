@@ -8,14 +8,15 @@ type MethodImp = func(stack *Slice, scope *Scope, pos Pos) (error)
 
 type Method struct {
 	function *Function
-	arguments []Argument
-	results []Result
+	arguments, results []Argument
 	imp MethodImp
 	scope *Scope
 }
 
-func (self *Method) Init(function *Function, imp MethodImp, scope *Scope) *Method{
+func (self *Method) Init(function *Function, arguments, results []Argument, imp MethodImp, scope *Scope) *Method{
 	self.function = function
+	self.arguments = arguments
+	self.results = results
 	self.imp = imp
 	self.scope = scope.Clone()
 	return self
@@ -34,7 +35,7 @@ func (self *Method) Name() string {
 		a.Dump(&name)
 	}
 
-	if self.arguments != nil && self.results != nil {
+	if self.results != nil {
 		name.WriteString("; ")
 	}
 
@@ -51,8 +52,8 @@ func (self *Method) Name() string {
 }
 
 func (self *Method) Call(stack *Slice, pos Pos) error {
-	if sl, ac := stack.Len(), len(self.arguments); sl < ac {
-		self.scope.Error(pos, "Not enough arguments: %v (%v)", sl, ac)
+	if stack.Len() < len(self.arguments) {
+		return self.scope.Error(pos, "Method not applicable: %v %v", self.Name(), stack)
 	}
 	
 	return self.imp(stack, self.scope.Clone(), pos)
