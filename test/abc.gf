@@ -19,6 +19,9 @@ check: =(42)
 
 "foo" type check: is(String)
 
+thread: (35) {+(7)}
+call check: =(42)
+
 {
   let: t (thread: () {pause: 1 pause: 2 3})
   t call check: =(1)
