@@ -349,38 +349,6 @@ func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
-func typeGtImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	xt, yt := x.data.(Type), y.data.(Type)
-	stack.Push(NewVal(&TBool, xt.Isa(yt) != nil))
-	return nil
-}
-
-func typeGteImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	xt, yt := x.data.(Type), y.data.(Type)
-	stack.Push(NewVal(&TBool, xt == yt || xt.Isa(yt) != nil))
-	return nil
-}
-
-func typeLtImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	xt, yt := x.data.(Type), y.data.(Type)
-	stack.Push(NewVal(&TBool, yt.Isa(xt) != nil))
-	return nil
-}
-
-func typeLteImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	xt, yt := x.data.(Type), y.data.(Type)
-	stack.Push(NewVal(&TBool, xt == yt || yt.Isa(xt) != nil))
-	return nil
-}
-
 func New() *Scope {
 	return new(Scope).InitRoot()
 }
@@ -467,27 +435,6 @@ func (self *Scope) InitRoot() *Scope {
 		lteImp)
 
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
-
-	self.AddMethod(">",
-		[]Argument{AType("x", &TMeta), AType("y", &TMeta)},
-		[]Result{RType(&TBool)},
-		typeGtImp)
-
-	self.AddMethod(">=",
-		[]Argument{AType("x", &TMeta), AType("y", &TMeta)},
-		[]Result{RType(&TBool)},
-		typeGteImp)
-	
-	self.AddMethod("<",
-		[]Argument{AType("x", &TMeta), AType("y", &TMeta)},
-		[]Result{RType(&TBool)},
-		typeLtImp)
-
-	self.AddMethod("<=",
-		[]Argument{AType("x", &TMeta), AType("y", &TMeta)},
-		[]Result{RType(&TBool)},
-		typeLteImp)
-
 	return self
 }
 

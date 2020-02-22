@@ -14,11 +14,11 @@ func (_ *MetaType) Compare(x, y Val) Order {
 	xt, yt := x.data.(Type), y.data.(Type)
 
 	if xt.Isa(yt) != nil {
-		return Lt
+		return Gt
 	}
 
 	if yt.Isa(xt) != nil {
-		return Gt
+		return Lt
 	}
 
 	return Eq
