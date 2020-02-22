@@ -14,7 +14,7 @@ func (self *Function) Init(name string) *Function {
 	return self
 }
 
-func (self *Function) AddMethod(arguments, results []Argument, imp MethodImp, scope *Scope) *Method {
+func (self *Function) AddMethod(arguments []Argument, results []Result, imp MethodImp, scope *Scope) *Method {
 	m := new(Method).Init(self, arguments, results, imp, scope)
 	self.methods = append(self.methods, m)
 	return m

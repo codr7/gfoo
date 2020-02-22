@@ -1,10 +1,10 @@
+* convert Int64 to big.Int
+* add Rational
+** use big.Rat
+** Rename to Integer
 * finish Method.Call
 ** walk function.methods from back to front
 ** add Type.Isa(parent)
-* convert Int64 to big.Int
-** Rename to Integer
-* add Rational
-** use big.Rat
 * add String interpolation
 ** read form following @ & print last value
 ** add Writer type

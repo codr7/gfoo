@@ -1,3 +1,8 @@
+42 .. check: is(42)
+check: is(42)
+
+42 'foo _ check: is(42)
+
 check: ("foo" type is(String))
 
 {

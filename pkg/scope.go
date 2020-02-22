@@ -29,7 +29,7 @@ func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
 	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
-func (self *Scope) AddMethod(name string, arguments, results []Argument, imp MethodImp) {
+func (self *Scope) AddMethod(name string, arguments []Argument, results []Result, imp MethodImp) {
 	var f *Function
 	b := self.Get(name)
 	

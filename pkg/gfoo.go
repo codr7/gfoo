@@ -268,8 +268,10 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
-func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewTypeOp(form)), nil
+func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	val, _ := stack.Pop();
+	stack.Push(NewVal(&TMeta, val.dataType))
+	return nil
 }
 
 func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
@@ -313,9 +315,9 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("thread:", 1, threadImp)
-	self.AddMacro("type", 0, typeImp)
 
 	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
+	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
 	return self
 }
 
