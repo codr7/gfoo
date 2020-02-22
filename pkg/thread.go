@@ -2,11 +2,10 @@ package gfoo
 
 type Thread struct {
 	body []Op
-	stack Slice
-	scope Scope
-	done bool
 	err error
 	results chan []Val
+	scope Scope
+	stack Slice
 }
 
 func NewThread(body []Op, scope *Scope) *Thread {
@@ -27,8 +26,7 @@ func (self *Thread) Call(stack *Slice, pos Pos) error {
 			return self.err
 		}
 
-		stack.Push(self.stack.items...)
-		self.err = NewError(pos, "Thread is done")
+		return NewError(pos, "Thread is done")
 	}
 		
 	return nil
@@ -39,8 +37,11 @@ func (self *Thread) Pause(result []Val) {
 }
 
 func (self *Thread) Start() {
-	go func() {	
-		self.err = self.scope.Evaluate(self.body, &self.stack)
+	go func() {
+		if self.err = self.scope.Evaluate(self.body, &self.stack); self.err == nil {
+			self.results<- self.stack.items
+		}
+		
 		close(self.results)
 	}()
 }
