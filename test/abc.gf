@@ -9,6 +9,14 @@ check: =(42)
 42 -(7) check: =(35)
 6 *(7) check: =(42)
 
+1 check: <(2)
+1 check: <=(2)
+1 check: <=(1)
+
+2 check: >(1)
+2 check: >=(1)
+1 check: >=(1)
+
 "foo" type check: is(String)
 
 {

@@ -275,6 +275,20 @@ func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
+func gtImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Compare(y) == Gt))
+	return nil
+}
+
+func gteImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Compare(y) >= Eq))
+	return nil
+}
+
 func intAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
@@ -312,6 +326,20 @@ func isImp(stack *Slice, scope *Scope, pos Pos) (error) {
 func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	path, _ := stack.Pop()
 	return scope.Load(path.data.(string), stack)
+}
+
+func ltImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Compare(y) == Lt))
+	return nil
+}
+
+func lteImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Compare(y) <= Eq))
+	return nil
 }
 
 func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
@@ -362,6 +390,16 @@ func (self *Scope) InitRoot() *Scope {
 		[]Result{RType(&TBool)},
 		eqImp)
 
+	self.AddMethod(">",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		gtImp)
+
+	self.AddMethod(">=",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		gteImp)
+
 	self.AddMethod("+",
 		[]Argument{AType("x", &TInt), AType("y", &TInt)},
 		[]Result{RType(&TInt)},
@@ -383,6 +421,17 @@ func (self *Scope) InitRoot() *Scope {
 		isImp)
 
 	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
+
+	self.AddMethod("<",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		ltImp)
+	
+	self.AddMethod("<=",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		lteImp)
+
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
 	return self
 }
