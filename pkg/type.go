@@ -2,6 +2,7 @@ package gfoo
 
 type Type interface {
 	DirectParents() []Type
+	Isa(other Type) Type
 	Name() string
 }
 
@@ -43,6 +44,10 @@ func (self *TypeBase) DirectParents() []Type {
 	return self.directParents
 }
 
+
+func (self *TypeBase) Isa(other Type) Type {
+	return self.parents[other]
+}
 
 func (self *TypeBase) Name() string {
 	return self.name

@@ -28,6 +28,35 @@ func (self *Method) Init(
 	return self
 }
 
+func (self *Method) Applicable(stack *Slice) bool {
+	sl, al := stack.Len(), len(self.arguments)
+	
+	if sl < al {
+		return false
+	}
+
+	s := stack.items[sl-al:]
+	si := 0
+	
+	for _, a := range self.arguments {
+		if !a.Match(s, si) {
+			return false
+		}
+
+		si++
+	}
+	
+	return true
+}
+
+func (self *Method) Call(stack *Slice, pos Pos) error {
+	if stack.Len() < len(self.arguments) {
+		return self.scope.Error(pos, "Method not applicable: %v %v", self.Name(), stack)
+	}
+	
+	return self.imp(stack, self.scope.Clone(), pos)
+}
+
 func (self *Method) Name() string {
 	var name strings.Builder
 	name.WriteString(self.function.name)
@@ -55,12 +84,4 @@ func (self *Method) Name() string {
 
 	name.WriteRune('>')
 	return name.String()
-}
-
-func (self *Method) Call(stack *Slice, pos Pos) error {
-	if stack.Len() < len(self.arguments) {
-		return self.scope.Error(pos, "Method not applicable: %v %v", self.Name(), stack)
-	}
-	
-	return self.imp(stack, self.scope.Clone(), pos)
 }

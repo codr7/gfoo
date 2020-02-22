@@ -18,17 +18,17 @@ Press Return on empty line to evaluate.
 By default, arguments are expected before operations.
 
 ```
-  42 type
+  35 7 +
 
-[Int]
+[42]
 ```
 
 Trailing arguments may be enclosed in parens to get prefix/infix notation.
 
 ```
-  type("foo")
+  35 +(7)
 
-[String]
+[42]
 ```
 
 ### stacks

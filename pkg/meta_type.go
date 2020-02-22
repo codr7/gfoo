@@ -11,7 +11,17 @@ type MetaType struct {
 }
 
 func (_ *MetaType) Compare(x, y Val) Order {
-	return CompareString(x.data.(Type).Name(), y.data.(Type).Name())
+	xt, yt := x.data.(Type), y.data.(Type)
+
+	if xt.Isa(yt) != nil {
+		return Lt
+	}
+
+	if yt.Isa(xt) != nil {
+		return Gt
+	}
+
+	return Eq
 }
 
 func (_ *MetaType) Dump(val Val, out io.Writer) error {

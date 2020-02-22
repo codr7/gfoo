@@ -21,6 +21,12 @@ func (self *Function) AddMethod(arguments []Argument, results []Result, imp Meth
 }
 
 func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
+	for i := len(self.methods)-1; i >= 0; i-- {
+		if m := self.methods[i]; m.Applicable(stack) {
+			return m.Call(stack, pos)
+		}
+	}
+	
 	return scope.Error(pos, "Function not applicable: %v %v", self.name, stack)
 }
 

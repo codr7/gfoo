@@ -1,12 +1,7 @@
-* implement <, >, <=. >= for Meta
-** add Type.Isa(parent)
-** use to implement Meta.Compare
 * add Rational
 ** use big.Rat
 ** add Int /
 *** create Rational result
-* finish Method.Call
-** walk function.methods from back to front
 * add negation using !
 ** NotForm
 ** compile value 

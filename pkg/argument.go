@@ -24,7 +24,7 @@ func AVal(id string, val Val) Argument {
 	return Argument{id: id, index: -1, val: val}
 }
 
-func (self Argument) Dump(out io.Writer) error {
+func (self *Argument) Dump(out io.Writer) error {
 	if self.index == -1 {
 		if self.valType == nil {
 			if err := self.val.Dump(out); err != nil {
@@ -42,4 +42,18 @@ func (self Argument) Dump(out io.Writer) error {
 	}
 
 	return nil
+}
+
+func (self *Argument) Match(stack []Val, index int) bool {
+	if self.index == -1 {
+		if self.valType == nil {
+			return self.val.Compare(stack[index]) == Eq
+		} else {
+			xt, yt := stack[index].dataType, self.valType
+			return xt == yt || xt.Isa(yt) != nil
+		}
+	}
+
+	xt, yt := stack[index].dataType, stack[self.index].dataType
+	return xt == yt || xt.Isa(yt) != nil
 }
