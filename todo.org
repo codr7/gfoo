@@ -5,6 +5,11 @@
 * finish Method.Call
 ** walk function.methods from back to front
 ** add Type.Isa(parent)
+* add negation using !
+** NotForm
+** compile value 
+** emit Not op
+*** call .Bool
 * add String interpolation
 ** read form following @ & print last value
 ** add Writer type

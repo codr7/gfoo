@@ -20,7 +20,7 @@ By default, arguments are expected before operations.
 ```
   42 type
 
-[Int64]
+[Integer]
 ```
 
 Trailing arguments may be enclosed in parens to get prefix/infix notation.
