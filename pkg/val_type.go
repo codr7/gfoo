@@ -11,7 +11,6 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
-	Is(x, y Val) bool
 	Unquote(val Val, scope *Scope, pos Pos) Form
 }
 
@@ -34,10 +33,6 @@ func (_ *ValTypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) erro
 
 func (self *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
-}
-
-func (self *ValTypeBase) Is(x, y Val) bool {
-	return x.data == y.data
 }
 
 func (self *ValTypeBase) Name() string {

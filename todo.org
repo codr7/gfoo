@@ -1,3 +1,5 @@
+* add <, >, <=. >=
+** use Compare
 * add Rational
 ** use big.Rat
 ** add Integer /

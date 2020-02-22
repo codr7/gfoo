@@ -25,10 +25,6 @@ func (_ *IntegerType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (self *IntegerType) Is(x, y Val) bool {
-	return self.Compare(x, y) == Eq
-}
-
 func (self *IntegerType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

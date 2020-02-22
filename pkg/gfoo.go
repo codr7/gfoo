@@ -79,10 +79,6 @@ func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
 }
 
-func isImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewIs(form)), nil
-}
-
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var args *Group
@@ -272,6 +268,13 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
+func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Compare(y) == Eq))
+	return nil
+}
+
 func integerAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
@@ -296,6 +299,13 @@ func integerSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	var z big.Int
 	z.Sub(x.data.(*big.Int), y.data.(*big.Int))
 	stack.Push(NewVal(&TInteger, &z))
+	return nil
+}
+
+func isImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, x.Is(y)))
 	return nil
 }
 
@@ -338,7 +348,6 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("check:", 1, checkImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
-	self.AddMacro("is", 0, isImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 2, macroImp)
@@ -348,6 +357,11 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("thread:", 1, threadImp)
 
 	
+	self.AddMethod("=",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		eqImp)
+
 	self.AddMethod("+",
 		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
 		[]Result{RType(&TInteger)},
@@ -362,6 +376,11 @@ func (self *Scope) InitRoot() *Scope {
 		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
 		[]Result{RType(&TInteger)},
 		integerSubImp)
+
+	self.AddMethod("is",
+		[]Argument{AType("x", &TAny), AType("y", &TAny)},
+		[]Result{RType(&TBool)},
+		isImp)
 
 	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
