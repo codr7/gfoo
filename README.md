@@ -251,7 +251,7 @@ Macro arguments are bound to forms following the call in specified order. By con
 ```
 
 ### threads
-Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the result.
+Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
 
 ```
   thread: (1 2 3) {4 5 6}
@@ -266,15 +266,21 @@ Threads are implemented as Goroutines, which means they are preemptive yet more 
 Threads may be paused until next call, which then returns the specified argument.
 
 ```
-  thread: () {1 pause: 2 3}
+  thread: () {pause: 1 pause: 2 3}
 
 [Thread(0xc0000a2000)]
   .. call
 
+[Thread(0xc0000a2000) 1]
+  _ .. call
+
 [Thread(0xc0000a2000) 2]
+  _ .. call
+
+[Thread(0xc0000a2000) 3]
   _ call
 
-[1 3]
+Error in 'repl', line 1, column 2: Thread is done
 ```
 
 ### tests

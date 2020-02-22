@@ -20,13 +20,14 @@ func (self *ScopeForm) Init(body []Form, pos Pos) *ScopeForm {
 }
 
 func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	ops, err := scope.Clone().Compile(self.body, nil)
+	scope = scope.Clone()
+	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
 		return out, err
 	}
 	
-	return append(out, NewScopeOp(self, ops)), nil
+	return append(out, NewScopeOp(self, ops, scope)), nil
 }
 
 func (self *ScopeForm) Do(action func(Form) error) error {

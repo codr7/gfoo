@@ -2,13 +2,13 @@ package gfoo
 
 type Pause struct {
 	OpBase
-	result []Op
+	resultOps []Op
 }
 
-func NewPause(form Form, result []Op) *Pause {
+func NewPause(form Form, resultOps []Op) *Pause {
 	op := new(Pause)
 	op.OpBase.Init(form)
-	op.result = result
+	op.resultOps = resultOps
 	return op
 }
 
@@ -19,10 +19,12 @@ func (self *Pause) Evaluate(scope *Scope, stack *Slice) error {
 		return scope.Error(self.form.Pos(), "No active thread")
 	}
 
-	if err := t.scope.Evaluate(self.result, &t.result); err != nil {
+	var result Slice
+	
+	if err := t.scope.Evaluate(self.resultOps, &result); err != nil {
 		return err
 	}
 
-	t.Pause()
+	t.Pause(result.items)
 	return nil
 }

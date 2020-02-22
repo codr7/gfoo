@@ -68,6 +68,7 @@ func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 func main() {
 	gfoo.Init()
 	g := gfoo.New()
+	g.Debug = true
 	stack := gfoo.NewSlice(nil)
 
 	if len(os.Args) == 1 {
