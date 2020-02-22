@@ -3,7 +3,7 @@ check: =(42)
 
 42 'fail _ check: =(42)
 
-42 type check: is(Integer)
+42 type check: is(Int)
 
 35 +(7) check: =(42)
 42 -(7) check: =(35)

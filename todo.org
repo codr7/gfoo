@@ -2,7 +2,7 @@
 ** use Compare
 * add Rational
 ** use big.Rat
-** add Integer /
+** add Int /
 *** create Rational result
 * finish Method.Call
 ** walk function.methods from back to front

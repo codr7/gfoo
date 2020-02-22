@@ -14,7 +14,7 @@ func Init() {
 	TBool.Init("Bool", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
-	TInteger.Init("Integer", &TAny)
+	TInt.Init("Int", &TAny)
 	TLambda.Init("Lambda", &TAny)
 	TMacro.Init("Macro", &TAny)
 	TMeta.Init("Type", &TAny)
@@ -275,30 +275,30 @@ func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
-func integerAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
 	var z big.Int
 	z.Add(x.data.(*big.Int), y.data.(*big.Int))
-	stack.Push(NewVal(&TInteger, &z))
+	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func integerMulImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intMulImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
 	var z big.Int
 	z.Mul(x.data.(*big.Int), y.data.(*big.Int))
-	stack.Push(NewVal(&TInteger, &z))
+	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func integerSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
 	var z big.Int
 	z.Sub(x.data.(*big.Int), y.data.(*big.Int))
-	stack.Push(NewVal(&TInteger, &z))
+	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
@@ -330,7 +330,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddType(&TBool)
 	self.AddType(&TFunction)
 	self.AddType(&TId)
-	self.AddType(&TInteger)
+	self.AddType(&TInt)
 	self.AddType(&TLambda)
 	self.AddType(&TMacro)
 	self.AddType(&TMeta)
@@ -363,19 +363,19 @@ func (self *Scope) InitRoot() *Scope {
 		eqImp)
 
 	self.AddMethod("+",
-		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
-		[]Result{RType(&TInteger)},
-		integerAddImp)
+		[]Argument{AType("x", &TInt), AType("y", &TInt)},
+		[]Result{RType(&TInt)},
+		intAddImp)
 
 	self.AddMethod("*",
-		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
-		[]Result{RType(&TInteger)},
-		integerMulImp)
+		[]Argument{AType("x", &TInt), AType("y", &TInt)},
+		[]Result{RType(&TInt)},
+		intMulImp)
 
 	self.AddMethod("-",
-		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
-		[]Result{RType(&TInteger)},
-		integerSubImp)
+		[]Argument{AType("x", &TInt), AType("y", &TInt)},
+		[]Result{RType(&TInt)},
+		intSubImp)
 
 	self.AddMethod("is",
 		[]Argument{AType("x", &TAny), AType("y", &TAny)},

@@ -20,7 +20,7 @@ By default, arguments are expected before operations.
 ```
   42 type
 
-[Integer]
+[Int]
 ```
 
 Trailing arguments may be enclosed in parens to get prefix/infix notation.
@@ -184,7 +184,7 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 ['ok 'ok]
 ```
 
-All values have boolean representations; non-zero integers are true; empty strings and slices false etc.
+All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
 
 ```
   42 if: 'ok
