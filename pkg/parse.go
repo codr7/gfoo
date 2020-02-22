@@ -4,6 +4,7 @@ import (
 	"bufio"
 	//"fmt"
 	"io"
+	"math/big"
 	"strings"
 	"unicode"
 )
@@ -184,7 +185,7 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	if c == '0' {
 		if c, _, err = in.ReadRune(); err != nil {
 			if err == io.EOF {
-				return NewLiteral(NewVal(&TInt64, v), fpos), nil
+				return NewLiteral(NewVal(&TInteger, big.NewInt(v)), fpos), nil
 			}
 			
 			return nil, err
@@ -242,7 +243,7 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 		pos.column++
 	}
 	
-	return NewLiteral(NewVal(&TInt64, v), fpos), nil
+	return NewLiteral(NewVal(&TInteger, big.NewInt(v)), fpos), nil
 }
 
 func (self *Scope) ParseQuote(in *bufio.Reader, pos *Pos) (Form, error) {

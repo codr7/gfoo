@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"math/big"
+)
+
 const (
 	VersionMajor = 0
 	VersionMinor = 6
@@ -10,7 +14,7 @@ func Init() {
 	TBool.Init("Bool", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
-	TInt64.Init("Int64", &TAny)
+	TInteger.Init("Integer", &TAny)
 	TLambda.Init("Lambda", &TAny)
 	TMacro.Init("Macro", &TAny)
 	TMeta.Init("Type", &TAny)
@@ -268,15 +272,42 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
-func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	val, _ := stack.Pop();
-	stack.Push(NewVal(&TMeta, val.dataType))
+func integerAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	var z big.Int
+	z.Add(x.data.(*big.Int), y.data.(*big.Int))
+	stack.Push(NewVal(&TInteger, &z))
+	return nil
+}
+
+func integerMulImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	var z big.Int
+	z.Mul(x.data.(*big.Int), y.data.(*big.Int))
+	stack.Push(NewVal(&TInteger, &z))
+	return nil
+}
+
+func integerSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	y, _ := stack.Pop()
+	x, _ := stack.Pop()
+	var z big.Int
+	z.Sub(x.data.(*big.Int), y.data.(*big.Int))
+	stack.Push(NewVal(&TInteger, &z))
 	return nil
 }
 
 func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	path, _ := stack.Pop()
 	return scope.Load(path.data.(string), stack)
+}
+
+func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	val, _ := stack.Pop();
+	stack.Push(NewVal(&TMeta, val.dataType))
+	return nil
 }
 
 func New() *Scope {
@@ -289,7 +320,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddType(&TBool)
 	self.AddType(&TFunction)
 	self.AddType(&TId)
-	self.AddType(&TInt64)
+	self.AddType(&TInteger)
 	self.AddType(&TLambda)
 	self.AddType(&TMacro)
 	self.AddType(&TMeta)
@@ -315,6 +346,22 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("thread:", 1, threadImp)
+
+	
+	self.AddMethod("+",
+		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
+		[]Result{RType(&TInteger)},
+		integerAddImp)
+
+	self.AddMethod("*",
+		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
+		[]Result{RType(&TInteger)},
+		integerMulImp)
+
+	self.AddMethod("-",
+		[]Argument{AType("x", &TInteger), AType("y", &TInteger)},
+		[]Result{RType(&TInteger)},
+		integerSubImp)
 
 	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)

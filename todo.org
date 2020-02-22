@@ -1,7 +1,7 @@
-* convert Int64 to big.Int
 * add Rational
 ** use big.Rat
-** Rename to Integer
+** add Integer /
+*** create Rational result
 * finish Method.Call
 ** walk function.methods from back to front
 ** add Type.Isa(parent)

@@ -52,7 +52,7 @@ func (self Val) Is(other Val) bool {
 		return false
 	}
 	
-	return self.data == other.data
+	return self.dataType.Is(self, other)
 }
 
 func (self Val) Literal(pos Pos) *Literal {

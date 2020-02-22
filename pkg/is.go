@@ -22,6 +22,6 @@ func (self *Is) Evaluate(scope *Scope, stack *Slice) error {
 		return scope.Error(self.form.Pos(), "Missing left value")
 	}
 
-	stack.Push(NewVal(&TBool, left.data == right.data))
+	stack.Push(NewVal(&TBool, left.Is(right)))
 	return nil
 }
