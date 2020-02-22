@@ -1,6 +1,3 @@
-* isolate threads
-** clone arguments/pause args
-** run tests
 * finish Method.Call
 ** walk function.methods from back to front
 ** add Type.Isa(parent)
