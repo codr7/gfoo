@@ -41,6 +41,19 @@ func (_ *BoolType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *BoolType) Print(val Val, out io.Writer) error {
+	var s string
+	
+	if val.data.(bool) {
+		s = "true"
+	} else {
+		s = "false"
+	}
+	
+	_, err := io.WriteString(out, s)
+	return err
+}
+
 func (self *BoolType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

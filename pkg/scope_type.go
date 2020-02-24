@@ -21,6 +21,10 @@ func (_ *ScopeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *ScopeType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *ScopeType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewScopeForm(val.data.(*ScopeForm).body, pos)
 }

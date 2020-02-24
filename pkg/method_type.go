@@ -23,6 +23,10 @@ func (_ *MethodType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *MethodType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *MethodType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

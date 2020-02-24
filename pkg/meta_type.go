@@ -29,6 +29,10 @@ func (_ *MetaType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *MetaType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *MetaType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

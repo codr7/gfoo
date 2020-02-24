@@ -2,7 +2,6 @@ package gfoo
 
 import (
 	"bufio"
-	//"fmt"
 	"io"
 	"math/big"
 	"strings"
@@ -11,18 +10,25 @@ import (
 
 func IsId(c rune) bool {
 	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
-		c != '\'' && c != '@' && c != '"' &&
+		c != ';' && c != '\'' && c != '@' && c != '"' &&
 		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']'
 }
 
-func (self *Scope) ParseBody(in *bufio.Reader, end rune, pos *Pos) ([]Form, error) {
+func (self *Scope) ParseBody(
+	in *bufio.Reader,
+	end rune,
+	create func([]Form, Pos) Form,
+	depth int,
+	pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
 	var out []Form
 	
 	for {
 		if err := SkipSpace(in, pos); err != nil {
 			return nil, err
 		}
-		
+
 		c, _, err := in.ReadRune()
 		
 		if err != nil {
@@ -30,23 +36,38 @@ func (self *Scope) ParseBody(in *bufio.Reader, end rune, pos *Pos) ([]Form, erro
 		}
 
 		if c == end {
+			if depth == 0 {
+				pos.column++
+			} else {
+				if err = in.UnreadRune(); err != nil {
+					return nil, err
+				}
+			}
+			
 			break
-		}
-
-		if err = in.UnreadRune(); err != nil {
-			return nil, err
+				
 		}
 
 		var f Form
 
-		if f, err = self.ParseForm(in, pos); err != nil {
-			return nil, err
+		if c == ';' {
+			if f, err = self.ParseBody(in, end, create, depth+1, pos); err != nil {
+				return nil, err
+			}
+		} else {
+			if err = in.UnreadRune(); err != nil {
+				return nil, err
+			}
+			
+			if f, err = self.ParseForm(in, pos); err != nil {
+				return nil, err
+			}
 		}
 
 		out = append(out, f)
 	}
 
-	return out, nil
+	return create(out, fpos), nil
 }
 
 func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -83,15 +104,7 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 }
 
 func (self *Scope) ParseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
-	fpos := *pos
-	pos.column++
-	body, err := self.ParseBody(in, ')', pos)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return NewGroup(body, fpos), nil
+	return self.ParseBody(in, ')', func(body []Form, pos Pos) Form { return NewGroup(body, pos) }, 0, pos)
 }
 
 func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
@@ -260,27 +273,11 @@ func (self *Scope) ParseQuote(in *bufio.Reader, pos *Pos) (Form, error) {
 }
 
 func (self *Scope) ParseScope(in *bufio.Reader, pos *Pos) (Form, error) {
-	fpos := *pos
-	pos.column++
-	body, err := self.ParseBody(in, '}', pos)
-
-	if err != nil {
-		return nil, err
-	}
-	
-	return NewScopeForm(body, fpos), nil
+	return self.ParseBody(in, '}', func(body []Form, pos Pos) Form { return NewScopeForm(body, pos) }, 0, pos)
 }
 
 func (self *Scope) ParseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
-	fpos := *pos
-	pos.column++
-	body, err := self.ParseBody(in, ']', pos)
-
-	if err != nil {
-		return nil, err
-	}
-	
-	return NewSliceForm(body, fpos), nil
+	return self.ParseBody(in, ']', func(body []Form, pos Pos) Form { return NewSliceForm(body, pos) }, 0, pos)
 }
 
 func (self *Scope) ParseString(in *bufio.Reader, pos *Pos) (Form, error) {

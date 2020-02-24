@@ -44,7 +44,6 @@ func (self *Id) Dump(out io.Writer) error {
 	return err
 }
 
-
 func (self *Id) Quote(scope *Scope, pos Pos) (Val, error) {
 	return NewVal(&TId, self.name), nil
 }

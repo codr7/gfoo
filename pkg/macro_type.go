@@ -20,6 +20,10 @@ func (_ *MacroType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *MacroType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *MacroType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

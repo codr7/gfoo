@@ -11,6 +11,7 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
+	Print(val Val, out io.Writer) error
 	Unquote(val Val, scope *Scope, pos Pos) Form
 }
 

@@ -39,3 +39,19 @@ func (self Pair) Dump(out io.Writer) error {
 
 	return nil
 }
+
+func (self Pair) Print(out io.Writer) error {
+	if err := self.left.Print(out); err != nil {
+		return err
+	}
+
+	if _, err := io.WriteString(out, " "); err != nil {
+		return err
+	}
+	
+	if err := self.right.Print(out); err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -14,6 +14,9 @@ Press Return on empty line to evaluate.
 [42]
 ```
 
+### design
+The design rests on three main pillars: flexbility, separation of concerns and first class features.
+
 ### syntax
 By default, arguments are expected before operations.
 
@@ -32,7 +35,7 @@ Trailing arguments may be enclosed in parens to get prefix/infix notation.
 ```
 
 ### stacks
-Literals, values of bindings and results from operations are pushed on a stack.
+Literals, values of bindings and results from operations are pushed on the stack.
 
 ```
   1 2 3
@@ -56,12 +59,11 @@ and dropped using `_`.
 [1 2 3]
 ```
 
-`|` may be used to drop all items.
+Evaluating nothing in the REPL clears the stack.
 
 ```
-  1 2 3 | 4 5 6
 
-[4 5 6]
+[]
 ```
 
 ### bindings
@@ -112,6 +114,16 @@ Specifying the empty group as value pops the stack.
 ["baz"]
 ```
 
+### booleans
+All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
+
+```
+  42 if: 'ok
+  "" else: 'ok
+  
+['ok 'ok]
+```
+
 ### numbers
 Numeric literals may be specified using decimal, hexadecimal or binary notation.
 
@@ -131,7 +143,7 @@ Pairs allow treating two values as one, and may be created using `,`.
 ```
 
 ### slices
-Slices may be created by enclosing code in brackets,
+Slices may be created by enclosing code in brackets.
 
 ```
   ['foo 'bar 'baz]
@@ -139,13 +151,14 @@ Slices may be created by enclosing code in brackets,
 [['foo 'bar 'baz]]
 ```
 
-or by quoting groups.
+`;` may be used as a shorthand for nested slices.
 
 ```
-  '(foo bar baz)
-  
-[['foo 'bar 'baz]]
+  ['foo; 'bar 'baz]
+
+[['foo ['bar 'baz]]]
 ```
+
 
 ### lambdas
 Lambdas may be created using `\:`;
@@ -181,15 +194,6 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
   T if: 'ok
   F else: 'ok
 
-['ok 'ok]
-```
-
-All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
-
-```
-  42 if: 'ok
-  "" else: 'ok
-  
 ['ok 'ok]
 ```
 

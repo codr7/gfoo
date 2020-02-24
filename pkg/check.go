@@ -28,7 +28,7 @@ func (self *Check) Evaluate(scope *Scope, stack *Slice) error {
 	}
 
 	if !result.Bool() {
-		return scope.Error(self.form.Pos(), "Check failed: %v %v", FormString(self.cond), condStack)	
+		return scope.Error(self.form.Pos(), "Check failed: %v %v", self.cond, condStack)	
 	}
 	
 	return nil

@@ -18,6 +18,10 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 	return val.data.(Pair).Dump(out)
 }
 
+func (_ *PairType) Print(val Val, out io.Writer) error {
+	return val.data.(Pair).Print(out)
+}
+
 func (self *PairType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

@@ -1,3 +1,22 @@
+* invalidate methods when done compiling scope
+** finish arg parsing in method: macro
+** store index in method
+** truncate function.methods if scope = compileScope
+** add override test
+
+method: foo (x Int; Int) {x +(7)}
+say(foo(35))
+
+method: bar (;'outer) {}
+say(bar)
+
+{
+  method: bar (;'inner) {}
+  say(bar)
+}
+
+say(bar)
+
 * add Rational
 ** use big.Rat
 ** add Int /
@@ -30,11 +49,12 @@ macro: while: (cond body) {
 
 * add first class scopes
 ** add scope method
-*** return clone
+*** return current scope
 ** add new(Scope) method
 *** return empty scope
+** add Scope.call
+*** replace scope op with call
 ** add scope: macro
-*** add ScopeOp.pop bool
 ** add dot access in Id
 *** pop scope if first char == '.' and second char != '.'
 

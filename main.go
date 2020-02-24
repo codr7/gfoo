@@ -32,28 +32,33 @@ func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 
 		if line == "" {
 			var err error
-			source := buffer.String()
+			source := strings.TrimSpace(buffer.String());
 			buffer.Reset()
-			in := bufio.NewReader(strings.NewReader(source))
-			pos := gfoo.NewPos("repl")
-			var forms []gfoo.Form
+
+			if source == "" {
+				stack.Clear()
+			} else {
+				in := bufio.NewReader(strings.NewReader(source))
+				pos := gfoo.NewPos("repl")
+				var forms []gfoo.Form
 			
-			if forms, err = g.Parse(in, nil, &pos); err != nil {
-				fmt.Println(err)
-				continue
+				if forms, err = g.Parse(in, nil, &pos); err != nil {
+					fmt.Println(err)
+					continue
+				}
+				
+				var ops []gfoo.Op
+				
+				if ops, err = g.Compile(forms, nil); err != nil {
+					fmt.Println(err)
+					continue
+				}
+				
+				if err = g.Evaluate(ops, stack); err != nil {
+					fmt.Println(err)
+				}
 			}
-
-			var ops []gfoo.Op
 			
-			if ops, err = g.Compile(forms, nil); err != nil {
-				fmt.Println(err)
-				continue
-			}
-
-			if err = g.Evaluate(ops, stack); err != nil {
-				fmt.Println(err)
-			}
-
 			if err := stack.Dump(os.Stdout); err != nil {
 				log.Fatal(err)
 			}

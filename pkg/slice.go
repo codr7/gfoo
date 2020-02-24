@@ -95,6 +95,22 @@ func (self *Slice) Pop() (Val, bool) {
 	return v, true
 }
 
+func (self Slice) Print(out io.Writer) error {
+	for i, v := range self.items {
+		if i > 0 {
+			if _, err := fmt.Fprint(out, " "); err != nil {
+				return err
+			}
+		}
+		
+		if err := v.Print(out); err != nil {
+			return err
+		}
+	}
+	
+	return nil
+}
+
 func (self *Slice) Push(vals...Val) {
 	self.items = append(self.items, vals...)
 }

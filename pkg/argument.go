@@ -6,22 +6,22 @@ import (
 )
 
 type Argument struct {
-	id string
+	name string
 	index int
 	valType Type
 	val Val
 }
 
-func AIndex(id string, index int) Argument {
-	return Argument{id: id, index: index}
+func AIndex(name string, index int) Argument {
+	return Argument{name: name, index: index}
 }
 
-func AType(id string, valType Type) Argument {
-	return Argument{id: id, index: -1, valType: valType}
+func AType(name string, valType Type) Argument {
+	return Argument{name: name, index: -1, valType: valType}
 }
 
-func AVal(id string, val Val) Argument {
-	return Argument{id: id, index: -1, val: val}
+func AVal(name string, val Val) Argument {
+	return Argument{name: name, index: -1, val: val}
 }
 
 func (self *Argument) Dump(out io.Writer) error {

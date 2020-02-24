@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type MethodImp = func(stack *Slice, scope *Scope, pos Pos) (error)
+type MethodImp = func(stack *Slice, scope *Scope, pos Pos) error
 
 type Method struct {
 	function *Function

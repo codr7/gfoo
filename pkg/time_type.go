@@ -44,6 +44,10 @@ func (_ *TimeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *TimeType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *TimeType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

@@ -25,6 +25,10 @@ func (_ *LambdaType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *LambdaType) Print(val Val, out io.Writer) error {
+	return self.Dump(val, out)
+}
+
 func (self *LambdaType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

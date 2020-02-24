@@ -1,12 +1,14 @@
 package gfoo
 
 import (
+	"fmt"
 	"math/big"
+	"os"
 )
 
 const (
 	VersionMajor = 0
-	VersionMinor = 6
+	VersionMinor = 7
 )
 
 func Init() {
@@ -170,14 +172,14 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var bodyOps []Op
 
 	for i := len(args.body)-1; i >= 0; i-- {
-		a := args.body[i]
+		f := args.body[i]
 		var id *Id
 		
-		if id, ok = args.body[i].(*Id); !ok {
-			return out, scope.Error(a.Pos(), "Invalid argumnet: %v", f)
+		if id, ok = f.(*Id); !ok {
+			return out, scope.Error(f.Pos(), "Invalid argument: %v", f)
 		}
 		
-		bodyOps = append(bodyOps, NewLet(id, id.name))
+		bodyOps = append(bodyOps, NewLet(f, id.name))
 	}
 
 	var err error
@@ -217,6 +219,64 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return out, nil
 }
 
+func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	f := in.Pop()
+	id, ok := f.(*Id)
+
+	if !ok {
+		scope.Error(f.Pos(), "Expected id: %v", f)
+	}
+
+	f = in.Pop()
+	var argsForm *Group
+
+	if argsForm, ok = f.(*Group); !ok || len(argsForm.body) < 1 {
+		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+	}
+
+	f = in.Pop()
+	var body *ScopeForm
+
+	if body, ok = f.(*ScopeForm); !ok {
+		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
+	}
+
+	var args []Argument
+
+	for _, f := range argsForm.body[:len(argsForm.body)-1] {
+		fmt.Printf("arg: %v\n", DumpString(f))
+	}
+
+	var bodyOps []Op
+
+	for i := len(args)-1; i >= 0; i-- {
+		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
+	}
+
+	var retsForm *Group
+	var rets []Result
+
+	if retsForm, ok = argsForm.body[len(argsForm.body)-1].(*Group); !ok {
+		return out, scope.Error(f.Pos(), "Invalid result list: %v", f)
+	}
+
+	for _, f := range retsForm.body {
+		fmt.Printf("ret: %v\n", DumpString(f))
+	}
+	
+	var err error
+	
+	if bodyOps, err = body.Compile(nil, bodyOps, scope.Clone()); err != nil {
+		return out, err
+	}
+	
+	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
+		return scope.Evaluate(bodyOps, stack)
+	})
+		
+	return out, nil
+}
+
 func pairImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPairOp(form)), nil
 }
@@ -231,10 +291,6 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	return append(out, NewPause(form, resultOps)), nil
-}
-
-func resetImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewReset(form)), nil
 }
 
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -343,6 +399,13 @@ func lteImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
+func sayImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	val, _ := stack.Pop();
+	val.Print(os.Stdout)
+	os.Stdout.WriteString("\n")
+	return nil
+}
+
 func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	val, _ := stack.Pop();
 	stack.Push(NewVal(&TMeta, val.dataType))
@@ -380,10 +443,10 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
-	self.AddMacro("macro:", 2, macroImp)
+	self.AddMacro("macro:", 3, macroImp)
+	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
-	self.AddMacro("|", 0, resetImp)
 	self.AddMacro("thread:", 1, threadImp)
 
 	
@@ -434,6 +497,7 @@ func (self *Scope) InitRoot() *Scope {
 		[]Result{RType(&TBool)},
 		lteImp)
 
+	self.AddMethod("say", []Argument{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
 	return self
 }
