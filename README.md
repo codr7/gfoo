@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.6
+gfoo v0.8
 
 Press Return on empty line to evaluate.
 
@@ -151,7 +151,7 @@ Slices may be created by enclosing code in brackets.
 [['foo 'bar 'baz]]
 ```
 
-`;` may be used as a shorthand for nested slices.
+`;` may be used as a shorthand for a nested slice.
 
 ```
   ['foo; 'bar 'baz]
@@ -169,7 +169,7 @@ Slices may be created by enclosing code in brackets.
 ['ok 'ok]
 ```
 
-`if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module, and may be used to when there is only one branch.
+`if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module.
 
 ```
   load("lib/abc.gf")
@@ -205,6 +205,22 @@ Metods allow dispatching on argument types.
   foo(42) foo("bar")
 
 ['int 42, 'string "bar",]
+```
+
+Methods belong to the containing scope.
+
+```
+  method: bar (;Id) {'outer}
+  bar
+
+  {
+    method: bar (;Id) {'inner}
+    bar
+  }
+
+  bar
+
+['outer 'inner 'outer]
 ```
 
 ### macros
@@ -245,7 +261,7 @@ Error in 'repl', line 1, column 0: Unknown identifier: $bar
 []
 ```
 
-Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have names ending with `:`. Values may be spliced into quoted forms using `@`
+Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have names ending with `:`. Values may be spliced into quoted forms using `@`.
 
 ```
   macro: while: (cond body) {
@@ -265,7 +281,7 @@ Macro arguments are bound to forms following the call in specified order. By con
 ```
 
 ### threads
-Threads are implemented as Goroutines, which means they are preemptive yet more efficient than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts the thread immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
+Threads are implemented as Goroutines, which means they are preemptive yet cheaper than OS threads. New threads may be started using `thread:`, which takes an initial stack and body as arguments and starts running immediately. Calling a thread waits for it to stop executing and returns the contents of its stack.
 
 ```
   thread: (1 2 3) {4 5 6}

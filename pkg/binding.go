@@ -1,8 +1,8 @@
 package gfoo
 
 type Binding struct {
-	val Val
 	scope *Scope
+	val Val
 }
 
 func NewBinding(scope *Scope, val Val) Binding {

@@ -1,18 +1,3 @@
-* invalidate methods when done compiling scope
-** store index in method
-** truncate function.methods if scope = compileScope
-** add override test
-
-method: bar (;'outer) {}
-say(bar)
-
-{
-  method: bar (;'inner) {}
-  say(bar)
-}
-
-say(bar)
-
 * add Rational
 ** use big.Rat
 ** add Int /

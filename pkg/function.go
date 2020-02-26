@@ -14,10 +14,27 @@ func (self *Function) Init(name string) *Function {
 	return self
 }
 
-func (self *Function) AddMethod(arguments []Argument, results []Result, imp MethodImp, scope *Scope) *Method {
+func (self *Function) NewMethod(arguments []Argument, results []Result, imp MethodImp, scope *Scope) *Method {
 	m := new(Method).Init(self, arguments, results, imp, scope)
-	self.methods = append(self.methods, m)
+	self.AddMethod(m)
 	return m
+}
+
+func (self *Function) AddMethod(method *Method) {
+	method.index = len(self.methods)
+	self.methods = append(self.methods, method)
+}
+
+func (self *Function) RemoveMethod(method *Method) {
+	if method.index == -1 {
+		panic("Method not added")
+	}
+	
+	if len(self.methods) > method.index {
+		self.methods = self.methods[:method.index]
+	}
+	
+	method.index = -1
 }
 
 func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {

@@ -1,9 +1,5 @@
 package gfoo
 
-import (
-	//"fmt"
-)
-
 type ScopeOp struct {
 	OpBase
 	body []Op
@@ -19,6 +15,17 @@ func NewScopeOp(form Form, body []Op, scope *Scope) *ScopeOp {
 }
 
 func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
-	return self.scope.Clone().Evaluate(self.body, stack)
-}
+	for _, m := range self.scope.methods {
+		if m.index == -1 {
+			m.function.AddMethod(m)
+		}
+	}
 
+	err := self.scope.Clone().Evaluate(self.body, stack)
+
+	for _, m := range self.scope.methods {
+		m.function.RemoveMethod(m)
+	}
+
+	return err
+}

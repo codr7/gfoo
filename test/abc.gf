@@ -25,6 +25,24 @@ Number check: >(Any)
 Number check: >=(Any)
 Number check: >=(Number)
 
+{
+  method: foo (x Int; Id) {'int x,}
+  method: foo (x String; Id) {'string x,}
+  foo(42) check: =('int 42,)
+  foo("bar") check: =('string "bar",)
+}
+
+{
+  method: bar (;Id) {'outer}
+
+  {
+    method: bar (;Id) {'inner}
+    bar check: =('inner)
+  }
+
+  bar check: =('outer)
+}
+
 thread: (35) {+(7)}
 call check: =(42)
 

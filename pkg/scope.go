@@ -14,6 +14,7 @@ type Scope struct {
 	thread *Thread
 	loadPath string
 	bindings Bindings
+	methods []*Method
 }
 
 func (self *Scope) Init() *Scope {
@@ -40,8 +41,9 @@ func (self *Scope) AddMethod(name string, arguments []Argument, results []Result
 		f = b.val.data.(*Function)
 	}
 
-	m := f.AddMethod(arguments, results, imp, self)
+	m := f.NewMethod(arguments, results, imp, self)
 	self.AddConst(m.Name(), &TMethod, m)
+	self.methods = append(self.methods, m)
 }
 
 func (self *Scope) AddType(val Type) {

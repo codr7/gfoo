@@ -8,6 +8,7 @@ type MethodImp = func(stack *Slice, scope *Scope, pos Pos) error
 
 type Method struct {
 	function *Function
+	index int
 	arguments []Argument
 	results []Result
 	imp MethodImp
@@ -21,6 +22,7 @@ func (self *Method) Init(
 	imp MethodImp,
 	scope *Scope) *Method{
 	self.function = function
+	self.index = -1
 	self.arguments = arguments
 	self.results = results
 	self.imp = imp

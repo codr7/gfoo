@@ -7,7 +7,7 @@ import (
 
 const (
 	VersionMajor = 0
-	VersionMinor = 7
+	VersionMinor = 8
 )
 
 func Init() {
