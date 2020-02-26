@@ -159,24 +159,6 @@ Slices may be created by enclosing code in brackets.
 [['foo ['bar 'baz]]]
 ```
 
-
-### lambdas
-Lambdas may be created using `\:`;
-
-```
-  \: (x y) {x y 3}
-
-[Lambda(0xc0000483c0)]
-```
-
-and evaluated using `call`, or `call:` which pushes specified arguments after the target is popped.
-
-```
-  call: (1 2)
-
-[1 2 3]
-```
-
 ### branches
 `?:` may be used to conditionally evaluate code.
 
@@ -195,6 +177,34 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
   F else: 'ok
 
 ['ok 'ok]
+```
+
+### lambdas
+Lambdas may be created using `\:`;
+
+```
+  \: (x y) {x y 3}
+
+[Lambda(0xc0000483c0)]
+```
+
+and evaluated using `call`, or `call:` which pushes specified arguments after the target is popped.
+
+```
+  call: (1 2)
+
+[1 2 3]
+```
+
+### methods
+Metods allow dispatching on argument types.
+
+```
+  method: foo (x Int; Id) {'int x,}
+  method: foo (x String; Id) {'string x,}
+  foo(42) foo("bar")
+
+['int 42, 'string "bar",]
 ```
 
 ### macros

@@ -1,11 +1,7 @@
 * invalidate methods when done compiling scope
-** finish arg parsing in method: macro
 ** store index in method
 ** truncate function.methods if scope = compileScope
 ** add override test
-
-method: foo (x Int; Int) {x +(7)}
-say(foo(35))
 
 method: bar (;'outer) {}
 say(bar)

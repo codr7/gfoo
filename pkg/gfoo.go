@@ -1,7 +1,6 @@
 package gfoo
 
 import (
-	"fmt"
 	"math/big"
 	"os"
 )
@@ -234,6 +233,12 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
+	var retsForm *Group
+
+	if retsForm, ok = argsForm.body[len(argsForm.body)-1].(*Group); !ok {
+		return out, scope.Error(f.Pos(), "Invalid result list: %v", f)
+	}
+
 	f = in.Pop()
 	var body *ScopeForm
 
@@ -242,9 +247,25 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	var args []Argument
+	
+	for i := 0; i < len(argsForm.body)-1; i++ {
+		anf := argsForm.body[i]
+		an := anf.(*Id).name
+		i++
 
-	for _, f := range argsForm.body[:len(argsForm.body)-1] {
-		fmt.Printf("arg: %v\n", DumpString(f))
+		atnf := argsForm.body[i]
+		atn := atnf.(*Id).name
+		atb := scope.Get(atn)
+
+		if atb == nil {
+			return out, scope.Error(atnf.Pos(), "Type not found: %v", atn)
+		}
+
+		if atb.val.dataType != &TMeta {
+			return out, scope.Error(atnf.Pos(), "Expected type: %v", atb.val.dataType.Name())
+		}
+
+		args = append(args, AType(an, atb.val.data.(Type)))
 	}
 
 	var bodyOps []Op
@@ -253,23 +274,29 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
 	}
 
-	var retsForm *Group
 	var rets []Result
 
-	if retsForm, ok = argsForm.body[len(argsForm.body)-1].(*Group); !ok {
-		return out, scope.Error(f.Pos(), "Invalid result list: %v", f)
-	}
-
 	for _, f := range retsForm.body {
-		fmt.Printf("ret: %v\n", DumpString(f))
+		rtn := f.(*Id).name
+		rtb := scope.Get(rtn)
+
+		if rtb == nil {
+			return out, scope.Error(f.Pos(), "Type not found: %v", rtn)
+		}
+
+		if rtb.val.dataType != &TMeta {
+			return out, scope.Error(f.Pos(), "Expected type: %v", rtb.val.dataType.Name())
+		}
+
+		rets = append(rets, RType(rtb.val.data.(Type)))
 	}
 	
 	var err error
 	
-	if bodyOps, err = body.Compile(nil, bodyOps, scope.Clone()); err != nil {
+	if bodyOps, err = scope.Clone().Compile(body.body, bodyOps); err != nil {
 		return out, err
 	}
-	
+
 	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
 		return scope.Evaluate(bodyOps, stack)
 	})
