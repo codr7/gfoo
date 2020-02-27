@@ -17,6 +17,10 @@ type Scope struct {
 	methods []*Method
 }
 
+func NewScope() *Scope {
+	return new(Scope).Init()
+}
+
 func (self *Scope) Init() *Scope {
 	self.bindings = make(Bindings)
 	return self
@@ -74,6 +78,14 @@ func (self *Scope) Copy(out *Scope) {
 	}
 }
 
+func (self *Scope) Extend(in *Scope) *Scope {
+	for k, b := range in.bindings {
+		self.bindings[k] = b
+	}
+
+	return self
+}
+
 func (self *Scope) Clone() *Scope {
 	out := new(Scope).Init()
 	self.Copy(out)
@@ -98,7 +110,7 @@ func (self *Scope) Get(key string) *Binding {
 	return nil
 }
 
-func (self *Scope) Load(filePath string, stack *Slice) error {
+func (self *Scope) Include(filePath string, action func([]Form) error) (error) {
 	var file *os.File
 	var err error
 
@@ -121,18 +133,25 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 	if forms, err = self.Parse(in, nil, &pos); err != nil {
 		return err
 	}
-	
-	var ops []Op
-	
-	if ops, err = self.Compile(forms, nil); err != nil {
-		return err
-	}
-	
-	if err = self.Evaluate(ops, stack); err != nil {
-		return err
-	}
 
-	return nil
+	return action(forms)
+}
+
+func (self *Scope) Load(filePath string, stack *Slice) error {
+	return self.Include(filePath, func(forms []Form) error {
+		var ops []Op
+		var err error
+		
+		if ops, err = self.Compile(forms, nil); err != nil {
+			return err
+		}
+		
+		if err = self.Evaluate(ops, stack); err != nil {
+			return err
+		}
+		
+		return nil
+	})
 }
 
 func (self *Scope) Parse(in *bufio.Reader, out []Form, pos *Pos) ([]Form, error) {

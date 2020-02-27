@@ -118,10 +118,10 @@ Specifying the empty group as value pops the stack.
 All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
 
 ```
-  42 if: 'ok
-  "" else: 'ok
+  42 bool
+  "" bool
   
-['ok 'ok]
+[T F]
 ```
 
 ### numbers
@@ -317,9 +317,9 @@ Error in 'repl', line 1, column 2: Thread is done
 Conditions may be asserted using `check:`, which signals an error describing the condition and incoming stack on failure.
 
 ```
-  T check: is(F)
+  T check: =(F)
 
-Error in 'repl', line 1, column 2: Check failed: (F is) [T]
+Error in 'repl', line 1, column 2: Check failed: (F =) [T]
 ```
 
 ### license

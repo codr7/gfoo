@@ -1,7 +1,7 @@
 macro: if: (body) {
-  '(branch: @body ())
+  '(?: @body ())
 }
 
 macro: else: (body) {
-  '(branch: () @body)
+  '(?: () @body)
 }

@@ -32,5 +32,11 @@ func (self *Quote) Dump(out io.Writer) error {
 }
 
 func (self *Quote) Quote(scope *Scope, pos Pos) (Val, error) {
-	return self.form.Quote(scope, pos)
+	v, err := self.form.Quote(scope, pos)
+
+	if err != nil {
+		return Nil, err
+	}
+	
+	return NewVal(&TQuote, v), nil
 }

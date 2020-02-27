@@ -15,7 +15,8 @@ check: =(42)
 2 check: >=(1)
 1 check: >=(1)
 
-42 type check: is(Int)
+42 bool check: =(T)
+"" bool check: =(F)
 
 Number check: <(Int)
 Number check: <=(Int)
@@ -52,3 +53,7 @@ call check: =(42)
   t call check: =(2)
   t call check: =(3)
 }
+
+include: "../lib/abc.gf"
+T if: 'ok check: =('ok)
+F else: 'ok check: =('ok)

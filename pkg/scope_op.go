@@ -21,7 +21,8 @@ func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
 		}
 	}
 
-	err := self.scope.Clone().Evaluate(self.body, stack)
+	
+	err := self.scope.Clone().Extend(scope).Evaluate(self.body, stack)
 
 	for _, m := range self.scope.methods {
 		m.function.RemoveMethod(m)

@@ -13,11 +13,11 @@ type ScopeType struct {
 }
 
 func (_ *ScopeType) Compare(x, y Val) Order {
-	return ComparePointer(unsafe.Pointer(x.data.(*ScopeForm)), unsafe.Pointer(y.data.(*ScopeForm)))
+	return ComparePointer(unsafe.Pointer(x.data.(*Scope)), unsafe.Pointer(y.data.(*Scope)))
 }
 
 func (_ *ScopeType) Dump(val Val, out io.Writer) error {
-	_, err := fmt.Fprintf(out, "Scope(%v)", unsafe.Pointer(val.data.(*ScopeForm)))
+	_, err := fmt.Fprintf(out, "Scope(%v)", unsafe.Pointer(val.data.(*Scope)))
 	return err
 }
 
@@ -26,5 +26,5 @@ func (self *ScopeType) Print(val Val, out io.Writer) error {
 }
 
 func (self *ScopeType) Unquote(val Val, scope *Scope, pos Pos) Form {
-	return NewScopeForm(val.data.(*ScopeForm).body, pos)
+	return NewLiteral(val, pos)
 }

@@ -39,6 +39,6 @@ func (self *Forms) Pop() Form {
 	return f
 }
 
-func (self *Forms) Push(form Form) {
-	self.items = append(self.items, form)
+func (self *Forms) Push(forms...Form) {
+	self.items = append(self.items, forms...)
 }

@@ -1,3 +1,14 @@
+* add first class scopes
+** add scope method
+*** return current scope
+** add scope: macro
+** add dot access in Id
+*** pop scope if first char == '.' and second char != '.'
+
+let: foo new(scope) 
+foo.let: bar 42 
+foo scope: {bar}
+
 * add Rational
 ** use big.Rat
 ** add Int /
@@ -27,21 +38,6 @@ let foo 42 "@(foo)bar"
 macro: while: (cond body) {
   '(loop: (@cond else: break @body))
 }
-
-* add first class scopes
-** add scope method
-*** return current scope
-** add new(Scope) method
-*** return empty scope
-** add Scope.call
-*** replace scope op with call
-** add scope: macro
-** add dot access in Id
-*** pop scope if first char == '.' and second char != '.'
-
-let: foo new(scope) 
-foo.let: bar 42 
-foo scope: {bar}
 
 * add Splat op
 ** add Type.Splat

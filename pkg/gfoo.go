@@ -23,6 +23,7 @@ func Init() {
 	TMethod.Init("Method", &TAny)
 	TPair.Init("Pair", &TAny)
 	TScope.Init("Scope", &TAny)
+	TScopeForm.Init("ScopeForm", &TAny)
 	TString.Init("String", &TAny)
 }
 
@@ -79,6 +80,27 @@ func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
+}
+
+func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	path, ok := f.(*Literal)
+	
+	if !ok {
+		return out, scope.Error(form.Pos(), "Invalid filename: %v", f)
+	}
+
+	if path.val.dataType != &TString {
+		return out, scope.Error(form.Pos(), "Invalid filename: %v", path.val)
+	}
+
+	return out, scope.Include(path.val.data.(string), func(forms []Form) error {
+		for i := len(forms)-1; i >=0; i-- {
+			in.Push(forms[i])
+		}
+		
+		return nil
+	})
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -208,8 +230,8 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			return out, err
 		}
 
-		for _, v := range stack.items {
-			in.Push(v.Unquote(scope, form.Pos()))
+		for i := stack.Len()-1; i >= 0; i-- {
+			in.Push(stack.items[i].Unquote(scope, form.Pos()))
 		}
 
 		return out, nil
@@ -352,6 +374,12 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
+func boolImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	v, _ := stack.Pop()
+	stack.Push(NewVal(&TBool, v.Bool()))
+	return nil
+}
+
 func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	y, _ := stack.Pop()
 	x, _ := stack.Pop()
@@ -426,6 +454,11 @@ func lteImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
+func newScopeImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	stack.Push(NewVal(&TScope, NewScope()))
+	return nil
+}
+
 func sayImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	val, _ := stack.Pop();
 	val.Print(os.Stdout)
@@ -457,6 +490,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddType(&TNumber)
 	self.AddType(&TPair)
 	self.AddType(&TScope)
+	self.AddType(&TScopeForm)
 	self.AddType(&TString)
 
 	self.AddConst("T", &TBool, true)
@@ -468,6 +502,7 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("check:", 1, checkImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
+	self.AddMacro("include:", 1, includeImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
@@ -477,6 +512,11 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("thread:", 1, threadImp)
 
 	
+	self.AddMethod("bool",
+		[]Argument{AType("val", &TAny)},
+		[]Result{RType(&TBool)},
+		boolImp)
+
 	self.AddMethod("=",
 		[]Argument{AType("x", &TAny), AType("y", &TAny)},
 		[]Result{RType(&TBool)},
@@ -523,6 +563,11 @@ func (self *Scope) InitRoot() *Scope {
 		[]Argument{AType("x", &TAny), AType("y", &TAny)},
 		[]Result{RType(&TBool)},
 		lteImp)
+
+	self.AddMethod("new-scope",
+		[]Argument{},
+		[]Result{RType(&TScope)},
+		newScopeImp)
 
 	self.AddMethod("say", []Argument{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
