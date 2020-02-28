@@ -21,6 +21,17 @@ func (_ *ScopeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *ScopeType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
+	scope = source.data.(*Scope)
+	found := scope.Get(key)
+	
+	if found == nil || found.val == Nil {
+		return Nil, scope.Error(pos, "Unknown identifier: %v", key)
+	}
+
+	return found.val, nil
+}
+
 func (self *ScopeType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

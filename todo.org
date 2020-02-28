@@ -1,6 +1,7 @@
-* first class scopes
-** add scope method
-*** return current scope
+* add scope method
+** return current scope
+* add Hash type
+** implement Get like scope type
 * add Ratio type
 ** use big.Rat
 ** add Int / with Ratio result

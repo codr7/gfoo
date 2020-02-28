@@ -26,17 +26,23 @@ func (self *Get) Evaluate(scope *Scope, stack *Slice) error {
 			return scope.Error(self.form.Pos(), "Expected scope: %v", sv)
 		}
 		
-		scope = sv.data.(*Scope)
-		key = key[1:]
+		v, err := sv.Get(key[1:], scope, self.form.Pos())
+
+		if err != nil {
+			return err
+		}
+
+		stack.Push(v)
+	} else {
+		found := scope.Get(key)
+		
+		if found == nil || found.val == Nil {
+			return scope.Error(self.form.Pos(), "Unknown identifier: %v", key)
+		}
+		
+		stack.Push(found.val)
 	}
 	
-	found := scope.Get(key)
-
-	if found == nil || found.val == Nil {
-		return scope.Error(self.form.Pos(), "Unknown identifier: %v", key)
-	}
-
-	stack.Push(found.val)
 	return nil
 }
 

@@ -11,6 +11,7 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
+	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Unquote(val Val, scope *Scope, pos Pos) Form
 }
@@ -34,6 +35,10 @@ func (_ *ValTypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) erro
 
 func (self *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
+}
+
+func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
+	return Nil, scope.Error(pos, "Dot access not supported for type: %v", self.name)
 }
 
 func (self *ValTypeBase) Name() string {

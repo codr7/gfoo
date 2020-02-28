@@ -47,6 +47,10 @@ func (self Val) Dump(out io.Writer) error {
 	return self.dataType.Dump(self, out)
 }
 
+func (self Val) Get(key string, scope *Scope, pos Pos) (Val, error) {
+	return self.dataType.Get(self, key, scope, pos)
+}
+
 func (self Val) Is(other Val) bool {
 	if self.dataType != other.dataType {
 		return false
