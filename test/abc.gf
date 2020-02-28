@@ -58,6 +58,11 @@ call check: =(42)
   t call check: =(3)
 }
 
+{
+  macro: foo () {'(let: #bar 42)}
+  foo foo
+}
+
 include: "../lib/abc.gf"
 T if: 'ok check: =('ok)
 F else: 'ok check: =('ok)

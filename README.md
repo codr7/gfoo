@@ -262,11 +262,11 @@ Macros are called before compilation and expand to the unquoted contents of thei
 Error in 'repl', line 1, column 0: Duplicate binding: bar
 ```
 
-Identifiers may be prefixed with `$` to avoid capturing bindings at the point of expansion.
+Identifiers may be prefixed with `#` to avoid capturing bindings at the point of expansion.
 
 ```
   macro: foo () {
-    '(let: $bar 42)
+    '(let: #bar 42)
   }
 
 []
@@ -274,7 +274,7 @@ Identifiers may be prefixed with `$` to avoid capturing bindings at the point of
 
 Error in 'repl', line 1, column 0: Unknown identifier: bar
 []
-  $bar
+  #bar
 
 Error in 'repl', line 1, column 0: Unknown identifier: $bar
 []

@@ -19,7 +19,7 @@ func (_ *IdType) Dump(val Val, out io.Writer) error {
 func (_ *IdType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	n := val.data.(string)
 	
-	if n[0] == '$' {
+	if n[0] == '#' {
 		n = scope.Unique(n)
 	}
 	
