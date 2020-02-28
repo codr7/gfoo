@@ -74,6 +74,23 @@ func checkImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCheck(form, cond, condOps)), nil
 }
 
+func doImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	body, ok := f.(*ScopeForm)
+
+	if !ok {
+		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
+	}
+
+	bodyOps, err := scope.Clone().Compile(body.body, nil)
+	
+	if err != nil {
+		return out, err
+	}
+	
+	return append(out, NewScopeOp(form, bodyOps, nil)), nil
+}
+
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
@@ -500,6 +517,7 @@ func (self *Scope) InitRoot() *Scope {
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
 	self.AddMacro("check:", 1, checkImp)
+ 	self.AddMacro("do:", 1, doImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("include:", 1, includeImp)

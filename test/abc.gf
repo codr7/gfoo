@@ -26,6 +26,10 @@ Number check: >(Any)
 Number check: >=(Any)
 Number check: >=(Number)
 
+new-scope 
+.. do: {let: bar 42}
+.bar check: =(42)
+
 {
   method: foo (x Int; Id) {'int x,}
   method: foo (x String; Id) {'string x,}

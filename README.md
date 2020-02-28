@@ -114,6 +114,31 @@ Specifying the empty group as value pops the stack.
 ["baz"]
 ```
 
+### scopes
+Scopes are first class. `new-scope` may be used to create a new, empty scope.
+
+```
+  new-scope
+
+[Scope(0xc0000447c0)]
+```
+
+`do:` may be used to evaluate code in an external scope.
+
+```
+  .. do: {let: bar 42}
+
+[Scope(0xc0000447c0)]
+```
+
+Identifiers starting with `.` get their scope from the stack.
+
+```
+  .bar
+
+[42]
+```
+
 ### booleans
 All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
 

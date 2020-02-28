@@ -15,16 +15,37 @@ func NewScopeOp(form Form, body []Op, scope *Scope) *ScopeOp {
 }
 
 func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
-	for _, m := range self.scope.methods {
+	s := self.scope
+
+	if s == nil {
+		sv, ok := stack.Pop()
+		
+		if !ok {
+			return scope.Error(self.form.Pos(), "Missing scope")
+		}
+
+		if sv.dataType != &TScope {
+			return scope.Error(self.form.Pos(), "Expected scope: %v", sv)
+		}
+
+		s = sv.data.(*Scope)
+	}
+	
+	for _, m := range s.methods {
 		if m.index == -1 {
 			m.function.AddMethod(m)
 		}
 	}
 
-	
-	err := self.scope.Clone().Extend(scope).Evaluate(self.body, stack)
+	es := s
 
-	for _, m := range self.scope.methods {
+	if self.scope != nil {
+		es = es.Clone().Extend(scope)
+	}
+	
+	err := es.Evaluate(self.body, stack)
+
+	for _, m := range s.methods {
 		m.function.RemoveMethod(m)
 	}
 

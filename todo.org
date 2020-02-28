@@ -1,18 +1,9 @@
-* add first class scopes
+* first class scopes
 ** add scope method
 *** return current scope
-** add scope: macro
-** add dot access in Id
-*** pop scope if first char == '.' and second char != '.'
-
-let: foo new(scope) 
-foo.let: bar 42 
-foo scope: {bar}
-
-* add Rational
+* add Ratio type
 ** use big.Rat
-** add Int /
-*** create Rational result
+** add Int / with Ratio result
 * add negation using !
 ** NotForm
 ** compile value 
@@ -28,7 +19,7 @@ foo scope: {bar}
 ** use bytes.Buffer
 ** compile form, call: Print with buffer, call: Print with buffer/string, call: String with buffer 
 
-let foo 42 "@(foo)bar"
+let: foo 42 "@(foo)bar"
 
 * add Loop op
 ** add Break/Next error
