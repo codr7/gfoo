@@ -12,19 +12,23 @@ const (
 
 func Init() {
 	TAny.Init("Any")
-	TNumber.Init("Number", &TAny)
 	TBool.Init("Bool", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
+	TNumber.Init("Number", &TAny)
 	TInt.Init("Int", &TNumber)
 	TLambda.Init("Lambda", &TAny)
 	TMacro.Init("Macro", &TAny)
 	TMeta.Init("Type", &TAny)
 	TMethod.Init("Method", &TAny)
+	TNil.Init("Nil")
 	TPair.Init("Pair", &TAny)
+	TRecord.Init("Record", &TRecord)
 	TScope.Init("Scope", &TAny)
 	TScopeForm.Init("ScopeForm", &TAny)
 	TString.Init("String", &TAny)
+
+	Nil.dataType = &TNil
 }
 
 func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -504,14 +508,17 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddType(&TMacro)
 	self.AddType(&TMeta)
 	self.AddType(&TMethod)
+	self.AddType(&TNil)
 	self.AddType(&TNumber)
 	self.AddType(&TPair)
+	self.AddType(&TRecord)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
 	self.AddType(&TString)
 
-	self.AddConst("T", &TBool, true)
-	self.AddConst("F", &TBool, false)
+	self.AddVal("NIL", &TNil, nil)
+	self.AddVal("T", &TBool, true)
+	self.AddVal("F", &TBool, false)
 
 	self.AddMacro("?:", 2, branchImp)
  	self.AddMacro("call", 0, callImp)

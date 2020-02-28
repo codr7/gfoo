@@ -26,12 +26,12 @@ func (self *Scope) Init() *Scope {
 	return self
 }
 
-func (self *Scope) AddConst(name string, dataType ValType, data interface{}) {
+func (self *Scope) AddVal(name string, dataType ValType, data interface{}) {
 	self.Set(name, NewVal(dataType, data))
 }
 
 func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
-	self.AddConst(name, &TMacro, NewMacro(name, argCount, imp))
+	self.AddVal(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
 func (self *Scope) AddMethod(name string, arguments []Argument, results []Result, imp MethodImp) {
@@ -40,18 +40,18 @@ func (self *Scope) AddMethod(name string, arguments []Argument, results []Result
 	
 	if b == nil {
 		f = NewFunction(name)
-		self.AddConst(name, &TFunction, f)
+		self.AddVal(name, &TFunction, f)
 	} else {
 		f = b.val.data.(*Function)
 	}
 
 	m := f.NewMethod(arguments, results, imp, self)
-	self.AddConst(m.Name(), &TMethod, m)
+	self.AddVal(m.Name(), &TMethod, m)
 	self.methods = append(self.methods, m)
 }
 
 func (self *Scope) AddType(val Type) {
-	self.AddConst(val.Name(), &TMeta, val)
+	self.AddVal(val.Name(), &TMeta, val)
 }
 
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {

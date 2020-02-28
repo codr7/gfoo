@@ -17,9 +17,9 @@ func NewId(name string, pos Pos) *Id {
 }
 
 func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	if b := scope.Get(self.name); b != nil && b.val != Nil {
+	if b := scope.Get(self.name); b != nil && (self.name == "NIL" || b.val != Nil) {
 		v := &b.val
-
+		
 		switch (v.dataType) {
 		case &TFunction:
 			return self.compileFunction(v.data.(*Function), out)
@@ -28,7 +28,7 @@ func (self *Id) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		case &TMethod:
 			return self.compileMethod(v.data.(*Method), out)
 		}
-
+		
 		return append(out, NewPush(self, *v)), nil
 	}
 

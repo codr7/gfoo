@@ -1,3 +1,6 @@
+NIL check: is(NIL)
+NIL check: =(NIL)
+
 42 .. check: =(42)
 check: =(42)
 
