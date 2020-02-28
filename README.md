@@ -14,9 +14,6 @@ Press Return on empty line to evaluate.
 [42]
 ```
 
-### design
-The design rests on three main pillars: flexbility, separation of concerns and first class features.
-
 ### syntax
 By default, arguments are expected before operations.
 
@@ -140,7 +137,7 @@ Identifiers starting with `.` get their scope from the stack.
 ```
 
 ### booleans
-All values have Bool representations; non-zero Ints are true; empty Strings and Slices false etc.
+All values have Bool representations; non-zero Ints are true, empty Strings and Slices false etc.
 
 ```
   42 bool
