@@ -115,7 +115,7 @@ Specifying the empty group as value pops the stack.
 ```
 
 ### scopes
-Scopes are first class. `new-scope` may be used to create a new, empty scope.
+`new-scope` may be used to create a new, empty scope.
 
 ```
   new-scope
