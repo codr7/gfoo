@@ -276,7 +276,7 @@ Error in 'repl', line 1, column 0: Unknown identifier: bar
 []
   #bar
 
-Error in 'repl', line 1, column 0: Unknown identifier: $bar
+Error in 'repl', line 1, column 0: Unknown identifier: #bar
 []
   foo
 
