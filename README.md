@@ -194,7 +194,7 @@ Slices may be created by enclosing code in brackets.
 `if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module.
 
 ```
-  load("lib/abc.gf")
+  include: "lib/abc.gf"
   T if: 'ok
   F else: 'ok
 
@@ -286,20 +286,13 @@ Error in 'repl', line 1, column 0: Unknown identifier: $bar
 Macro arguments are bound to forms following the call in specified order. By convention, macros that take compile time arguments have names ending with `:`. Values may be spliced into quoted forms using `@`.
 
 ```
-  macro: while: (cond body) {
-    '(loop: (@cond else: break @body))
+  macro: if: (body) {
+    '(?: @body ())
   }
 
-[]
-
-  3 while: () {
-    say(..) --
+  macro: else: (body) {
+    '(?: () @body)
   }
-
-3
-2
-1
-[]
 ```
 
 ### threads
