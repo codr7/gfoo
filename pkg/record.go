@@ -30,7 +30,7 @@ func (self Record) Compare(other Record) Order {
 }
 
 func (self Record) Dump(out io.Writer) error {
-	if _, err := io.WriteString(out, "Record("); err != nil {
+	if _, err := io.WriteString(out, "("); err != nil {
 		return err
 	}
 

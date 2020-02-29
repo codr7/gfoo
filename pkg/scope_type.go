@@ -16,8 +16,8 @@ func (_ *ScopeType) Compare(x, y Val) Order {
 	return ComparePointer(unsafe.Pointer(x.data.(*Scope)), unsafe.Pointer(y.data.(*Scope)))
 }
 
-func (_ *ScopeType) Dump(val Val, out io.Writer) error {
-	_, err := fmt.Fprintf(out, "Scope(%v)", unsafe.Pointer(val.data.(*Scope)))
+func (self *ScopeType) Dump(val Val, out io.Writer) error {
+	_, err := fmt.Fprintf(out, "%v(%v)", self.name, unsafe.Pointer(val.data.(*Scope)))
 	return err
 }
 

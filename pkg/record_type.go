@@ -15,7 +15,11 @@ func (_ *RecordType) Compare(x, y Val) Order {
 	return Eq
 }
 
-func (_ *RecordType) Dump(val Val, out io.Writer) error {
+func (self *RecordType) Dump(val Val, out io.Writer) error {
+	if _, err := io.WriteString(out, self.name); err != nil {
+		return err
+	}
+
 	return val.data.(Record).Dump(out)
 }
 

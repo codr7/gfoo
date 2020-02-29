@@ -24,8 +24,8 @@ func (_ *ThreadType) Compare(x, y Val) Order {
 	return ComparePointer(unsafe.Pointer(x.data.(*Thread)), unsafe.Pointer(y.data.(*Thread)))
 }
 
-func (_ *ThreadType) Dump(val Val, out io.Writer) error {
-	_, err := fmt.Fprintf(out, "Thread(%v)", unsafe.Pointer(val.data.(*Thread)))
+func (self *ThreadType) Dump(val Val, out io.Writer) error {
+	_, err := fmt.Fprintf(out, "%v(%v)", self.name, unsafe.Pointer(val.data.(*Thread)))
 	return err
 }
 
