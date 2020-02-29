@@ -14,35 +14,26 @@ func NewGet(form Form, key string) *Get {
 
 func (self *Get) Evaluate(scope *Scope, stack *Slice) error {
 	key := self.key
+	var source *Val
 	
 	if key[0] == '.' {
-		sv, ok := stack.Pop();
-		
-		if !ok {
-			return scope.Error(self.form.Pos(), "Missing scope: %v", self.key)
-		}
+		key = key[1:]
 
-		if sv.dataType != &TScope {
-			return scope.Error(self.form.Pos(), "Expected scope: %v", sv)
+		if source = stack.Pop(); source == nil {
+			return scope.Error(self.form.Pos(), "Missing source: %v", self.key)
 		}
-		
-		v, err := sv.Get(key[1:], scope, self.form.Pos())
-
-		if err != nil {
-			return err
-		}
-
-		stack.Push(v)
 	} else {
-		found := scope.Get(key)
-		
-		if found == nil || found.val == Nil {
-			return scope.Error(self.form.Pos(), "Unknown identifier: %v", key)
-		}
-		
-		stack.Push(found.val)
+		s := NewVal(&TScope, scope)
+		source = &s
+	}
+
+	v, err := source.Get(key, scope, self.form.Pos())
+	
+	if err != nil {
+		return err
 	}
 	
+	stack.Push(v)
 	return nil
 }
 

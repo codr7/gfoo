@@ -52,7 +52,7 @@ func (self *Method) Applicable(stack *Slice) bool {
 }
 
 func (self *Method) Call(stack *Slice, pos Pos) error {
-	if stack.Len() < len(self.arguments) {
+	if !self.Applicable(stack) {
 		return self.scope.Error(pos, "Method not applicable: %v %v", self.Name(), stack)
 	}
 	

@@ -11,17 +11,16 @@ func NewPairOp(form Form) *PairOp {
 }
 
 func (self *PairOp) Evaluate(scope *Scope, stack *Slice) error {
-	var left, right Val
-	var ok bool
+	var left, right *Val
 		
-	if right, ok = stack.Pop(); !ok {
+	if right = stack.Pop(); right == nil {
 		return scope.Error(self.form.Pos(), "Missing right")
 	}
 	
-	if left, ok = stack.Pop(); !ok {
+	if left = stack.Pop(); left == nil {
 		return scope.Error(self.form.Pos(), "Missing left")
 	}
 
-	stack.Push(NewVal(&TPair, NewPair(left, right)))
+	stack.Push(NewVal(&TPair, NewPair(*left, *right)))
 	return nil
 }

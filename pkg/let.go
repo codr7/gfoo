@@ -14,13 +14,13 @@ func NewLet(form Form, key string) *Let {
 
 func (self *Let) Evaluate(scope *Scope, stack *Slice) error {	
 	p := self.form.Pos()
-	v, ok := stack.Pop()
+	v := stack.Pop()
 
-	if !ok {
+	if v == nil {
 		return scope.Error(p, "Missing value: %v", self.key)
 	}
 
-	scope.Set(self.key, v)
+	scope.Set(self.key, *v)
 	return nil
 }
 

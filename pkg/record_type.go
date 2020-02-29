@@ -11,16 +11,16 @@ type RecordType struct {
 }
 
 func (_ *RecordType) Compare(x, y Val) Order {
-	x.data.(*Record).Compare(y.data.(*Record))
+	x.data.(Record).Compare(y.data.(Record))
 	return Eq
 }
 
 func (_ *RecordType) Dump(val Val, out io.Writer) error {
-	return val.data.(*Record).Dump(out)
+	return val.data.(Record).Dump(out)
 }
 
 func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
-	return source.data.(*Record).Get(key, Nil), nil
+	return source.data.(Record).Get(key, Nil), nil
 }
 
 func (self *RecordType) Print(val Val, out io.Writer) error {

@@ -18,13 +18,9 @@ func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
 	t := self.target
 	
 	if t == nil {
-		if v, ok := stack.Pop(); ok {
-			t = &v
+		if t = stack.Pop(); t == nil {
+			scope.Error(self.form.Pos(), "Missing target")
 		}
-	}
-
-	if t == nil {
-		scope.Error(self.form.Pos(), "Missing target")
 	}
 
 	if err := scope.Evaluate(self.args, stack); err != nil {

@@ -14,9 +14,9 @@ func NewBranch(form Form, trueBody, falseBody []Op) *Branch {
 }
 
 func (self *Branch) Evaluate(scope *Scope, stack *Slice) error {
-	v, ok := stack.Pop()
+	v := stack.Pop()
 	
-	if !ok {
+	if v == nil {
 		scope.Error(self.form.Pos(), "Missing condition")
 	}
 

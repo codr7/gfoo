@@ -4,6 +4,7 @@ type Type interface {
 	DirectParents() []Type
 	Isa(other Type) Type
 	Name() string
+	String() string
 }
 
 type TypeBase struct {
@@ -50,5 +51,9 @@ func (self *TypeBase) Isa(other Type) Type {
 }
 
 func (self *TypeBase) Name() string {
+	return self.name
+}
+
+func (self *TypeBase) String() string {
 	return self.name
 }

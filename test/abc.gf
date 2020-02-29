@@ -1,5 +1,4 @@
 NIL check: is(NIL)
-NIL check: =(NIL)
 
 42 .. check: =(42)
 check: =(42)
@@ -28,6 +27,25 @@ Number check: <=(Number)
 Number check: >(Any)
 Number check: >=(Any)
 Number check: >=(Number)
+
+length("abc") check: =(3)
+
+length([1 2 3]) check: =(3)
+
+{
+  let: r (record: ('foo 1 'bar 2 'baz 3))
+  r length check: =(3)
+  r .foo check: =(1)
+  r .bar check: =(2)
+  r .baz check: =(3)
+
+  {
+    let: r (r set('qux 4))
+    r .qux check: =(4)
+  }
+
+  r .qux check: is(NIL)
+}
 
 new-scope 
 .. do: {let: bar 42}

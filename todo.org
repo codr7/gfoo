@@ -1,22 +1,7 @@
-* add Record type
-** add basic tests
-** make Tree immutable
-*** trace paths on update & create new nodes
-*** return updated tree
-
-let: r record: ('foo 1 'bar 2 'baz 3)
-r r.foo r.bar r.baz r.qux.foo.bar
-r set('qux 4)
-r merge(record: ('foo 4 'qux 5))
-* add union types
-** add Union with list of types
-** parse X|Y as union
-*** handle in ParseId
-** add Type.ReverseIsa
-*** call Isa for all types
-** replace uses of Isa with ReverseIsa
-* add scope method
-** return current scope
+* add type alias
+** type: Foo String
+** only allow for val types
+** define string->foo method
 * add Ratio type
 ** use big.Rat
 ** add Int / with Ratio result
@@ -54,6 +39,16 @@ macro: while: (cond body) {
 *** implement for String
 **** add Char type
 ** add ... macro
+* add scope method
+** return current scope
+* add union type
+** add Union with list of types
+** parse X|Y as union
+*** handle in ParseId
+** add Type.ReverseIsa
+*** call Isa for all types
+** replace uses of Isa with ReverseIsa
+
 
 type: Quantity Record
 
@@ -62,7 +57,6 @@ method: new-quantity(; Quantity) {
 }
 
 type: Calendar Slice
-
 method: new-calendar(; Calendar) {
   slice->calendar([new-quantity])
 }

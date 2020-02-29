@@ -21,9 +21,9 @@ func (self *Check) Evaluate(scope *Scope, stack *Slice) error {
 		return err
 	}
 
-	result, ok := stack.Pop()
+	result := stack.Pop()
 	
-	if !ok {
+	if result == nil {
 		return scope.Error(self.form.Pos(), "Missing result")
 	}
 

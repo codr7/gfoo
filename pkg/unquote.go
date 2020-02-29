@@ -1,3 +1,4 @@
+
 package gfoo
 
 import (
@@ -45,11 +46,11 @@ func (self *Unquote) Quote(scope *Scope, pos Pos) (Val, error) {
 		return Nil, err
 	}
 
-	v, ok := stack.Pop()
+	v := stack.Pop()
 
-	if !ok {
+	if v == nil {
 		return Nil, scope.Error(pos, "Empty unquote")
 	}
 	
-	return v, nil
+	return *v, nil
 }

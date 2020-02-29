@@ -268,7 +268,7 @@ func (self *Scope) ParseQuote(in *bufio.Reader, pos *Pos) (Form, error) {
 	if f, err = self.ParseForm(in, pos); err != nil {
 		return nil, err
 	}
-	
+
 	return NewQuote(f, fpos), nil
 }
 

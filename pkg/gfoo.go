@@ -7,7 +7,7 @@ import (
 
 const (
 	VersionMajor = 0
-	VersionMinor = 8
+	VersionMinor = 9
 )
 
 func Init() {
@@ -122,6 +122,10 @@ func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		
 		return nil
 	})
+}
+
+func isImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewIs(form, nil)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -363,6 +367,38 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPause(form, resultOps)), nil
 }
 
+func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	f := in.Pop()
+	var fields *Group
+	var ok bool
+
+	if fields, ok = f.(*Group); !ok {
+		return out, scope.Error(form.Pos(), "Invalid field list: %v", f)
+	}
+
+	for i := 0; i < len(fields.body); i += 2 {
+		f = fields.body[i]
+		var q *Quote
+				
+		if q, ok = f.(*Quote); !ok {
+			return out, scope.Error(form.Pos(), "Invalid field id: %v", f)
+		}
+
+		if _, ok = q.form.(*Id); !ok {
+			return out, scope.Error(form.Pos(), "Invalid field id: %v", f)
+		}
+	}
+
+	var fieldOps []Op
+	var err error
+		
+	if fieldOps, err = fields.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewRecordOp(form, fieldOps)), nil
+}
+
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var args *Group
@@ -396,82 +432,63 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func boolImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	v, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, v.Bool()))
+	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
 }
 
 func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Compare(y) == Eq))
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Eq))
 	return nil
 }
 
 func gtImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Compare(y) == Gt))
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Gt))
 	return nil
 }
 
 func gteImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Compare(y) >= Eq))
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) >= Eq))
 	return nil
 }
 
 func intAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
 	var z big.Int
-	z.Add(x.data.(*big.Int), y.data.(*big.Int))
+	z.Add(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
 func intMulImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
 	var z big.Int
-	z.Mul(x.data.(*big.Int), y.data.(*big.Int))
+	z.Mul(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
 func intSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
+	y := stack.Pop()
 	var z big.Int
-	z.Sub(x.data.(*big.Int), y.data.(*big.Int))
+	z.Sub(stack.Pop().data.(*big.Int), y.data.(*big.Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func isImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Is(y)))
-	return nil
-}
-
 func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	path, _ := stack.Pop()
-	return scope.Load(path.data.(string), stack)
+	return scope.Load(stack.Pop().data.(string), stack)
 }
 
 func ltImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Compare(y) == Lt))
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Lt))
 	return nil
 }
 
 func lteImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	y, _ := stack.Pop()
-	x, _ := stack.Pop()
-	stack.Push(NewVal(&TBool, x.Compare(y) <= Eq))
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) <= Eq))
 	return nil
 }
 
@@ -480,16 +497,35 @@ func newScopeImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
+func recordLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	stack.Push(NewVal(&TInt, big.NewInt(int64(stack.Pop().data.(Record).Len()))))
+	return nil
+}
+
+func recordSetImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
+	stack.Push(NewVal(&TRecord, r.data.(Record).Set(k.data.(string), *v)))
+	return nil
+}
+
 func sayImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	val, _ := stack.Pop();
-	val.Print(os.Stdout)
+	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
+func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	stack.Push(NewVal(&TInt, big.NewInt(int64(stack.Pop().data.(*Slice).Len()))))
+	return nil
+}
+
+func stringLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+	stack.Push(NewVal(&TInt, big.NewInt(int64(len(stack.Pop().data.(string))))))
+	return nil
+}
+
 func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
-	val, _ := stack.Pop();
-	stack.Push(NewVal(&TMeta, val.dataType))
+	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }
 
@@ -528,12 +564,14 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("include:", 1, includeImp)
+	self.AddMacro("is", 0, isImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
+	self.AddMacro("record:", 1, recordImp)
 	self.AddMacro("thread:", 1, threadImp)
 
 	
@@ -572,11 +610,6 @@ func (self *Scope) InitRoot() *Scope {
 		[]Result{RType(&TInt)},
 		intSubImp)
 
-	self.AddMethod("is",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
-		isImp)
-
 	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
 
 	self.AddMethod("<",
@@ -594,7 +627,17 @@ func (self *Scope) InitRoot() *Scope {
 		[]Result{RType(&TScope)},
 		newScopeImp)
 
+	self.AddMethod("length", []Argument{AType("val", &TRecord)}, []Result{RType(&TInt)}, recordLengthImp)
+
+	self.AddMethod("set",
+		[]Argument{AType("record", &TRecord), AType("key", &TId), AType("val", &TAny)},
+		[]Result{RType(&TRecord)},
+		recordSetImp)
+	
 	self.AddMethod("say", []Argument{AType("val", &TAny)}, nil, sayImp)
+	self.AddMethod("length", []Argument{AType("val", &TSlice)}, []Result{RType(&TInt)}, sliceLengthImp)
+	self.AddMethod("length", []Argument{AType("val", &TString)}, []Result{RType(&TInt)}, stringLengthImp)
+
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
 	return self
 }

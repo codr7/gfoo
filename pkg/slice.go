@@ -83,16 +83,16 @@ func (self Slice) Peek() *Val {
 	return &self.items[i-1]
 }
 
-func (self *Slice) Pop() (Val, bool) {
+func (self *Slice) Pop() *Val {
 	i := len(self.items)
 	
 	if i == 0 {
-		return Nil, false
+		return nil
 	}
 
 	v := self.items[i-1]
 	self.items = self.items[:i-1]
-	return v, true
+	return &v
 }
 
 func (self Slice) Print(out io.Writer) error {

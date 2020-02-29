@@ -18,9 +18,9 @@ func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
 	s := self.scope
 
 	if s == nil {
-		sv, ok := stack.Pop()
+		sv := stack.Pop()
 		
-		if !ok {
+		if sv == nil {
 			return scope.Error(self.form.Pos(), "Missing scope")
 		}
 

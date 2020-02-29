@@ -1,7 +1,7 @@
 package gfoo
 
 type Tree struct {
-	compare TreeCompare
+	compare TreeKeyCompare
 	root *TreeNode
 	len uint64
 }
@@ -13,15 +13,15 @@ type TreeNode struct {
 	red bool
 }
 
-type TreeCompare = func(x, y interface{}) Order
-type TreeNodeCompare = func(x, y *TreeNode) Order
 type TreeAction = func(key, val interface{}) error
+type TreeKeyCompare = func(x, y interface{}) Order
+type TreeNodeCompare = func(x, y *TreeNode) Order
 
-func NewTree(compare TreeCompare) *Tree {
+func NewTree(compare TreeKeyCompare) *Tree {
 	return new(Tree).Init(compare)
 }
 
-func (self *Tree) Init(compare TreeCompare) *Tree {
+func (self *Tree) Init(compare TreeKeyCompare) *Tree {
 	self.compare = compare
 	return self
 }
@@ -30,14 +30,14 @@ func (self *Tree) Compare(other *Tree, compare TreeNodeCompare) Order {
 	return self.root.Compare(other.root, compare)
 }
 
-func (self *Tree) Do(action TreeAction) error {
-	return self.root.Do(action)
-}
-
 func (self *Tree) Find(key interface{}) []interface{} {
 	n := self.findNode(self.root, key)
 	if n == nil { return nil }
 	return n.values
+}
+
+func (self *Tree) ForEach(action TreeAction) error {
+	return self.root.ForEach(action)
 }
 
 func (self *Tree) Insert(key, value interface{}, dup bool) bool {
@@ -51,11 +51,10 @@ func (self *Tree) Len() uint64 {
 	return self.len
 }
 
-func (self *Tree) Update(key, value interface{}) bool {
-	var ok bool
-	self.root, ok = self.updateNode(self.root, key, value)
+func (self Tree) Update(key, value interface{}) Tree {
+	self.root = self.updateNode(self.root.clone(), key, value)
 	self.root.red = false
-	return ok
+	return self
 }
 
 func (self *TreeNode) Compare(other *TreeNode, compare TreeNodeCompare) Order {
@@ -86,9 +85,9 @@ func (self *TreeNode) Compare(other *TreeNode, compare TreeNodeCompare) Order {
 	return Eq
 }
 
-func (self *TreeNode) Do(action TreeAction) (error) {
+func (self *TreeNode) ForEach(action TreeAction) (error) {
 	if self != nil {
-		if err := self.left.Do(action); err != nil {
+		if err := self.left.ForEach(action); err != nil {
 			return err
 		}
 		
@@ -98,7 +97,7 @@ func (self *TreeNode) Do(action TreeAction) (error) {
 			}
 		}
 		
-		if err := self.right.Do(action); err != nil {
+		if err := self.right.ForEach(action); err != nil {
 			return err
 		}
 	}
@@ -148,20 +147,18 @@ func (self *Tree) insertNode(node *TreeNode, key, value interface{}, dup bool) (
 	return node.fix(), ok
 }
 
-func (self *Tree) updateNode(node *TreeNode, key, value interface{}) (*TreeNode, bool) {
+func (self *Tree) updateNode(node *TreeNode, key, value interface{}) *TreeNode {
 	if node == nil {
 		node = &TreeNode{key: key, values: []interface{}{value}, red: true}
 		self.len++
-		return node, true
+		return node
 	}
-
-	var ok bool
 
 	switch self.compare(key, node.key) {
 	case Lt:
-		node.left, ok = self.updateNode(node.left, key, value)
+		node.left = self.updateNode(node.left.clone(), key, value)
 	case Gt:
-		node.right, ok = self.updateNode(node.right, key, value)
+		node.right = self.updateNode(node.right.clone(), key, value)
 	default:
 		if len(node.values) == 0 {
 			node.values = append(node.values, value)
@@ -170,10 +167,29 @@ func (self *Tree) updateNode(node *TreeNode, key, value interface{}) (*TreeNode,
 			node.values[0] = value
 		}
 		
-		return node, true
+		return node
 	}
 
-	return node.fix(), ok
+	return node.fix()
+}
+
+func (self *TreeNode) clone() *TreeNode {
+	if self == nil {
+		return nil
+	}
+	
+	out := new(TreeNode)
+	out.left = self.left
+	out.right = self.right
+	out.key = self.key
+	out.red = self.red
+
+	if len(self.values) > 0 {
+		out.values = make([]interface{}, len(self.values))
+		copy(out.values, self.values)	
+	}
+
+	return out
 }
 
 func (self *TreeNode) fix() *TreeNode {
