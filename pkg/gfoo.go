@@ -530,10 +530,13 @@ func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
 }
 
 func New() *Scope {
-	return new(Scope).InitRoot()
+	s := new(Scope)
+	s.InitAbc()
+	s.InitTime()
+	return s
 }
 
-func (self *Scope) InitRoot() *Scope {
+func (self *Scope) InitAbc() {
 	self.Init()
 	self.AddType(&TAny)
 	self.AddType(&TBool)
@@ -573,7 +576,6 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("record:", 1, recordImp)
 	self.AddMacro("thread:", 1, threadImp)
-
 	
 	self.AddMethod("bool",
 		[]Argument{AType("val", &TAny)},
@@ -639,6 +641,4 @@ func (self *Scope) InitRoot() *Scope {
 	self.AddMethod("length", []Argument{AType("val", &TString)}, []Result{RType(&TInt)}, stringLengthImp)
 
 	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
-	return self
 }
-

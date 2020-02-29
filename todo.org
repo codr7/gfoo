@@ -1,7 +1,8 @@
 * add type alias
 ** type: Foo String
 ** only allow for val types
-** define string->foo method
+** add as method
+* --commit demo/bookings.gf
 * add Ratio type
 ** use big.Rat
 ** add Int / with Ratio result
@@ -48,21 +49,3 @@ macro: while: (cond body) {
 ** add Type.ReverseIsa
 *** call Isa for all types
 ** replace uses of Isa with ReverseIsa
-
-
-type: Quantity Record
-
-method: new-quantity(; Quantity) {
-  record->quantity(record: ('start time.MIN 'end time.MAX 'total 0 'available 0))
-}
-
-type: Calendar Slice
-method: new-calendar(; Calendar) {
-  slice->calendar([new-quantity])
-}
-
-type: Resource Record
-
-method: new-resource (; Resource) {
-  record->resource(record: ('calendar new-calendar))
-}
