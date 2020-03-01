@@ -108,7 +108,7 @@ Pairs allow treating two values as one, and may be created using `,`.
 Records are ordered, immutable mappings from identifiers to values.
 
 ```
-  data.record: ('foo 1 'bar 2)
+  data.record: (foo 1 bar 2)
 
 [Record(bar 2 foo 1)]
 ```

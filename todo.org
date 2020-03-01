@@ -1,6 +1,3 @@
-* skip quoting in record: macro
-** parse ids & evaluate values like type:
-** update test/bookings/readme
 * rename arg/ret
 * finish type alias
 ** define as-method

@@ -33,7 +33,7 @@ length("abc") check: =(3)
 length([1 2 3]) check: =(3)
 
 {
-  let: r (data.record: ('foo 1 'bar 2 'baz 3))
+  let: r (data.record: (foo 1 bar 2 baz 3))
   r length check: =(3)
   r .foo check: =(1)
   r .bar check: =(2)

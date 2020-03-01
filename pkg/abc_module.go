@@ -373,7 +373,7 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
-func typedefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	traitId, ok := f.(*Id)
 	
@@ -526,7 +526,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("thread:", 2, threadImp)
-	self.AddMacro("type:", 2, typedefImp)
+	self.AddMacro("type:", 2, typeDefImp)
 
 	self.AddFunction("set")
 	
