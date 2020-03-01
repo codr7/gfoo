@@ -14,7 +14,7 @@ func NewScopeOp(form Form, body []Op, scope *Scope) *ScopeOp {
 	return op
 }
 
-func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
+func (self *ScopeOp) Eval(scope *Scope, stack *Slice) error {
 	s := self.scope
 
 	if s == nil {
@@ -43,7 +43,7 @@ func (self *ScopeOp) Evaluate(scope *Scope, stack *Slice) error {
 		es = es.Clone().Extend(scope)
 	}
 	
-	err := es.Evaluate(self.body, stack)
+	err := es.EvalOps(self.body, stack)
 
 	for _, m := range s.methods {
 		m.function.RemoveMethod(m)

@@ -21,5 +21,5 @@ func (self *Lambda) Call(stack *Slice, pos Pos) error {
 		return self.scope.Error(pos, "Not enough arguments: %v (%v)", sl, self.argCount)
 	}
 	
-	return self.scope.Clone().Evaluate(self.body, stack)
+	return self.scope.Clone().EvalOps(self.body, stack)
 }

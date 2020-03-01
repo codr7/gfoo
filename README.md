@@ -300,7 +300,7 @@ Methods belong to the containing scope.
 ```
 
 ### macros
-Macros are called before compilation and expand to the unquoted contents of their stacks.
+Macros are called during compilation and expand to the unquoted contents of their stacks.
 
 ```
   macro: foo () {
@@ -395,6 +395,6 @@ Error in 'repl', line 1, column 2: Check failed: (F =) [T]
 [MIT](https://github.com/codr7/gfoo/blob/master/LICENSE.txt)
 
 ### support
-Please consider a donation if you would like to support the project, every contribution helps.
+Please consider a donation if you would like to support the project.
 
 <a href="https://liberapay.com/codr7/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a>

@@ -14,7 +14,7 @@ func NewCall(form Form, target *Val, args []Op) *Call {
 	return op
 }
 
-func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Call) Eval(scope *Scope, stack *Slice) error {
 	t := self.target
 	
 	if t == nil {
@@ -23,7 +23,7 @@ func (self *Call) Evaluate(scope *Scope, stack *Slice) error {
 		}
 	}
 
-	if err := scope.Evaluate(self.args, stack); err != nil {
+	if err := scope.EvalOps(self.args, stack); err != nil {
 		return err
 	}
 	

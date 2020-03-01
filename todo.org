@@ -1,10 +1,17 @@
-* add type alias
-** type: Foo String
-** only val types
-** add as method
-* demo/bookings.gf
+* skip quoting in record: macro
+** parse ids & evaluate values like type:
+** update test/bookings/readme
+* rename arg/ret
+* finish type alias
+** define as-method
+** use AVal
+** demo/bookings.gf
 * replace new-scope with scope: (...)
-** update readme
+** update test/readme
+* --
+* check method results
+* add define: macro
+** like let but compile time
 * add Ratio type
 ** add math module
 ** use big.Rat

@@ -9,19 +9,6 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, scope.Error(form.Pos(), "Invalid field list: %v", f)
 	}
 
-	for i := 0; i < len(fields.body); i += 2 {
-		f = fields.body[i]
-		var q *Quote
-				
-		if q, ok = f.(*Quote); !ok {
-			return out, scope.Error(form.Pos(), "Invalid field id: %v", f)
-		}
-
-		if _, ok = q.form.(*Id); !ok {
-			return out, scope.Error(form.Pos(), "Invalid field id: %v", f)
-		}
-	}
-
 	var fieldOps []Op
 	var err error
 		

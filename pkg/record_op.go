@@ -12,10 +12,10 @@ func NewRecordOp(form Form, fieldOps []Op) *RecordOp {
 	return op
 }
 
-func (self *RecordOp) Evaluate(scope *Scope, stack *Slice) error {
+func (self *RecordOp) Eval(scope *Scope, stack *Slice) error {
 	var fs Slice
 	
-	if err := scope.Evaluate(self.fieldOps, &fs); err != nil {
+	if err := scope.EvalOps(self.fieldOps, &fs); err != nil {
 		return err
 	}
 

@@ -10,7 +10,7 @@ func NewQuoteOp(form Form) *QuoteOp {
 	return op
 }
 
-func (self *QuoteOp) Evaluate(scope *Scope, stack *Slice) error {
+func (self *QuoteOp) Eval(scope *Scope, stack *Slice) error {
 	v, err := self.form.Quote(scope, self.form.Pos())
 	
 	if err != nil {

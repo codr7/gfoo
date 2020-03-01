@@ -18,9 +18,10 @@ func Init() {
 	TMethod.Init("Method", &TAny)
 	TNil.Init("Nil")
 	TPair.Init("Pair", &TAny)
-	TRecord.Init("Record", &TRecord)
+	TRecord.Init("Record", &TAny)
 	TScope.Init("Scope", &TAny)
 	TScopeForm.Init("ScopeForm", &TAny)
+	TSlice.Init("Slice", &TAny)
 	TString.Init("String", &TAny)
 	TTime.Init("Time", &TAny)
 

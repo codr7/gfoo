@@ -10,6 +10,10 @@ type Trait struct {
 	TypeBase
 }
 
+func NewTrait(name string, parents...Type) *Trait {
+	return new(Trait).Init(name, parents...)
+}
+
 func (self *Trait) Init(name string, parents...Type) *Trait {
 	self.TypeBase.Init(name, parents)
 	return self

@@ -10,7 +10,7 @@ func NewPairOp(form Form) *PairOp {
 	return op
 }
 
-func (self *PairOp) Evaluate(scope *Scope, stack *Slice) error {
+func (self *PairOp) Eval(scope *Scope, stack *Slice) error {
 	var left, right *Val
 		
 	if right = stack.Pop(); right == nil {

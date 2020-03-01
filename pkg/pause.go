@@ -12,7 +12,7 @@ func NewPause(form Form, resultOps []Op) *Pause {
 	return op
 }
 
-func (self *Pause) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Pause) Eval(scope *Scope, stack *Slice) error {
 	t := scope.thread
 	
 	if t == nil {
@@ -21,7 +21,7 @@ func (self *Pause) Evaluate(scope *Scope, stack *Slice) error {
 
 	var result Slice
 	
-	if err := t.scope.Evaluate(self.resultOps, &result); err != nil {
+	if err := t.scope.EvalOps(self.resultOps, &result); err != nil {
 		return err
 	}
 

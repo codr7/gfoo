@@ -13,7 +13,7 @@ func NewBranch(form Form, trueBody, falseBody []Op) *Branch {
 	return op
 }
 
-func (self *Branch) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Branch) Eval(scope *Scope, stack *Slice) error {
 	v := stack.Pop()
 	
 	if v == nil {
@@ -28,5 +28,5 @@ func (self *Branch) Evaluate(scope *Scope, stack *Slice) error {
 		body = self.falseBody
 	}
 	
-	return scope.Evaluate(body, stack)
+	return scope.EvalOps(body, stack)
 }

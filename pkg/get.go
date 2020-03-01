@@ -12,7 +12,7 @@ func NewGet(form Form, key string) *Get {
 	return op
 }
 
-func (self *Get) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Get) Eval(scope *Scope, stack *Slice) error {
 	key := self.key
 	var source *Val
 	

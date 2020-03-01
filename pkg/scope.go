@@ -97,13 +97,33 @@ func (self *Scope) Clone() *Scope {
 	return out
 }
 
-func (self *Scope) Evaluate(ops []Op, stack *Slice) error {
+func (self *Scope) EvalOps(ops []Op, stack *Slice) error {
 	for _, o := range ops {
-		if err := o.Evaluate(self, stack); err != nil {
+		if err := o.Eval(self, stack); err != nil {
 			return err
 		}
 	}
 	
+	return nil
+}
+
+func (self *Scope) EvalForm(in *Forms, stack *Slice) error {
+	f := in.Pop()
+
+	if f == nil {
+		return nil
+	}
+	
+	ops, err := f.Compile(in, nil, self)
+	
+	if err != nil {
+		return err
+	}
+	
+	if err = self.EvalOps(ops, stack); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -151,7 +171,7 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 			return err
 		}
 		
-		if err = self.Evaluate(ops, stack); err != nil {
+		if err = self.EvalOps(ops, stack); err != nil {
 			return err
 		}
 		

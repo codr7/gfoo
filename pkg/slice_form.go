@@ -65,7 +65,7 @@ func (self *SliceForm) Quote(scope *Scope, pos Pos) (Val, error) {
 
 	v := NewSlice(nil)
 	
-	if err = scope.Evaluate(ops, v); err != nil {
+	if err = scope.EvalOps(ops, v); err != nil {
 		return Nil, err
 	}
 		

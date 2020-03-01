@@ -14,10 +14,10 @@ func NewCheck(form Form, cond Form, condOps []Op) *Check {
 	return op
 }
 
-func (self *Check) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Check) Eval(scope *Scope, stack *Slice) error {
 	condStack := stack.Clone()
 	
-	if err := scope.Evaluate(self.condOps, stack); err != nil {
+	if err := scope.EvalOps(self.condOps, stack); err != nil {
 		return err
 	}
 

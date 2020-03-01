@@ -15,3 +15,5 @@ type: Resource data.Record
 method: new-resource (; Resource) {
   data.record: ('calendar new-calendar) as(Resource)
 }
+
+say(new-resource)

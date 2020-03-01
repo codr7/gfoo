@@ -38,7 +38,7 @@ func (self *Thread) Pause(result []Val) {
 
 func (self *Thread) Start() {
 	go func() {
-		if self.err = self.scope.Evaluate(self.body, &self.stack); self.err == nil {
+		if self.err = self.scope.EvalOps(self.body, &self.stack); self.err == nil {
 			self.results<- self.stack.items
 		}
 		

@@ -42,7 +42,7 @@ func (self *Unquote) Quote(scope *Scope, pos Pos) (Val, error) {
 	var stack Slice
 	stack.Init(nil)
 
-	if err = scope.Evaluate(ops, &stack); err != nil {
+	if err = scope.EvalOps(ops, &stack); err != nil {
 		return Nil, err
 	}
 

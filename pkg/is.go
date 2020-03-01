@@ -12,7 +12,7 @@ func NewIs(form Form, x *Val) *Is {
 	return op
 }
 
-func (self *Is) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Is) Eval(scope *Scope, stack *Slice) error {
 	y := stack.Pop()
 
 	if y == nil {

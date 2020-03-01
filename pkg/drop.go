@@ -10,7 +10,7 @@ func NewDrop(form Form) *Drop {
 	return op
 }
 
-func (self *Drop) Evaluate(scope *Scope, stack *Slice) error {
+func (self *Drop) Eval(scope *Scope, stack *Slice) error {
 	if stack.Pop() == nil {
 		return scope.Error(self.form.Pos(), "Nothing to drop")
 	}

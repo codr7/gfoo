@@ -54,7 +54,7 @@ func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 					continue
 				}
 				
-				if err = g.Evaluate(ops, stack); err != nil {
+				if err = g.EvalOps(ops, stack); err != nil {
 					fmt.Println(err)
 				}
 			}

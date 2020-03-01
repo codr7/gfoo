@@ -160,7 +160,7 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	val := in.Pop()
 	var err error
 	
-	if out, err = val.Compile(nil, out, scope); err != nil {
+	if out, err = val.Compile(in, out, scope); err != nil {
 		return out, err
 	}
 	
@@ -225,7 +225,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 		scope = macroScope.Clone()
 		
-		if err := scope.Evaluate(bodyOps, &stack); err != nil {
+		if err := scope.EvalOps(bodyOps, &stack); err != nil {
 			return out, err
 		}
 
@@ -319,7 +319,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
-		return scope.Evaluate(bodyOps, stack)
+		return scope.EvalOps(bodyOps, stack)
 	})
 		
 	return out, nil
@@ -371,6 +371,34 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
+}
+
+func typedefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	traitId, ok := f.(*Id)
+	
+	if !ok {
+		return out, scope.Error(form.Pos(), "Expected id: %v", f)
+	}
+
+	var stack Slice
+
+	if err := scope.EvalForm(in, &stack); err != nil {
+		return out, err
+	}
+	
+	imp := stack.Pop()
+
+	if imp == nil {
+		return out, scope.Error(form.Pos(), "Type not found")
+	}
+
+	if imp.dataType != &TMeta {
+		return out, scope.Error(form.Pos(), "Expected type: %v", imp)
+	}
+	
+	scope.AddType(NewTrait(traitId.name, imp.data.(Type)))
+	return out, nil
 }
 
 func boolImp(stack *Slice, scope *Scope, pos Pos) (error) {
@@ -475,6 +503,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddType(&TPair)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
+	self.AddType(&TSlice)
 	self.AddType(&TString)
 
 	self.AddVal("NIL", &TNil, nil)
@@ -496,7 +525,8 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
-	self.AddMacro("thread:", 1, threadImp)
+	self.AddMacro("thread:", 2, threadImp)
+	self.AddMacro("type:", 2, typedefImp)
 
 	self.AddFunction("set")
 	
