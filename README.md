@@ -63,9 +63,9 @@ Evaluating nothing in the REPL clears the stack.
 []
 ```
 
-### values
-#### bool
-All values have Bool representations; non-zero Ints are true, empty Strings and Slices false etc.
+### types
+#### Bool
+All values have boolean representations; non-zero integers are true, empty strings and slices false etc.
 
 ```
   42 bool
@@ -74,7 +74,19 @@ All values have Bool representations; non-zero Ints are true, empty Strings and 
 [T F]
 ```
 
-#### int
+#### Id
+Identifiers may be quoted and used as values.
+
+```
+  'foo
+
+['foo]
+  type
+
+[Id]
+```
+
+#### Int
 Integers may be specified using decimal, hexadecimal or binary notation.
 
 ```
@@ -83,7 +95,7 @@ Integers may be specified using decimal, hexadecimal or binary notation.
 [42 42 42]
 ```
 
-#### pair
+#### Pair
 Pairs allow treating two values as one, and may be created using `,`.
 
 ```
@@ -92,7 +104,40 @@ Pairs allow treating two values as one, and may be created using `,`.
 [1 2,]
 ```
 
-#### slice
+#### Record
+Records are ordered, immutable mappings of identifiers to values.
+
+```
+  data.record: ('foo 1 'bar 2)
+
+[Record(bar 2 foo 1)]
+```
+
+`set` returns a structurally shared copy.
+
+```
+  .. set('baz 3)
+
+[Record(bar 2 foo 1) Record(bar 2 baz 3 foo 1)]
+```
+
+Fields may be accessed directly without quoting.
+
+```
+  .baz
+
+[Record(bar 2 foo 1) 3]
+```
+
+Missing fields return `NIL`.
+
+```
+  _ .baz
+
+[NIL]
+```
+
+#### Slice
 Slices may be created by enclosing code in brackets.
 
 ```
@@ -109,7 +154,7 @@ Slices may be created by enclosing code in brackets.
 [['foo ['bar 'baz]]]
 ```
 
-#### time
+#### Time
 `now` may be used to get the current time.
 
 ```
