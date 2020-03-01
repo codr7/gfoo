@@ -1,5 +1,6 @@
 * replace new-scope with scope: (...)
 ** update test/readme
+* add debug flag
 * check method results
 * add define: macro
 ** like let but compile time
@@ -41,9 +42,7 @@ macro: while: (cond body) {
 *** implement for String
 **** add Char type
 ** add ... macro
-* add scope method
-** return current scope
-* add union type
+* add union types
 ** add Union with list of types
 ** parse X|Y as union
 *** handle in ParseId
