@@ -36,7 +36,7 @@ func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
 	self.AddVal(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
-func (self *Scope) AddMethod(name string, arguments []Argument, results []Result, imp MethodImp) {
+func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp) {
 	var f *Function
 	b := self.Get(name)
 	
@@ -46,7 +46,7 @@ func (self *Scope) AddMethod(name string, arguments []Argument, results []Result
 		f = b.val.data.(*Function)
 	}
 
-	m := f.NewMethod(arguments, results, imp, self)
+	m := f.NewMethod(args, rets, imp, self)
 	self.AddVal(m.Name(), &TMethod, m)
 	self.methods = append(self.methods, m)
 }

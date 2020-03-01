@@ -9,29 +9,29 @@ type MethodImp = func(stack *Slice, scope *Scope, pos Pos) error
 type Method struct {
 	function *Function
 	index int
-	arguments []Argument
-	results []Result
+	args []Arg
+	rets []Ret
 	imp MethodImp
 	scope *Scope
 }
 
 func (self *Method) Init(
 	function *Function,
-	arguments []Argument,
-	results []Result,
+	args []Arg,
+	rets []Ret,
 	imp MethodImp,
 	scope *Scope) *Method{
 	self.function = function
 	self.index = -1
-	self.arguments = arguments
-	self.results = results
+	self.args = args
+	self.rets = rets
 	self.imp = imp
 	self.scope = scope.Clone()
 	return self
 }
 
 func (self *Method) Applicable(stack *Slice) bool {
-	sl, al := stack.Len(), len(self.arguments)
+	sl, al := stack.Len(), len(self.args)
 	
 	if sl < al {
 		return false
@@ -40,7 +40,7 @@ func (self *Method) Applicable(stack *Slice) bool {
 	s := stack.items[sl-al:]
 	si := 0
 	
-	for _, a := range self.arguments {
+	for _, a := range self.args {
 		if !a.Match(s, si) {
 			return false
 		}
@@ -64,7 +64,7 @@ func (self *Method) Name() string {
 	name.WriteString(self.function.name)
 	name.WriteRune('<')
 
-	for i, a := range self.arguments {
+	for i, a := range self.args {
 		if i > 0 {
 			name.WriteRune(' ')
 		}
@@ -72,11 +72,11 @@ func (self *Method) Name() string {
 		a.Dump(&name)
 	}
 
-	if self.results != nil {
+	if self.rets != nil {
 		name.WriteString("; ")
 	}
 
-	for i, r := range self.results {
+	for i, r := range self.rets {
 		r.Dump(&name)
 		
 		if i > 0 {

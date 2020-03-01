@@ -267,7 +267,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
 	}
 
-	var args []Argument
+	var args []Arg
 	
 	for i := 0; i < len(argsForm.body)-1; i++ {
 		anf := argsForm.body[i]
@@ -295,7 +295,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
 	}
 
-	var rets []Result
+	var rets []Ret
 
 	for _, f := range retsForm.body {
 		rtn := f.(*Id).name
@@ -531,60 +531,60 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddFunction("set")
 	
 	self.AddMethod("bool",
-		[]Argument{AType("val", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("val", &TAny)},
+		[]Ret{RType(&TBool)},
 		boolImp)
 
 	self.AddMethod("=",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("x", &TAny), AType("y", &TAny)},
+		[]Ret{RType(&TBool)},
 		eqImp)
 
 	self.AddMethod(">",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("x", &TAny), AType("y", &TAny)},
+		[]Ret{RType(&TBool)},
 		gtImp)
 
 	self.AddMethod(">=",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("x", &TAny), AType("y", &TAny)},
+		[]Ret{RType(&TBool)},
 		gteImp)
 
 	self.AddMethod("+",
-		[]Argument{AType("x", &TInt), AType("y", &TInt)},
-		[]Result{RType(&TInt)},
+		[]Arg{AType("x", &TInt), AType("y", &TInt)},
+		[]Ret{RType(&TInt)},
 		intAddImp)
 
 	self.AddMethod("*",
-		[]Argument{AType("x", &TInt), AType("y", &TInt)},
-		[]Result{RType(&TInt)},
+		[]Arg{AType("x", &TInt), AType("y", &TInt)},
+		[]Ret{RType(&TInt)},
 		intMulImp)
 
 	self.AddMethod("-",
-		[]Argument{AType("x", &TInt), AType("y", &TInt)},
-		[]Result{RType(&TInt)},
+		[]Arg{AType("x", &TInt), AType("y", &TInt)},
+		[]Ret{RType(&TInt)},
 		intSubImp)
 
-	self.AddMethod("load", []Argument{AType("path", &TString)}, nil, loadImp)
+	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 
 	self.AddMethod("<",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("x", &TAny), AType("y", &TAny)},
+		[]Ret{RType(&TBool)},
 		ltImp)
 	
 	self.AddMethod("<=",
-		[]Argument{AType("x", &TAny), AType("y", &TAny)},
-		[]Result{RType(&TBool)},
+		[]Arg{AType("x", &TAny), AType("y", &TAny)},
+		[]Ret{RType(&TBool)},
 		lteImp)
 
 	self.AddMethod("new-scope",
-		[]Argument{},
-		[]Result{RType(&TScope)},
+		[]Arg{},
+		[]Ret{RType(&TScope)},
 		newScopeImp)
 	
-	self.AddMethod("say", []Argument{AType("val", &TAny)}, nil, sayImp)
-	self.AddMethod("length", []Argument{AType("val", &TSlice)}, []Result{RType(&TInt)}, sliceLengthImp)
-	self.AddMethod("length", []Argument{AType("val", &TString)}, []Result{RType(&TInt)}, stringLengthImp)
-	self.AddMethod("type", []Argument{AType("val", &TAny)}, []Result{RType(&TMeta)}, typeImp)
+	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
+	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
+	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
+	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
 	return self
 }

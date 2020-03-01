@@ -58,11 +58,11 @@ func (self *Scope) InitData() *Scope {
 
 	self.AddMacro("record:", 1, recordImp)
 
-	self.AddMethod("length", []Argument{AType("val", &TRecord)}, []Result{RType(&TInt)}, recordLengthImp)
+	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
 
 	self.AddMethod("set",
-		[]Argument{AType("record", &TRecord), AType("key", &TId), AType("val", &TAny)},
-		[]Result{RType(&TRecord)},
+		[]Arg{AType("record", &TRecord), AType("key", &TId), AType("val", &TAny)},
+		[]Ret{RType(&TRecord)},
 		recordSetImp)
 
 	return self

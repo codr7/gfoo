@@ -5,26 +5,26 @@ import (
 	"strconv"
 )
 
-type Argument struct {
+type Arg struct {
 	name string
 	index int
 	valType Type
 	val Val
 }
 
-func AIndex(name string, index int) Argument {
-	return Argument{name: name, index: index}
+func AIndex(name string, index int) Arg {
+	return Arg{name: name, index: index}
 }
 
-func AType(name string, valType Type) Argument {
-	return Argument{name: name, index: -1, valType: valType}
+func AType(name string, valType Type) Arg {
+	return Arg{name: name, index: -1, valType: valType}
 }
 
-func AVal(name string, val Val) Argument {
-	return Argument{name: name, index: -1, val: val}
+func AVal(name string, val Val) Arg {
+	return Arg{name: name, index: -1, val: val}
 }
 
-func (self *Argument) Dump(out io.Writer) error {
+func (self *Arg) Dump(out io.Writer) error {
 	if self.index == -1 {
 		if self.valType == nil {
 			if err := self.val.Dump(out); err != nil {
@@ -44,7 +44,7 @@ func (self *Argument) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *Argument) Match(stack []Val, index int) bool {
+func (self *Arg) Match(stack []Val, index int) bool {
 	if self.index == -1 {
 		if self.valType == nil {
 			return self.val.Compare(stack[index]) == Eq

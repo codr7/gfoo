@@ -21,7 +21,7 @@ func (self *Scope) InitTime() *Scope {
 	self.AddVal("MAX", &TTime, MaxTime)
 	self.AddVal("MIN", &TTime, MinTime)
 
-	self.AddMethod("now", nil, []Result{RType(&TTime)}, nowImp)
-	self.AddMethod("today", nil, []Result{RType(&TTime)}, todayImp)
+	self.AddMethod("now", nil, []Ret{RType(&TTime)}, nowImp)
+	self.AddMethod("today", nil, []Ret{RType(&TTime)}, todayImp)
 	return self
 }

@@ -5,25 +5,25 @@ import (
 	"strconv"
 )
 
-type Result struct {
+type Ret struct {
 	index int
 	valType Type
 	val Val
 }
 
-func RIndex(index int) Result {
-	return Result{index: index}
+func RIndex(index int) Ret {
+	return Ret{index: index}
 }
 
-func RType(valType Type) Result {
-	return Result{index: -1, valType: valType}
+func RType(valType Type) Ret {
+	return Ret{index: -1, valType: valType}
 }
 
-func RVal(val Val) Result {
-	return Result{index: -1, val: val}
+func RVal(val Val) Ret {
+	return Ret{index: -1, val: val}
 }
 
-func (self Result) Dump(out io.Writer) error {
+func (self Ret) Dump(out io.Writer) error {
 	if self.index == -1 {
 		if self.valType == nil {
 			if err := self.val.Dump(out); err != nil {
