@@ -13,6 +13,7 @@ type ValType interface {
 	Dump(val Val, out io.Writer) error
 	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
+	New(name string, parents...Type) ValType
 	Unquote(val Val, scope *Scope, pos Pos) Form
 }
 

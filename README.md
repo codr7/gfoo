@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.8
+gfoo v0.10
 
 Press Return on empty line to evaluate.
 
@@ -64,6 +64,29 @@ Evaluating nothing in the REPL clears the stack.
 ```
 
 ### types
+Besides first class features described elsewhere in this document, the following types are provided. New types may be created using `type:`
+
+```
+  type: Foo Int
+  35 as(Foo)
+
+[35]
+  .. type
+
+[35 Foo]
+```
+
+New types are derived from their implementation and may be used as such without conversion.
+
+```
+  _ +(7)
+
+[42]
+  type
+
+[Int]
+```
+
 #### Bool
 All values have boolean representations; non-zero integers are true, empty strings and slices false etc.
 

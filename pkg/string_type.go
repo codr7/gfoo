@@ -24,6 +24,12 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *StringType) New(name string, parents...Type) ValType {
+	t := new(StringType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (_ *StringType) Print(val Val, out io.Writer) error {
 	_, err := io.WriteString(out, val.data.(string))
 	return err

@@ -20,6 +20,12 @@ func (_ *ScopeFormType) Dump(val Val, out io.Writer) error {
 	return val.data.(*ScopeForm).Dump(out)
 }
 
+func (_ *ScopeFormType) New(name string, parents...Type) ValType {
+	t := new(ScopeFormType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *ScopeFormType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

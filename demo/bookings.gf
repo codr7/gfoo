@@ -16,4 +16,4 @@ method: new-resource (; Resource) {
   data.record: (calendar new-calendar) as(Resource)
 }
 
-say(new-resource)
+dump(new-resource)

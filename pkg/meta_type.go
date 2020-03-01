@@ -29,6 +29,12 @@ func (_ *MetaType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *MetaType) New(name string, parents...Type) ValType {
+	t := new(MetaType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *MetaType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

@@ -167,7 +167,7 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 		var ops []Op
 		var err error
 		
-		if ops, err = self.Compile(forms, nil); err != nil {
+		if ops, err = self.Clone().Compile(forms, nil); err != nil {
 			return err
 		}
 		

@@ -25,6 +25,12 @@ func (self *LambdaType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *LambdaType) New(name string, parents...Type) ValType {
+	t := new(LambdaType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *LambdaType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

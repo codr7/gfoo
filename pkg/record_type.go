@@ -27,6 +27,12 @@ func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, er
 	return source.data.(Record).Get(key, Nil), nil
 }
 
+func (_ *RecordType) New(name string, parents...Type) ValType {
+	t := new(RecordType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *RecordType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

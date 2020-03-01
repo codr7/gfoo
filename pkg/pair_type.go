@@ -18,6 +18,12 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 	return val.data.(Pair).Dump(out)
 }
 
+func (_ *PairType) New(name string, parents...Type) ValType {
+	t := new(PairType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (_ *PairType) Print(val Val, out io.Writer) error {
 	return val.data.(Pair).Print(out)
 }

@@ -4,12 +4,12 @@ import (
 	"time"
 )
 
-func nowImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func nowImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TTime, time.Now().UTC()))
 	return nil
 }
 
-func todayImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func todayImp(stack *Slice, scope *Scope, pos Pos) error {
 	now := time.Now().UTC()
 	stack.Push(NewVal(&TTime, time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)))
 	return nil

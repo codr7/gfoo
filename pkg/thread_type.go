@@ -29,6 +29,12 @@ func (self *ThreadType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *ThreadType) New(name string, parents...Type) ValType {
+	t := new(ThreadType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *ThreadType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

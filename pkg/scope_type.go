@@ -32,6 +32,12 @@ func (_ *ScopeType) Get(source Val, key string, scope *Scope, pos Pos) (Val, err
 	return found.val, nil
 }
 
+func (_ *ScopeType) New(name string, parents...Type) ValType {
+	t := new(ScopeType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *ScopeType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

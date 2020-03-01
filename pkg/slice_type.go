@@ -30,6 +30,12 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
+func (_ *SliceType) New(name string, parents...Type) ValType {
+	t := new(SliceType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (_ *SliceType) Print(val Val, out io.Writer) error {
 	return val.data.(*Slice).Print(out)
 }

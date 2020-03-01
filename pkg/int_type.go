@@ -25,6 +25,12 @@ func (_ *IntType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *IntType) New(name string, parents...Type) ValType {
+	t := new(IntType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *IntType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

@@ -26,7 +26,7 @@ func (self *Method) Init(
 	self.args = args
 	self.rets = rets
 	self.imp = imp
-	self.scope = scope.Clone()
+	self.scope = scope
 	return self
 }
 

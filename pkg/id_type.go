@@ -16,6 +16,12 @@ func (_ *IdType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *IdType) New(name string, parents...Type) ValType {
+	t := new(IdType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (_ *IdType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	n := val.data.(string)
 	

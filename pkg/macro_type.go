@@ -20,6 +20,12 @@ func (_ *MacroType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *MacroType) New(name string, parents...Type) ValType {
+	t := new(MacroType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *MacroType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

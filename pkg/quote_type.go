@@ -26,6 +26,12 @@ func (_ *QuoteType) Dump(val Val, out io.Writer) error {
 	return val.data.(Val).Dump(out)
 }
 
+func (_ *QuoteType) New(name string, parents...Type) ValType {
+	t := new(QuoteType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *QuoteType) Print(val Val, out io.Writer) error {
 	return val.data.(Val).Print(out)
 }

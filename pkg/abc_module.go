@@ -205,7 +205,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var err error
 	macroScope := scope.Clone()
 	
-	if bodyOps, err = body.Compile(nil, bodyOps, macroScope); err != nil {
+	if bodyOps, err = macroScope.Compile(body.body, bodyOps); err != nil {
 		return out, err
 	}
 	
@@ -312,16 +312,17 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		rets = append(rets, RType(rtb.val.data.(Type)))
 	}
 	
+	methodScope := scope.Clone()
 	var err error
 	
-	if bodyOps, err = scope.Clone().Compile(body.body, bodyOps); err != nil {
+	if bodyOps, err = methodScope.Compile(body.body, bodyOps); err != nil {
 		return out, err
 	}
 
 	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
-		return scope.EvalOps(bodyOps, stack)
+		return methodScope.EvalOps(bodyOps, stack)
 	})
-		
+
 	return out, nil
 }
 
@@ -396,49 +397,73 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	if imp.dataType != &TMeta {
 		return out, scope.Error(form.Pos(), "Expected type: %v", imp)
 	}
+
+	impType, ok := imp.data.(ValType)
+
+	if !ok {
+		return out, scope.Error(form.Pos(), "Expected value type: %v", imp)
+	}
 	
-	scope.AddType(NewTrait(traitId.name, imp.data.(Type)))
+	t := impType.New(traitId.name, impType)
+	scope.AddType(t)
+
+	scope.AddMethod("as",
+		[]Arg{AType("val", impType), AVal("type", NewVal(&TMeta, t))},
+		[]Ret{RType(t)},
+		func(stack *Slice, scope *Scope, pos Pos) error {
+			stack.Pop()
+			v := stack.Peek()
+			v.dataType = t
+			return nil
+		})
+	
 	return out, nil
 }
 
-func boolImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func boolImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
 }
 
-func eqImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func dumpImp(stack *Slice, scope *Scope, pos Pos) error {
+	stack.Pop().Dump(os.Stdout)
+	os.Stdout.WriteString("\n")
+	return nil
+}
+
+func eqImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Eq))
 	return nil
 }
 
-func gtImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func gtImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Gt))
 	return nil
 }
 
-func gteImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func gteImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) >= Eq))
 	return nil
 }
 
-func intAddImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intAddImp(stack *Slice, scope *Scope, pos Pos) error {
 	var z big.Int
 	z.Add(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func intMulImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intMulImp(stack *Slice, scope *Scope, pos Pos) error {
 	var z big.Int
 	z.Mul(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func intSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func intSubImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	var z big.Int
 	z.Sub(stack.Pop().data.(*big.Int), y.data.(*big.Int))
@@ -446,44 +471,44 @@ func intSubImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
-func loadImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func loadImp(stack *Slice, scope *Scope, pos Pos) error {
 	return scope.Load(stack.Pop().data.(string), stack)
 }
 
-func ltImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func ltImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Lt))
 	return nil
 }
 
-func lteImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func lteImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) <= Eq))
 	return nil
 }
 
-func newScopeImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func newScopeImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TScope, NewScope()))
 	return nil
 }
 
-func sayImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func sayImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TInt, big.NewInt(int64(stack.Pop().data.(*Slice).Len()))))
 	return nil
 }
 
-func stringLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func stringLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TInt, big.NewInt(int64(len(stack.Pop().data.(string))))))
 	return nil
 }
 
-func typeImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func typeImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }
@@ -535,6 +560,8 @@ func (self *Scope) InitAbc() *Scope {
 		[]Ret{RType(&TBool)},
 		boolImp)
 
+	self.AddMethod("dump", []Arg{AType("val", &TAny)}, nil, dumpImp)
+	
 	self.AddMethod("=",
 		[]Arg{AType("x", &TAny), AType("y", &TAny)},
 		[]Ret{RType(&TBool)},

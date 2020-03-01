@@ -2,7 +2,7 @@ package gfoo
 
 const (
 	VersionMajor = 0
-	VersionMinor = 9
+	VersionMinor = 10
 )
 
 func Init() {
@@ -31,7 +31,7 @@ func Init() {
 func New() *Scope {
 	s := new(Scope).Init()
 	s.InitAbc()
-	s.AddVal("data", &TScope, s.Clone().InitData())	
 	s.AddVal("time", &TScope, s.Clone().InitTime())	
+	s.AddVal("data", &TScope, s.Clone().InitData())	
 	return s
 }

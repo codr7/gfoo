@@ -34,20 +34,20 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			return out, scope.Error(id.Pos(), "Missing field value: %v", id)
 		}
 		
-		if fieldOps, err = f.Compile(in, fieldOps, scope); err != nil {
+		if fieldOps, err = f.Compile(fieldForms, fieldOps, scope); err != nil {
 			return out, err
 		}
 	}
-	
+
 	return append(out, NewRecordOp(form, fieldOps)), nil
 }
 
-func recordLengthImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func recordLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(Record).Len()))))
 	return nil
 }
 
-func recordSetImp(stack *Slice, scope *Scope, pos Pos) (error) {
+func recordSetImp(stack *Slice, scope *Scope, pos Pos) error {
 	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
 	stack.Push(NewVal(&TRecord, r.data.(Record).Set(k.data.(string), *v)))
 	return nil

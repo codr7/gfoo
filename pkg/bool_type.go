@@ -41,6 +41,12 @@ func (_ *BoolType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *BoolType) New(name string, parents...Type) ValType {
+	t := new(BoolType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (_ *BoolType) Print(val Val, out io.Writer) error {
 	var s string
 	

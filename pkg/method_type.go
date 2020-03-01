@@ -23,6 +23,12 @@ func (_ *MethodType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *MethodType) New(name string, parents...Type) ValType {
+	t := new(MethodType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *MethodType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

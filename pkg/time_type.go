@@ -49,6 +49,12 @@ func (_ *TimeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *TimeType) New(name string, parents...Type) ValType {
+	t := new(TimeType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *TimeType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }

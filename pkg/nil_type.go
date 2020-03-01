@@ -27,6 +27,12 @@ func (_ *NilType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error
 	return Nil, nil
 }
 
+func (_ *NilType) New(name string, parents...Type) ValType {
+	t := new(NilType)
+	t.Init(name, parents...)
+	return t
+}
+
 func (self *NilType) Print(val Val, out io.Writer) error {
 	return nil
 }
