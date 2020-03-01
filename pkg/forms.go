@@ -22,6 +22,16 @@ func (self *Forms) Len() int {
 	return len(self.items)
 }
 
+func (self *Forms) Peek() Form {
+	i := len(self.items)
+	
+	if i == 0 {
+		return nil
+	}
+
+	return self.items[i-1]
+}
+
 func (self *Forms) Pop() Form {
 	if self == nil {
 		return nil

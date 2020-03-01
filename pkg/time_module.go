@@ -15,13 +15,13 @@ func todayImp(stack *Slice, scope *Scope, pos Pos) (error) {
 	return nil
 }
 
-func (self *Scope) InitTime() {
-	s := new(Scope).Init()
-	self.AddVal("time", &TScope, s)	
+func (self *Scope) InitTime() *Scope {
+	self.AddType(&TTime)
 
-	s.AddVal("MAX", &TTime, MaxTime)
-	s.AddVal("MIN", &TTime, MinTime)
+	self.AddVal("MAX", &TTime, MaxTime)
+	self.AddVal("MIN", &TTime, MinTime)
 
 	self.AddMethod("now", nil, []Result{RType(&TTime)}, nowImp)
 	self.AddMethod("today", nil, []Result{RType(&TTime)}, todayImp)
+	return self
 }

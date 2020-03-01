@@ -2,8 +2,11 @@
 ** type: Foo String
 ** only val types
 ** add as method
-* --commit demo/bookings.gf
+* demo/bookings.gf
+* replace new-scope with scope: (...)
+** update readme
 * add Ratio type
+** add math module
 ** use big.Rat
 ** add Int / with Ratio result
 * add negation using !

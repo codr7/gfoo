@@ -63,6 +63,60 @@ Evaluating nothing in the REPL clears the stack.
 []
 ```
 
+### values
+#### bool
+All values have Bool representations; non-zero Ints are true, empty Strings and Slices false etc.
+
+```
+  42 bool
+  "" bool
+  
+[T F]
+```
+
+#### int
+Integers may be specified using decimal, hexadecimal or binary notation.
+
+```
+  42 0x2a 0b101010
+
+[42 42 42]
+```
+
+#### pair
+Pairs allow treating two values as one, and may be created using `,`.
+
+```
+  1 2,
+
+[1 2,]
+```
+
+#### slice
+Slices may be created by enclosing code in brackets.
+
+```
+  ['foo 'bar 'baz]
+  
+[['foo 'bar 'baz]]
+```
+
+`;` may be used as shorthand for a nested slice.
+
+```
+  ['foo; 'bar 'baz]
+
+[['foo ['bar 'baz]]]
+```
+
+#### time
+`now` may be used to get the current time.
+
+```
+  time.now
+[2020-03-01T01:30:30.3399994Z]
+```
+
 ### bindings
 Identifiers may be bound to values in the current scope using `let:`.
 
@@ -134,51 +188,6 @@ Identifiers starting with `.` get their scope from the stack.
   .bar
 
 [42]
-```
-
-### booleans
-All values have Bool representations; non-zero Ints are true, empty Strings and Slices false etc.
-
-```
-  42 bool
-  "" bool
-  
-[T F]
-```
-
-### numbers
-Numeric literals may be specified using decimal, hexadecimal or binary notation.
-
-```
-  42 0x2a 0b101010
-
-[42 42 42]
-```
-
-### pairs
-Pairs allow treating two values as one, and may be created using `,`.
-
-```
-  1 2,
-
-[1 2,]
-```
-
-### slices
-Slices may be created by enclosing code in brackets.
-
-```
-  ['foo 'bar 'baz]
-  
-[['foo 'bar 'baz]]
-```
-
-`;` may be used as a shorthand for a nested slice.
-
-```
-  ['foo; 'bar 'baz]
-
-[['foo ['bar 'baz]]]
 ```
 
 ### branches

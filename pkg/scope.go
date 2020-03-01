@@ -26,8 +26,10 @@ func (self *Scope) Init() *Scope {
 	return self
 }
 
-func (self *Scope) AddVal(name string, dataType ValType, data interface{}) {
-	self.Set(name, NewVal(dataType, data))
+func (self *Scope) AddFunction(name string) *Function {
+	f := NewFunction(name)
+	self.AddVal(name, &TFunction, f)
+	return f
 }
 
 func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
@@ -39,8 +41,7 @@ func (self *Scope) AddMethod(name string, arguments []Argument, results []Result
 	b := self.Get(name)
 	
 	if b == nil {
-		f = NewFunction(name)
-		self.AddVal(name, &TFunction, f)
+		f = self.AddFunction(name)
 	} else {
 		f = b.val.data.(*Function)
 	}
@@ -52,6 +53,10 @@ func (self *Scope) AddMethod(name string, arguments []Argument, results []Result
 
 func (self *Scope) AddType(val Type) {
 	self.AddVal(val.Name(), &TMeta, val)
+}
+
+func (self *Scope) AddVal(name string, dataType ValType, data interface{}) {
+	self.Set(name, NewVal(dataType, data))
 }
 
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
