@@ -105,7 +105,7 @@ Pairs allow treating two values as one, and may be created using `,`.
 ```
 
 #### Record
-Records are ordered, immutable mappings of identifiers to values.
+Records are ordered, immutable mappings from identifiers to values.
 
 ```
   data.record: ('foo 1 'bar 2)
