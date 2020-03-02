@@ -527,11 +527,6 @@ func lteImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func newScopeImp(stack *Slice, scope *Scope, pos Pos) error {
-	stack.Push(NewVal(&TScope, NewScope()))
-	return nil
-}
-
 func sayImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
@@ -645,11 +640,6 @@ func (self *Scope) InitAbc() *Scope {
 		[]Ret{RType(&TBool)},
 		lteImp)
 
-	self.AddMethod("new-scope",
-		[]Arg{},
-		[]Ret{RType(&TScope)},
-		newScopeImp)
-	
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
