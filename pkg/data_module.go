@@ -6,32 +6,28 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var ok bool
 
 	if fields, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid field list: %v", f)
+		return out, scope.Error(form.Pos(), "Invalid fields: %v", f)
 	}
 
 	fieldForms := NewForms(fields.body)
 	var fieldOps []Op
 
 	for {
-		f = fieldForms.Pop()
-
-		if f == nil {
+		if f = fieldForms.Pop(); f == nil {
 			break
 		}
 
 		id, ok := f.(*Id)
 		
 		if !ok {
-			return out, scope.Error(f.Pos(), "Invalid field id: %v", f)
+			return out, scope.Error(f.Pos(), "Expected id: %v", f)
 		}
 
 		fieldOps = append(fieldOps, NewPush(f, NewVal(&TId, id.name)))
 		var err error
 
-		f = fieldForms.Pop()
-
-		if f == nil {
-			return out, scope.Error(id.Pos(), "Missing field value: %v", id)
+		if f = fieldForms.Pop(); f == nil {
+			return out, scope.Error(id.Pos(), "Missing value: %v", id)
 		}
 		
 		if fieldOps, err = f.Compile(fieldForms, fieldOps, scope); err != nil {

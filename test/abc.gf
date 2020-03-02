@@ -47,8 +47,12 @@ length([1 2 3]) check: =(3)
   r .qux check: is(NIL)
 }
 
-new-scope 
-.. do: {let: bar 42}
+scope: (foo 35)
+
+.. do: {
+  let: bar (foo +(7))
+}
+
 .bar check: =(42)
 
 {

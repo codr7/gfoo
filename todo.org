@@ -1,5 +1,9 @@
-* replace new-scope with scope: (...)
-** update test/readme
+* add record merge
+** add structurally shared Tree.merge
+** keep lhs
+
+merge(record: (foo 1 bar 2) record: (bar 3 baz 4))
+
 * add debug flag
 * check method results
 * add define: macro

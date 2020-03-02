@@ -2,20 +2,20 @@ package gfoo
 
 type RecordOp struct {
 	OpBase
-	fieldOps []Op
+	fields []Op
 }
 
-func NewRecordOp(form Form, fieldOps []Op) *RecordOp {
+func NewRecordOp(form Form, fields []Op) *RecordOp {
 	op := new(RecordOp)
 	op.OpBase.Init(form)
-	op.fieldOps = fieldOps
+	op.fields = fields
 	return op
 }
 
 func (self *RecordOp) Eval(scope *Scope, stack *Slice) error {
 	var fs Slice
 	
-	if err := scope.EvalOps(self.fieldOps, &fs); err != nil {
+	if err := scope.EvalOps(self.fields, &fs); err != nil {
 		return err
 	}
 

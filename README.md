@@ -234,10 +234,10 @@ Specifying the empty group as value pops the stack.
 ```
 
 ### scopes
-`new-scope` may be used to create a new, empty scope.
+`scope:` may be used to create a new scope with specified bindings.
 
 ```
-  new-scope
+  scope: (foo 35)
 
 [Scope(0xc0000447c0)]
 ```
@@ -245,7 +245,9 @@ Specifying the empty group as value pops the stack.
 `do:` may be used to evaluate code in an external scope.
 
 ```
-  .. do: {let: bar 42}
+  .. do: {
+    let: bar (foo +(7))
+  }
 
 [Scope(0xc0000447c0)]
 ```

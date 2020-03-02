@@ -342,6 +342,46 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPause(form, resultOps)), nil
 }
 
+func scopeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	f := in.Pop()
+	var bindings *Group
+	var ok bool
+
+	if bindings, ok = f.(*Group); !ok {
+		return out, scope.Error(form.Pos(), "Invalid bindings: %v", f)
+	}
+
+	bindingForms := NewForms(bindings.body)
+	var keys []string
+	var values []Op
+
+	for {
+		if f = bindingForms.Pop(); f == nil {
+			break
+		}
+
+		id, ok := f.(*Id)
+		
+		if !ok {
+			return out, scope.Error(f.Pos(), "Expected id: %v", f)
+		}
+
+		keys = append(keys, id.name)
+		
+		if f = bindingForms.Pop(); f == nil {
+			return out, scope.Error(id.Pos(), "Missing value: %v", id)
+		}
+
+		var err error
+		
+		if values, err = f.Compile(bindingForms, values, scope); err != nil {
+			return out, err
+		}
+	}
+
+	return append(out, NewScopeDef(form, keys, values)), nil
+}
+
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var args *Group
@@ -550,6 +590,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
+	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
 
