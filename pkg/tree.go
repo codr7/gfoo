@@ -51,6 +51,12 @@ func (self *Tree) Len() uint64 {
 	return self.len
 }
 
+func (self Tree) Merge(source *Tree) Tree {
+	self.root = self.mergeNode(self.root.clone(), source.root)
+	self.root.red = false
+	return self
+}
+
 func (self Tree) Update(key, value interface{}) Tree {
 	self.root = self.updateNode(self.root.clone(), key, value)
 	self.root.red = false
@@ -145,6 +151,35 @@ func (self *Tree) insertNode(node *TreeNode, key, value interface{}, dup bool) (
 	}
 
 	return node.fix(), ok
+}
+
+func (self *Tree) mergeNode(target, source *TreeNode) *TreeNode {
+	if source == nil {
+		return target
+	}
+	
+	if target == nil {
+		target = &TreeNode{
+			key: source.key,
+			values: make([]interface{}, len(source.values)),
+			red: true}
+		copy(target.values, source.values)
+		self.len += uint64(len(source.values))
+		self.root = self.mergeNode(self.root, source.left)
+		self.root = self.mergeNode(self.root, source.right)
+		return target
+	}
+
+	switch self.compare(source.key, target.key) {
+	case Lt:
+		target.left = self.mergeNode(target.left.clone(), source)
+	case Gt:
+		target.right = self.mergeNode(target.right.clone(), source)
+	}
+
+	self.root = self.mergeNode(self.root, source.left)
+	self.root = self.mergeNode(self.root, source.right)
+	return target.fix()
 }
 
 func (self *Tree) updateNode(node *TreeNode, key, value interface{}) *TreeNode {

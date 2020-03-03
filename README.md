@@ -128,7 +128,7 @@ Pairs allow treating two values as one, and may be created using `,`.
 ```
 
 #### Record
-Records are ordered, immutable mappings from identifiers to values.
+Records are ordered, immutable, structurally shared mappings from identifiers to values.
 
 ```
   data.record: (foo 1 bar 2)
@@ -136,20 +136,12 @@ Records are ordered, immutable mappings from identifiers to values.
 [Record(bar 2 foo 1)]
 ```
 
-`set` returns a structurally shared copy.
-
-```
-  .. set('baz 3)
-
-[Record(bar 2 foo 1) Record(bar 2 baz 3 foo 1)]
-```
-
 Fields may be accessed directly without quoting.
 
 ```
-  .baz
+  .. .foo
 
-[Record(bar 2 foo 1) 3]
+[Record(bar 2 foo 1) 1]
 ```
 
 Missing fields return `NIL`.
@@ -158,6 +150,22 @@ Missing fields return `NIL`.
   _ .baz
 
 [NIL]
+```
+
+`set` may be used to insert/update fields.
+
+```
+  set('baz 3)
+
+[Record(bar 2 baz 3 foo 1)]
+```
+
+`merge` may be used to update several fields at once, the left value is kept for duplicates.
+
+```
+  merge(data.record: (foo 1 bar 2) data.record: (foo 3 bar 4 baz 5))
+
+[Record(bar 2 baz 5 foo 1)]
 ```
 
 #### Slice

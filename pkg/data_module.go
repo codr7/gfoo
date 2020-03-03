@@ -43,6 +43,12 @@ func recordLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
+func recordMergeImp(stack *Slice, scope *Scope, pos Pos) error {
+	source := stack.Pop().data.(Record)
+	stack.Push(NewVal(&TRecord, stack.Pop().data.(Record).Merge(source)))
+	return nil
+}
+
 func recordSetImp(stack *Slice, scope *Scope, pos Pos) error {
 	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
 	stack.Push(NewVal(&TRecord, r.data.(Record).Set(k.data.(string), *v)))
@@ -55,6 +61,10 @@ func (self *Scope) InitData() *Scope {
 	self.AddMacro("record:", 1, recordImp)
 
 	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
+
+	self.AddMethod("merge",
+		[]Arg{AType("target", &TRecord), AType("source", &TRecord)},
+		[]Ret{RType(&TRecord)}, recordMergeImp)
 
 	self.AddMethod("set",
 		[]Arg{AType("record", &TRecord), AType("key", &TId), AType("val", &TAny)},
