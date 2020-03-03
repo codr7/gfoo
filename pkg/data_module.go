@@ -43,9 +43,9 @@ func recordLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func recordMergeImp(stack *Slice, scope *Scope, pos Pos) error {
+func recordUnionImp(stack *Slice, scope *Scope, pos Pos) error {
 	source := stack.Pop().data.(Record)
-	stack.Push(NewVal(&TRecord, stack.Pop().data.(Record).Merge(source)))
+	stack.Push(NewVal(&TRecord, stack.Pop().data.(Record).Union(source)))
 	return nil
 }
 
@@ -62,9 +62,9 @@ func (self *Scope) InitData() *Scope {
 
 	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
 
-	self.AddMethod("merge",
+	self.AddMethod("union",
 		[]Arg{AType("target", &TRecord), AType("source", &TRecord)},
-		[]Ret{RType(&TRecord)}, recordMergeImp)
+		[]Ret{RType(&TRecord)}, recordUnionImp)
 
 	self.AddMethod("set",
 		[]Arg{AType("record", &TRecord), AType("key", &TId), AType("val", &TAny)},

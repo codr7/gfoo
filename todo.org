@@ -1,4 +1,3 @@
-* add debug flag
 * check method results
 * add define: macro
 ** like let but compile time

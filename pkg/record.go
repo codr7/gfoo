@@ -73,12 +73,12 @@ func (self Record) Len() uint64 {
 	return self.fields.Len()
 }
 
-func (self Record) Merge(source Record) Record {
-	self.fields = self.fields.Merge(&source.fields)
+func (self Record) Set(key string, val Val) Record {
+	self.fields = self.fields.Update(key, val)
 	return self
 }
 
-func (self Record) Set(key string, val Val) Record {
-	self.fields = self.fields.Update(key, val)
+func (self Record) Union(source Record) Record {
+	self.fields = self.fields.Union(&source.fields)
 	return self
 }

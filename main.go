@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"fmt"
 	"gfoo/pkg"
 	"log"
@@ -73,13 +74,17 @@ func repl(g *gfoo.Scope, stack *gfoo.Slice) {
 func main() {
 	gfoo.Init()
 	g := gfoo.New()
-	g.Debug = true
-	stack := gfoo.NewSlice(nil)
 
-	if len(os.Args) == 1 {
+	flag.BoolVar(&g.Debug, "debug", false, "Enable debug mode")
+	flag.Parse()
+	args := flag.Args()
+	
+	stack := gfoo.NewSlice(nil)
+	
+	if len(args) == 0 {
 		repl(g, stack)
 	} else {
-		for _, path := range os.Args[1:] {
+		for _, path := range args {
 			if err := g.Load(path, stack); err != nil {
 				log.Fatal(err)
 			}

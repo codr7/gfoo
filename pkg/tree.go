@@ -51,8 +51,8 @@ func (self *Tree) Len() uint64 {
 	return self.len
 }
 
-func (self Tree) Merge(source *Tree) Tree {
-	self.root = self.mergeNode(self.root.clone(), source.root)
+func (self Tree) Union(source *Tree) Tree {
+	self.root = self.unionNode(self.root.clone(), source.root)
 	self.root.red = false
 	return self
 }
@@ -153,11 +153,14 @@ func (self *Tree) insertNode(node *TreeNode, key, value interface{}, dup bool) (
 	return node.fix(), ok
 }
 
-func (self *Tree) mergeNode(target, source *TreeNode) *TreeNode {
+func (self *Tree) unionNode(target, source *TreeNode) *TreeNode {
 	if source == nil {
 		return target
 	}
 	
+	self.root = self.unionNode(self.root, source.left)
+	self.root = self.unionNode(self.root, source.right)
+
 	if target == nil {
 		target = &TreeNode{
 			key: source.key,
@@ -165,20 +168,18 @@ func (self *Tree) mergeNode(target, source *TreeNode) *TreeNode {
 			red: true}
 		copy(target.values, source.values)
 		self.len += uint64(len(source.values))
-		self.root = self.mergeNode(self.root, source.left)
-		self.root = self.mergeNode(self.root, source.right)
+		self.root = self.unionNode(self.root, source.left)
+		self.root = self.unionNode(self.root, source.right)
 		return target
 	}
 
 	switch self.compare(source.key, target.key) {
 	case Lt:
-		target.left = self.mergeNode(target.left.clone(), source)
+		target.left = self.unionNode(target.left.clone(), source)
 	case Gt:
-		target.right = self.mergeNode(target.right.clone(), source)
+		target.right = self.unionNode(target.right.clone(), source)
 	}
 
-	self.root = self.mergeNode(self.root, source.left)
-	self.root = self.mergeNode(self.root, source.right)
 	return target.fix()
 }
 

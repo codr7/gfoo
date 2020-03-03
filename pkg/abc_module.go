@@ -589,8 +589,8 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
 
-	self.AddFunction("merge")
 	self.AddFunction("set")
+	self.AddFunction("union")
 	
 	self.AddMethod("bool",
 		[]Arg{AType("val", &TAny)},

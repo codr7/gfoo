@@ -47,7 +47,7 @@ length([1 2 3]) check: =(3)
   r .qux check: is(NIL)
 }
 
-merge(data.record: (foo 1 bar 2) data.record: (foo 3 bar 4 baz 5)) check: =(data.record: (foo 1 bar 2 baz 5)) 
+union(data.record: (foo 1 bar 2) data.record: (foo 3 bar 4 baz 5)) check: =(data.record: (foo 1 bar 2 baz 5)) 
 
 scope: (foo 35)
 
