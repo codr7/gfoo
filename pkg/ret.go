@@ -42,3 +42,17 @@ func (self Ret) Dump(out io.Writer) error {
 
 	return nil
 }
+
+func (self *Ret) Match(in, out []Val, index int) bool {
+	if self.index == -1 {
+		if self.valType == nil {
+			return self.val.Compare(out[index]) == Eq
+		} else {
+			xt, yt := out[index].dataType, self.valType
+			return xt == yt || xt.Isa(yt) != nil
+		}
+	}
+
+	xt, yt := out[index].dataType, in[self.index].dataType
+	return xt == yt || xt.Isa(yt) != nil
+}

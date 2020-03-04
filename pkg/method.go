@@ -51,12 +51,30 @@ func (self *Method) Applicable(stack *Slice) bool {
 	return true
 }
 
-func (self *Method) Call(stack *Slice, pos Pos) error {
-	if !self.Applicable(stack) {
-		return self.scope.Error(pos, "Method not applicable: %v %v", self.Name(), stack)
+func (self *Method) Call(stack *Slice, pos Pos) error {	
+	var in Slice
+	argCount := len(self.args)
+
+	if argCount > 0 {
+		in.items = make([]Val, argCount)
+		copy(in.items, stack.items[stack.Len()-argCount:])
 	}
 	
-	return self.imp(stack, self.scope.Clone(), pos)
+	if err := self.imp(stack, self.scope.Clone(), pos); err != nil {
+		return err
+	}
+
+	retCount := len(self.rets)
+	var out Slice
+	out.items = stack.items[stack.Len()-retCount:]
+		
+	for i := 0; i < retCount; i++ {
+		if !self.rets[i].Match(in.items, out.items, i) {
+			return self.scope.Error(pos, "Invalid method result: %v %v", self.Name(), out)
+		}
+	}
+
+	return nil
 }
 
 func (self *Method) Name() string {

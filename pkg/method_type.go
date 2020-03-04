@@ -11,7 +11,13 @@ type MethodType struct {
 }
 
 func (_ *MethodType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	return target.data.(*Method).Call(stack, pos)
+	m := target.data.(*Method)
+	
+	if !m.Applicable(stack) {
+		return scope.Error(pos, "Method not applicable: %v %v", m.Name(), stack)
+	}
+
+	return m.Call(stack, pos)
 }
 
 func (_ *MethodType) Compare(x, y Val) Order {

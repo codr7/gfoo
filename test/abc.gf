@@ -61,8 +61,8 @@ scope: (foo 35)
 .bar check: =(42)
 
 {
-  method: foo (x Int; Id) {'int x,}
-  method: foo (x String; Id) {'string x,}
+  method: foo (x Int; Pair) {'int x,}
+  method: foo (x String; Pair) {'string x,}
   foo(42) check: =('int 42,)
   foo("bar") check: =('string "bar",)
 }

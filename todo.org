@@ -1,4 +1,3 @@
-* check method results
 * add define: macro
 ** like let but compile time
 * add Table
