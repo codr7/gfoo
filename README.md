@@ -193,6 +193,39 @@ Slices may be created by enclosing code in brackets.
 [2020-03-01T01:30:30.3399994Z]
 ```
 
+### values
+`is` may be used to check if two values share the same address.
+
+```
+  'foo is('foo)
+
+[T]
+```
+
+Some values; including perhaps surprisingly, integers; are heap allocated.
+
+```
+  42 is(42)
+
+[F]
+```
+
+`=` may be used to check if two values are equal.
+
+```
+  42 =(42)
+
+[T]
+```
+
+Composite values support deep equality.
+
+```
+  [1 2 3] =([1 2 3])
+
+[T]
+```
+
 ### bindings
 Identifiers may be bound to values in the current scope using `let:`.
 
