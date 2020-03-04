@@ -24,7 +24,7 @@ func (self *RecordOp) Eval(scope *Scope, stack *Slice) error {
 	for i := 0; i < fs.Len(); i++ {
 		k := fs.items[i].data.(string)
 		i++
-		r.fields.Insert(k, fs.items[i], false)
+		r.Set(k, fs.items[i])
 	}
 
 	stack.Push(NewVal(&TRecord, r))

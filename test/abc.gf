@@ -38,16 +38,19 @@ length([1 2 3]) check: =(3)
   r .foo check: =(1)
   r .bar check: =(2)
   r .baz check: =(3)
-
-  {
-    let: r (r set('qux 4))
-    r .qux check: =(4)
-  }
-
+ 
   r .qux check: is(NIL)
+  r set('qux 4)
+  r .qux check: =(4)
+
+  let: c clone(r)
+  c set('qux 5)
+  r .qux check: =(4)
 }
 
-union(data.record: (foo 1 bar 2) data.record: (foo 3 bar 4 baz 5)) check: =(data.record: (foo 1 bar 2 baz 5)) 
+data.record: (foo 1 bar 2) ..
+union(data.record: (foo 3 bar 4 baz 5))
+check: =(data.record: (foo 1 bar 2 baz 5))
 
 scope: (foo 35)
 

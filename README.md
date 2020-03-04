@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.10
+gfoo v0.11
 
 Press Return on empty line to evaluate.
 
@@ -128,7 +128,7 @@ Pairs allow treating two values as one, and may be created using `,`.
 ```
 
 #### Record
-Records are ordered, immutable mappings from identifiers to values.
+Records are ordered mappings from identifiers to values.
 
 ```
   data.record: (foo 1 bar 2)
@@ -155,7 +155,7 @@ Missing fields return `NIL`.
 `set` may be used to insert/update fields.
 
 ```
-  set('baz 3)
+  .. set('baz 3)
 
 [Record(bar 2 baz 3 foo 1)]
 ```
@@ -163,7 +163,7 @@ Missing fields return `NIL`.
 `union` may be used to update several fields at once, the left value is kept for duplicates.
 
 ```
-  union(data.record: (foo 1 bar 2) data.record: (foo 3 bar 4 baz 5))
+  data.record: (foo 1 bar 2) .. union(data.record: (foo 3 bar 4 baz 5))
 
 [Record(bar 2 baz 5 foo 1)]
 ```

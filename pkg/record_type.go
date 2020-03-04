@@ -10,8 +10,12 @@ type RecordType struct {
 	ValTypeBase
 }
 
+func (_ *RecordType) Clone(val Val) interface{} {
+	return val.data.(*Record).Clone()
+}
+
 func (_ *RecordType) Compare(x, y Val) Order {
-	x.data.(Record).Compare(y.data.(Record))
+	x.data.(*Record).Compare(y.data.(*Record))
 	return Eq
 }
 
@@ -20,11 +24,11 @@ func (self *RecordType) Dump(val Val, out io.Writer) error {
 		return err
 	}
 
-	return val.data.(Record).Dump(out)
+	return val.data.(*Record).Dump(out)
 }
 
 func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
-	return source.data.(Record).Get(key, Nil), nil
+	return source.data.(*Record).Get(key, Nil), nil
 }
 
 func (_ *RecordType) New(name string, parents...Type) ValType {

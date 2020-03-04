@@ -465,6 +465,11 @@ func boolImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
+func cloneImp(stack *Slice, scope *Scope, pos Pos) error {
+	stack.Push(stack.Pop().Clone())
+	return nil
+}
+
 func dumpImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Pop().Dump(os.Stdout)
 	os.Stdout.WriteString("\n")
@@ -592,55 +597,18 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddFunction("set")
 	self.AddFunction("union")
 	
-	self.AddMethod("bool",
-		[]Arg{AType("val", &TAny)},
-		[]Ret{RType(&TBool)},
-		boolImp)
-
+	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
+	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)
 	self.AddMethod("dump", []Arg{AType("val", &TAny)}, nil, dumpImp)
-	
-	self.AddMethod("=",
-		[]Arg{AType("x", &TAny), AType("y", &TAny)},
-		[]Ret{RType(&TBool)},
-		eqImp)
-
-	self.AddMethod(">",
-		[]Arg{AType("x", &TAny), AType("y", &TAny)},
-		[]Ret{RType(&TBool)},
-		gtImp)
-
-	self.AddMethod(">=",
-		[]Arg{AType("x", &TAny), AType("y", &TAny)},
-		[]Ret{RType(&TBool)},
-		gteImp)
-
-	self.AddMethod("+",
-		[]Arg{AType("x", &TInt), AType("y", &TInt)},
-		[]Ret{RType(&TInt)},
-		intAddImp)
-
-	self.AddMethod("*",
-		[]Arg{AType("x", &TInt), AType("y", &TInt)},
-		[]Ret{RType(&TInt)},
-		intMulImp)
-
-	self.AddMethod("-",
-		[]Arg{AType("x", &TInt), AType("y", &TInt)},
-		[]Ret{RType(&TInt)},
-		intSubImp)
-
+	self.AddMethod("=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, eqImp)
+	self.AddMethod(">", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gtImp)
+	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
+	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
+	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
+	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
-
-	self.AddMethod("<",
-		[]Arg{AType("x", &TAny), AType("y", &TAny)},
-		[]Ret{RType(&TBool)},
-		ltImp)
-	
-	self.AddMethod("<=",
-		[]Arg{AType("x", &TAny), AType("y", &TAny)},
-		[]Ret{RType(&TBool)},
-		lteImp)
-
+	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
+	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
