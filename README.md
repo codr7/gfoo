@@ -227,12 +227,11 @@ Composite values support deep equality.
 ```
 
 ### bindings
-Identifiers may be bound to values in the current scope using `let:`.
+Bindings come in two flavors, compile time and runtime.
 
+Identifiers may be bound to values at runtime in the current scope using `let:`.
 ```
   let: foo 42
-
-[]
   foo
 
 [42]
@@ -272,6 +271,21 @@ Specifying the empty group as value pops the stack.
   bar
 
 ["baz"]
+```
+
+`define:` may be used to create compile time bindings.
+
+```
+  define: foo 42
+  foo
+```
+
+Overriding compile time bindings is not allowed.
+
+```
+  {let: foo 42}
+
+Error in 'repl', line 1, column 6: Attempt to override compile time binding: foo
 ```
 
 ### scopes

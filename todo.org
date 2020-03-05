@@ -1,5 +1,4 @@
-* add define: macro
-** like let but compile time
+* add slice push/pop/peek methods
 * add Table
 ** key/records
 * add Ratio type

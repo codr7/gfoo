@@ -33,6 +33,22 @@ length("abc") check: =(3)
 length([1 2 3]) check: =(3)
 
 {
+  let: foo 'bar
+
+  {
+    let: foo 'baz
+    foo check: =('baz)
+  }
+  
+  foo check: =('bar)
+}
+
+{
+  define: foo 'bar
+  foo check: =('bar)
+}
+
+{
   let: r (data.record: (foo 1 bar 2 baz 3))
   r length check: =(3)
   r .foo check: =(1)

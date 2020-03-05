@@ -52,6 +52,36 @@ func checkImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewCheck(form, cond, condOps)), nil
 }
 
+func defineImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	f := in.Pop()
+	id, ok := f.(*Id)
+
+	if !ok {
+		scope.Error(f.Pos(), "Expected id: %v", f)
+	}
+	
+	var stack Slice
+	
+	if err := scope.EvalForm(in, &stack); err != nil {
+		return out, err
+	}
+	
+	val := stack.Pop()
+
+	if val == nil {
+	        return out, scope.Error(id.Pos(), "Missing val: %v", id.name) 
+	}
+	
+
+	if found := scope.Get(id.name); found == nil {
+		scope.Set(id.name, *val)
+	} else if found.scope != scope {
+		return out, scope.Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
+	}
+
+	return out, nil
+}
+
 func doImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	body, ok := f.(*ScopeForm)
@@ -151,6 +181,8 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 	if found := scope.Get(id.name); found == nil {
 		scope.Set(id.name, Nil)
+	} else if found.val != Nil {
+	        return out, scope.Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
 	} else if found.scope != scope {
 		found.Init(scope, Nil)
 	} else {
@@ -579,6 +611,7 @@ func (self *Scope) InitAbc() *Scope {
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
 	self.AddMacro("check:", 1, checkImp)
+	self.AddMacro("define:", 2, defineImp)
  	self.AddMacro("do:", 1, doImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
