@@ -1,4 +1,20 @@
+* add ParseChar
+** add \' support
+** add \n support
+** add string splat test
+* switch ../_ to methods
+** remove ops
+* add support for using _ in place of ()
+** let:/define:/pause:
+* add trait: (...) X
+** create trait with parents
+* add trait parents to type:
+* add Type.Is method
+** default implement as =
+** override for Int
+*** update readme
 * add slice push/pop/peek methods
+* ---
 * add Table
 ** key/records
 * add Ratio type
@@ -31,14 +47,6 @@ macro: while: (cond body) {
   '(loop: (@cond else: break @body))
 }
 
-* add Splat op
-** add Type.Splat
-*** implement for Int
-**** 3... -> 0 1 2
-*** implement for Slice
-*** implement for String
-**** add Char type
-** add ... macro
 * add union types
 ** add Union with list of types
 ** parse X|Y as union

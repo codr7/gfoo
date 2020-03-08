@@ -540,6 +540,16 @@ func intMulImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
+func intSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+	v := stack.Pop().data.(*big.Int)
+	
+	for i := int64(0); i < v.Int64(); i++  {
+		stack.Push(NewVal(&TInt, big.NewInt(i)))
+	}
+
+	return nil
+}
+
 func intSubImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
 	var z big.Int
@@ -564,6 +574,13 @@ func lteImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
+func pairSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+	p := stack.Pop().data.(Pair)
+	stack.Push(p.left)
+	stack.Push(p.right)
+	return nil
+}
+
 func sayImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
@@ -575,8 +592,24 @@ func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
+func sliceSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+	for _, v := range stack.Pop().data.(*Slice).items {
+		stack.Push(v)
+	}
+
+	return nil
+}
+
 func stringLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	stack.Push(NewVal(&TInt, big.NewInt(int64(len(stack.Pop().data.(string))))))
+	return nil
+}
+
+func stringSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+	for _, c := range stack.Pop().data.(string) {
+		stack.Push(NewVal(&TChar, c))
+	}
+
 	return nil
 }
 
@@ -588,6 +621,7 @@ func typeImp(stack *Slice, scope *Scope, pos Pos) error {
 func (self *Scope) InitAbc() *Scope {
 	self.AddType(&TAny)
 	self.AddType(&TBool)
+	self.AddType(&TChar)
 	self.AddType(&TFunction)
 	self.AddType(&TId)
 	self.AddType(&TInt)
@@ -638,13 +672,17 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
+	self.AddMethod("...", []Arg{AType("val", &TInt)}, nil, intSplatImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
+	self.AddMethod("...", []Arg{AType("val", &TPair)}, nil, pairSplatImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
+	self.AddMethod("...", []Arg{AType("val", &TSlice)}, nil, sliceSplatImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
+	self.AddMethod("...", []Arg{AType("val", &TString)}, nil, stringSplatImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
 	return self
 }

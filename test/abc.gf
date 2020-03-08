@@ -28,9 +28,15 @@ Number check: >(Any)
 Number check: >=(Any)
 Number check: >=(Number)
 
+[3 ...] check: =([0 1 2])
+
 length("abc") check: =(3)
 
+['foo,(42)...] check: =(['foo 42])
+
 length([1 2 3]) check: =(3)
+
+[1 2 [3 4 5]...] check: =([1 2 3 4 5])
 
 {
   let: foo 'bar

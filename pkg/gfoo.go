@@ -2,12 +2,13 @@ package gfoo
 
 const (
 	VersionMajor = 0
-	VersionMinor = 11
+	VersionMinor = 12
 )
 
 func Init() {
 	TAny.Init("Any")
 	TBool.Init("Bool", &TAny)
+	TChar.Init("Char", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
 	TNumber.Init("Number", &TAny)

@@ -39,6 +39,18 @@ func ComparePointer(x, y unsafe.Pointer) Order {
 	return Eq
 }
 
+func CompareRune(x, y rune) Order {
+	if x < y {
+		return Lt
+	}
+
+	if x > y {
+		return Gt
+	}
+
+	return Eq
+}
+
 func CompareString(x, y string) Order {
 	return Order(strings.Compare(x, y))
 }
