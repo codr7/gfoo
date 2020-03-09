@@ -192,7 +192,7 @@ Missing fields return `NIL`.
 [['foo 'bar 'baz]]
 ```
 
-Slices support the regular stack operations,
+Slices support basic stack operations,
 
 ```
   [1 2] push(3)
@@ -204,6 +204,10 @@ Slices support the regular stack operations,
   _ pop
 
 [[1 2] 3]
+
+  _ length
+
+[2]
 ```
 
 and spreading using `...`.
