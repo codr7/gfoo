@@ -1,18 +1,6 @@
-* add ParseChar
-** add \' support
-** add \n support
-** add string splat test
-* switch ../_ to methods
-** remove ops
-* add support for using _ in place of ()
-** let:/define:/pause:
 * add trait: (...) X
 ** create trait with parents
 * add trait parents to type:
-* add Type.Is method
-** default implement as =
-** override for Int
-*** update readme
 * add slice push/pop/peek methods
 * ---
 * add Table

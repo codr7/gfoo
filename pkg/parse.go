@@ -10,7 +10,7 @@ import (
 
 func IsId(c rune) bool {
 	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
-		c != ';' && c != '\'' && c != '@' && c != '"' &&
+		c != ';' && c != '\'' && c != '@' && c != '\\' && c != '"' &&
 		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']'
 }
 
@@ -70,6 +70,34 @@ func (self *Scope) ParseBody(
 	return create(out, fpos), nil
 }
 
+func (self *Scope) ParseChar(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	c, _, err := in.ReadRune()
+	
+	if err != nil {
+		self.Error(fpos, "Invalid character literal: %v", err) 
+	}
+
+	pos.column++
+	var out rune
+	
+	switch c {
+	case '\'':
+		out, _, err = in.ReadRune()
+		
+		if err != nil {
+			self.Error(fpos, "Invalid character literal: %v", err)
+		}
+	case 'n':
+		out = '\n'
+	default:
+		self.Error(fpos, "Invalid character literal: %v", c)	
+	}
+	
+	return NewLiteral(NewVal(&TChar, out), fpos), nil
+}
+
 func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
@@ -82,6 +110,8 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 		return self.ParseQuote(in, pos)
 	case '@':
 		return self.ParseUnquote(in, pos)
+	case '\\':
+		return self.ParseChar(in, pos)
 	case '"':
 		return self.ParseString(in, pos)
 	case '(':

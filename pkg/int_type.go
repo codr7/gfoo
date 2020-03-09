@@ -25,6 +25,10 @@ func (_ *IntType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *IntType) Is(x, y Val) bool {
+	return self.Compare(x, y) == Eq 
+}
+
 func (_ *IntType) New(name string, parents...Type) ValType {
 	t := new(IntType)
 	t.Init(name, parents...)

@@ -241,23 +241,13 @@ Strings may be spread using `...`.
 [T]
 ```
 
-Some values; including perhaps surprisingly, integers; are heap allocated.
-
 ```
-  42 is(42)
+  [1 2 3] is([1 2 3])
 
 [F]
 ```
 
-`=` may be used to check if two values are equal.
-
-```
-  42 =(42)
-
-[T]
-```
-
-Composite values support deep equality.
+`=` may be used instead to check if two values are equal.
 
 ```
   [1 2 3] =([1 2 3])

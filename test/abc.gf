@@ -9,6 +9,8 @@ check: =(42)
 42 -(7) check: =(35)
 6 *(7) check: =(42)
 
+42 check: is(42)
+
 1 check: <(2)
 1 check: <=(2)
 1 check: <=(1)
@@ -32,6 +34,8 @@ Number check: >=(Number)
 
 length("abc") check: =(3)
 
+["foo"...] check: =([\'f \'o \'o])
+
 ['foo,(42)...] check: =(['foo 42])
 
 length([1 2 3]) check: =(3)
@@ -49,6 +53,11 @@ length([1 2 3]) check: =(3)
   foo check: =('bar)
 }
 
+{
+  42 let: foo ()
+  foo check: =(42)
+}
+  
 {
   define: foo 'bar
   foo check: =('bar)

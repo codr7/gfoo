@@ -191,11 +191,11 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	
 	val := in.Pop()
 	var err error
-	
+
 	if out, err = val.Compile(in, out, scope); err != nil {
 		return out, err
 	}
-	
+			
 	return append(out, NewLet(form, id.name)), nil
 }
 
