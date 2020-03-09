@@ -1,19 +1,26 @@
-* add trait: (...) X
-** create trait with parents
-* add trait parents to type:
+* add interactions/dump/say to readme
 * ---
-* add Table
-** key/records
-* add Ratio type
-** add math module
-** use big.Rat
-** add Int / with Ratio result
 * add negation using !
 ** NotForm
 ** compile value 
 ** emit Not op
 *** call .Bool
 * add and/or macros
+* ---
+* add trait: (...) X
+** create trait with parents
+* add trait parents to type:
+* add Maybe types
+** handle ? in ParseId
+** create types on demand that inherit from X & TOptional
+** use Type.New
+* --
+* add Table
+** key/records
+* add Ratio type
+** add math module
+** use big.Rat
+** add Int / with Ratio result
 * add String interpolation
 ** read form following @ & print last value
 ** add Writer type
