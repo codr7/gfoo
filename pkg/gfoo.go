@@ -6,7 +6,10 @@ const (
 )
 
 func Init() {
-	TAny.Init("Any")
+	TOptional.Init("Any?")
+	TAny.Init("Any", &TOptional)
+	TNil.Init("Nil", &TOptional)
+
 	TBool.Init("Bool", &TAny)
 	TChar.Init("Char", &TAny)
 	TFunction.Init("Function", &TAny)
@@ -17,7 +20,6 @@ func Init() {
 	TMacro.Init("Macro", &TAny)
 	TMeta.Init("Type", &TAny)
 	TMethod.Init("Method", &TAny)
-	TNil.Init("Nil")
 	TPair.Init("Pair", &TAny)
 	TRecord.Init("Record", &TAny)
 	TScope.Init("Scope", &TAny)

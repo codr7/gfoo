@@ -38,6 +38,19 @@ length("abc") check: =(3)
 
 ['foo,(42)...] check: =(['foo 42])
 
+peek([]) check: is(NIL)
+
+peek([1 2 3]..)
+check: is(3)
+check: =([1 2 3])
+
+pop([]) check: is(NIL)
+
+pop([1 2 3]..)
+check: is(3)
+check: =([1 2])
+
+[1 2].. push(3) check: =([1 2 3])
 length([1 2 3]) check: =(3)
 
 [1 2 [3 4 5]...] check: =([1 2 3 4 5])

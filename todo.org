@@ -1,7 +1,6 @@
 * add trait: (...) X
 ** create trait with parents
 * add trait parents to type:
-* add slice push/pop/peek methods
 * ---
 * add Table
 ** key/records

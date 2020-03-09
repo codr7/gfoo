@@ -192,20 +192,34 @@ Missing fields return `NIL`.
 [['foo 'bar 'baz]]
 ```
 
+Slices support the regular stack operations,
+
+```
+  [1 2] push(3)
+
+[1 2 3]
+  .. peek
+
+[[1 2 3] 3]
+  _ pop
+
+[[1 2] 3]
+```
+
+and spreading using `...`.
+
+```
+  [1 2 3]...
+
+[1 2 3]
+```
+
 `;` may be used as shorthand for a nested slice.
 
 ```
   ['foo; 'bar 'baz]
 
 [['foo ['bar 'baz]]]
-```
-
-Slices may be spread using `...`.
-
-```
-  [1 2 3]...
-
-[1 2 3]
 ```
 
 #### String

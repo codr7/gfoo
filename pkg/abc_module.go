@@ -540,7 +540,7 @@ func intMulImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func intSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+func intSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	v := stack.Pop().data.(*big.Int)
 	
 	for i := int64(0); i < v.Int64(); i++  {
@@ -574,7 +574,7 @@ func lteImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func pairSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+func pairSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	p := stack.Pop().data.(Pair)
 	stack.Push(p.left)
 	stack.Push(p.right)
@@ -592,7 +592,41 @@ func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func sliceSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+func slicePeekImp(stack *Slice, scope *Scope, pos Pos) error {
+	in := stack.Pop().data.(*Slice).Peek()
+	var out Val
+	
+	if in == nil {
+		out = Nil
+	} else {
+		out = *in
+	}
+	
+	stack.Push(out)
+	return nil
+}
+
+func slicePopImp(stack *Slice, scope *Scope, pos Pos) error {
+	in := stack.Pop().data.(*Slice).Pop()
+	var out Val
+	
+	if in == nil {
+		out = Nil
+	} else {
+		out = *in
+	}
+	
+	stack.Push(out)
+	return nil
+}
+
+func slicePushImp(stack *Slice, scope *Scope, pos Pos) error {
+	v := stack.Pop()
+	stack.Pop().data.(*Slice).Push(*v)
+	return nil
+}
+
+func sliceSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	for _, v := range stack.Pop().data.(*Slice).items {
 		stack.Push(v)
 	}
@@ -605,7 +639,7 @@ func stringLengthImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func stringSplatImp(stack *Slice, scope *Scope, pos Pos) error {
+func stringSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	for _, c := range stack.Pop().data.(string) {
 		stack.Push(NewVal(&TChar, c))
 	}
@@ -631,6 +665,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddType(&TMethod)
 	self.AddType(&TNil)
 	self.AddType(&TNumber)
+	self.AddType(&TOptional)
 	self.AddType(&TPair)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
@@ -672,17 +707,20 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
-	self.AddMethod("...", []Arg{AType("val", &TInt)}, nil, intSplatImp)
+	self.AddMethod("...", []Arg{AType("val", &TInt)}, nil, intSpreadImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
-	self.AddMethod("...", []Arg{AType("val", &TPair)}, nil, pairSplatImp)
+	self.AddMethod("...", []Arg{AType("val", &TPair)}, nil, pairSpreadImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
-	self.AddMethod("...", []Arg{AType("val", &TSlice)}, nil, sliceSplatImp)
+	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePeekImp)
+	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePopImp)
+	self.AddMethod("push", []Arg{AType("target", &TSlice), AType("val", &TAny)}, nil, slicePushImp)
+	self.AddMethod("...", []Arg{AType("val", &TSlice)}, nil, sliceSpreadImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
-	self.AddMethod("...", []Arg{AType("val", &TString)}, nil, stringSplatImp)
+	self.AddMethod("...", []Arg{AType("val", &TString)}, nil, stringSpreadImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
 	return self
 }
