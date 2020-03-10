@@ -20,7 +20,15 @@ func (_ *CharType) Compare(x, y Val) Order {
 }
 
 func (_ *CharType) Dump(val Val, out io.Writer) error {
-	_, err := fmt.Fprintf(out, "\\'%c", val.data.(rune))
+	var err error
+	
+	switch c := val.data.(rune); c {
+	case '\n':
+		_, err = io.WriteString(out, "\\n")
+	default:
+		_, err = fmt.Fprintf(out, "\\'%c", c)
+	}
+	
 	return err
 }
 

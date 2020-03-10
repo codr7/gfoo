@@ -96,13 +96,7 @@ func (self *Slice) Pop() *Val {
 }
 
 func (self Slice) Print(out io.Writer) error {
-	for i, v := range self.items {
-		if i > 0 {
-			if _, err := fmt.Fprint(out, " "); err != nil {
-				return err
-			}
-		}
-		
+	for _, v := range self.items {
 		if err := v.Print(out); err != nil {
 			return err
 		}

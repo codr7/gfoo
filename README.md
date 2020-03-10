@@ -97,6 +97,23 @@ All values have boolean representations; non-zero integers are true, empty strin
 [T F]
 ```
 
+#### Char
+Characters are prefixed with `\`.
+
+```
+  \n
+
+[\n]
+```
+
+Literal characters are quoted.
+
+```
+  \'n
+
+[\'n]
+```
+
 #### Id
 Identifiers may be quoted and used as values.
 
@@ -271,6 +288,40 @@ Strings may be spread using `...`.
   [1 2 3] =([1 2 3])
 
 [T]
+```
+
+### interactions
+Values may be printed as is using `dump`,
+
+```
+  dump("foo")
+
+"foo"
+[]
+```
+
+or pretty-printed using `say`.
+
+```
+  say("foo")
+
+foo
+[]
+```
+
+Pairs and slices may be used to print several values at once.
+
+```
+  say('foo 42,)
+
+foo42
+[]
+  say([1 \n 2 \n 3])
+
+1
+2
+3
+[]
 ```
 
 ### bindings

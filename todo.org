@@ -1,5 +1,4 @@
-* add interactions/dump/say to readme
-* ---
+* add string dump support for \n
 * add negation using !
 ** NotForm
 ** compile value 

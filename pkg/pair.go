@@ -45,10 +45,6 @@ func (self Pair) Print(out io.Writer) error {
 		return err
 	}
 
-	if _, err := io.WriteString(out, " "); err != nil {
-		return err
-	}
-	
 	if err := self.right.Print(out); err != nil {
 		return err
 	}
