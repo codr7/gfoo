@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.12
+gfoo v0.13
 
 Press Return on empty line to evaluate.
 
@@ -483,8 +483,8 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 Metods allow dispatching on argument types.
 
 ```
-  method: foo (x Int; Id) {'int x,}
-  method: foo (x String; Id) {'string x,}
+  method: foo (x Int; Pair) {'int x,}
+  method: foo (x String; Pair) {'string x,}
   foo(42) foo("bar")
 
 ['int 42, 'string "bar",]

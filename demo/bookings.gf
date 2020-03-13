@@ -1,3 +1,6 @@
+use: data (Record)
+use: time (days today)
+
 type: Quantity data.Record
 
 method: new-quantity (; Quantity) {

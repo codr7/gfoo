@@ -509,6 +509,50 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return out, nil
 }
 
+func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	sourceForm, ok := f.(*Id)
+	
+	if !ok {
+		return out, scope.Error(form.Pos(), "Invalid source: %v", f)
+	}
+
+	source := scope.Get(sourceForm.name);
+
+	if source == nil || source.val == Nil {
+		return out, scope.Error(form.Pos(), "Unknown identifier: %v", f)
+	}
+	
+	f = in.Pop()
+	ids, ok := f.(*Group)
+	
+	if !ok {
+		return out, scope.Error(form.Pos(), "Invalid identifier list: %v", f)
+	}
+
+	for _, f := range ids.body {
+		k, ok := f.(*Id)
+		
+		if !ok {
+			return out, scope.Error(f.Pos(), "Invalid identifier: %v", f)
+		}
+
+		v, err := source.val.Get(k.name, scope, k.Pos())
+
+		if err != nil {
+			return out, err
+		}
+
+		if scope.Get(k.name) != nil {
+			return out, scope.Error(k.Pos(), "Duplicate identifier: %v", k)
+		}
+
+		scope.Set(k.name, v)
+	}
+
+	return out, nil
+}
+
 func boolImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
@@ -725,6 +769,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
+	self.AddMacro("use:", 2, useImp)
 
 	self.AddFunction("set")
 	self.AddFunction("union")

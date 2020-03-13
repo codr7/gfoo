@@ -1,9 +1,4 @@
 * demo/bookings.gf
-** pull data/time bindings into current scope
-*** add use: X (...) macro
-**** add ValType.Use(val, scope)
-***** error on dup in Base
-***** append function methods
 ** add Resource.min-length/max-length
 *** use min-length to init end
 *** fail if booking > max-length

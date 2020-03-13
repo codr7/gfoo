@@ -50,3 +50,4 @@ func (self *ValTypeBase) Is(x, y Val) bool {
 func (self *ValTypeBase) Name() string {
 	return self.name
 }
+
