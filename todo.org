@@ -1,3 +1,8 @@
+* Ändra pair till prefix
+** ,foo bar
+** lägg till stöd i parser
+*** lägg till PairForm
+** readme/test
 * demo/bookings.gf
 ** add Resource.min-length/max-length
 *** use min-length to init end

@@ -1,10 +1,10 @@
-use: data (Record)
+use: data (Record record:)
 use: time (days today)
 
-type: Quantity data.Record
+type: Quantity Record
 
 method: new-quantity (; Quantity) {
-  data.record: (
+  record: (
     start     time.MIN
     end       time.MAX
     total     0
@@ -17,21 +17,21 @@ method: new-calendar (; Calendar) {
   [new-quantity] as(Calendar)
 }
 
-type: Resource data.Record
+type: Resource Record
 
 method: new-resource (; Resource) {
-  data.record: (calendar new-calendar) as(Resource)
+  record: (calendar new-calendar) as(Resource)
 }
 
-type: Booking data.Record
+type: Booking Record
 
 method: new-booking (; Booking) {
-  let: t time.today
+  let: t today
   
-  data.record: (
+  record: (
     resource NIL
     start    t
-    end      (t +(1 time.days))
+    end      (t +(1 days))
     quantity 1) as(Booking)
 }
 
