@@ -506,6 +506,15 @@ Methods belong to the containing scope.
 ['outer 'inner 'outer]
 ```
 
+Indexes may be used instead of types to match any type compatible with the specified argument.
+
+```
+  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  min("foo" "bar")
+
+["bar"]
+```
+
 ### macros
 Macros are called during compilation and expand to the unquoted contents of their stacks.
 

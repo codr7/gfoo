@@ -37,11 +37,9 @@ func (_ *TimeDeltaType) New(name string, parents...Type) ValType {
 }
 
 func (self *TimeDeltaType) Print(val Val, out io.Writer) error {
-	d := val.data.(TimeDelta)
-	_, err := fmt.Fprintf(out, "%v-%v-%v", d.years, d.months, d.days) 
-	return err
+	return self.Dump(val, out)
 }
 
-func (self *TimeDeltaType) Unquote(val Val, scope *Scope, pos Pos) Form {
+func (_ *TimeDeltaType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

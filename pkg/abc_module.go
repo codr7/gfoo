@@ -322,18 +322,21 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var rets []Ret
 
 	for _, f := range retsForm.body {
-		rtn := f.(*Id).name
-		rtb := scope.Get(rtn)
+		if rti, ok := f.(*Literal); ok && rti.val.dataType == &TInt {
+			rets = append(rets, RIndex(int(rti.val.data.(*Int).Int64())))
+		} else if rtn, ok := f.(*Id); ok {
+			rtb := scope.Get(rtn.name)
+			
+			if rtb == nil {
+				return out, scope.Error(f.Pos(), "Type not found: %v", rtn)
+			}
 
-		if rtb == nil {
-			return out, scope.Error(f.Pos(), "Type not found: %v", rtn)
+			if rtb.val.dataType != &TMeta {
+				return out, scope.Error(f.Pos(), "Expected type: %v", rtb.val.dataType.Name())
+			}
+
+			rets = append(rets, RType(rtb.val.data.(Type)))
 		}
-
-		if rtb.val.dataType != &TMeta {
-			return out, scope.Error(f.Pos(), "Expected type: %v", rtb.val.dataType.Name())
-		}
-
-		rets = append(rets, RType(rtb.val.data.(Type)))
 	}
 	
 	var bodyOps []Op

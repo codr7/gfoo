@@ -116,6 +116,11 @@ scope: (foo 35)
   bar check: =('outer)
 }
 
+{
+  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  min("foo" "bar") check: =("bar")
+}
+
 thread: (35) {+(7)}
 call check: =(42)
 
