@@ -105,6 +105,30 @@ All values have boolean representations; non-zero integers are true, empty strin
 [T F]
 ```
 
+`and:` returns the value on top of the stack if it's false, otherwise the right operand is evaluated.
+
+```
+  T and: 42
+
+[42]
+
+  _ F and: say("evaluate!")
+
+[F]
+```
+
+`or:` returns the value on top of the stack if it's true, otherwise the right operand is evaluated.
+
+```
+  F or: 42
+
+[42]
+
+  _ 42 or: say("evaluate!")
+
+[F]
+```
+
 #### Char
 Characters are prefixed with `\`.
 

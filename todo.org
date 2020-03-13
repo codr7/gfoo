@@ -1,5 +1,3 @@
-* add and:/or: macros
-** first argument on stack
 * add negation using !
 ** NotForm
 ** compile value 

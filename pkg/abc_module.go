@@ -4,6 +4,18 @@ import (
 	"os"
 )
 
+func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	right := in.Pop()
+	var rightOps []Op
+	var err error
+	
+	if rightOps, err = right.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewAnd(form, rightOps)), nil
+}
+
 func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	var trueOps []Op
@@ -373,6 +385,18 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	})
 	
 	return out, nil
+}
+
+func orImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	right := in.Pop()
+	var rightOps []Op
+	var err error
+	
+	if rightOps, err = right.Compile(nil, nil, scope); err != nil {
+		return out, err
+	}
+	
+	return append(out, NewOr(form, rightOps)), nil
 }
 
 func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -747,6 +771,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddVal("T", &TBool, true)
 	self.AddVal("F", &TBool, false)
 
+	self.AddMacro("and:", 1, andImp)
 	self.AddMacro("?:", 2, branchImp)
  	self.AddMacro("call", 0, callImp)
  	self.AddMacro("call:", 1, callArgsImp)
@@ -761,6 +786,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
 	self.AddMacro("method:", 3, methodImp)
+	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)
