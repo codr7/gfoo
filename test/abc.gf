@@ -30,7 +30,7 @@ length("abc") check: =(3)
 
 ["foo"...] check: =([\'f \'o \'o])
 
-['foo,(42)...] check: =(['foo 42])
+[,'foo 42...] check: =(['foo 42])
 
 peek([]) check: is(NIL)
 
@@ -99,18 +99,18 @@ scope: (foo 35)
 .bar check: =(42)
 
 {
-  method: foo (x Int; Pair) {'int x,}
-  method: foo (x String; Pair) {'string x,}
-  foo(42) check: =('int 42,)
-  foo("bar") check: =('string "bar",)
+  method: foo (x Int; Pair) {,'int x}
+  method: foo (x String; Pair) {,'string x}
+  foo(42) check: =(,'int 42)
+  foo("bar") check: =(,'string "bar")
 }
 
 {
-  method: foo (_ Int; Pair) ('int,)
-  method: foo (_ String; Pair) ('string,)
+  method: foo (_ Int; Id) (_ 'int)
+  method: foo (_ String; Id) (_ 'string)
 
-  foo(42) check: =(42 'int,)
-  foo("bar") check: =("bar" 'string,)
+  foo(42) check: =('int)
+  foo("bar") check: =('string)
 }
 
 {

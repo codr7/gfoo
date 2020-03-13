@@ -21,6 +21,10 @@ func (self Pair) Compare(other Pair) Order {
 }
 
 func (self Pair) Dump(out io.Writer) error {
+	if _, err := io.WriteString(out, ","); err != nil {
+		return err
+	}
+
 	if err := self.left.Dump(out); err != nil {
 		return err
 	}
@@ -30,10 +34,6 @@ func (self Pair) Dump(out io.Writer) error {
 	}
 	
 	if err := self.right.Dump(out); err != nil {
-		return err
-	}
-
-	if _, err := io.WriteString(out, ","); err != nil {
 		return err
 	}
 

@@ -375,10 +375,6 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return out, nil
 }
 
-func pairImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewPairOp(form)), nil
-}
-
 func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	result := in.Pop()
 	var resultOps []Op
@@ -741,6 +737,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddType(&TNumber)
 	self.AddType(&TOptional)
 	self.AddType(&TPair)
+	self.AddType(&TPairForm)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
 	self.AddType(&TSlice)
@@ -764,7 +761,6 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
 	self.AddMacro("method:", 3, methodImp)
-	self.AddMacro(",", 0, pairImp)
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)

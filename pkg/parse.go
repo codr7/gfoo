@@ -10,7 +10,7 @@ import (
 
 func IsId(c rune) bool {
 	return unicode.IsGraphic(c) && !unicode.IsSpace(c) &&
-		c != ';' && c != '\'' && c != '@' && c != '\\' && c != '"' &&
+		c != ',' && c != ';' && c != '\'' && c != '@' && c != '\\' && c != '"' &&
 		c != '(' && c != ')' && c != '{' && c != '}' && c != '[' && c != ']'
 }
 
@@ -106,6 +106,8 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	}
 
 	switch c {
+	case ',':
+		return self.ParsePair(in, pos)
 	case '\'':
 		return self.ParseQuote(in, pos)
 	case '@':
@@ -287,6 +289,27 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	}
 	
 	return NewLiteral(NewVal(&TInt, big.NewInt(v)), fpos), nil
+}
+
+func (self *Scope) ParsePair(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	var l, r Form
+	var err error
+	
+	if l, err = self.ParseForm(in, pos); err != nil {
+		return nil, err
+	}
+
+	if err := SkipSpace(in, pos); err != nil {
+		return nil, err
+	}
+
+	if r, err = self.ParseForm(in, pos); err != nil {
+		return nil, err
+	}
+
+	return NewPairForm(l, r, fpos), nil
 }
 
 func (self *Scope) ParseQuote(in *bufio.Reader, pos *Pos) (Form, error) {

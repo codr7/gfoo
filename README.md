@@ -155,9 +155,9 @@ Integers may be spread using `...`.
 Pairs allow treating two values as one, and may be created using `,`.
 
 ```
-  1 2,
+  ,1 2
 
-[1 2,]
+[,1 2]
 ```
 
 Pairs may be spread using `...`.
@@ -338,13 +338,9 @@ foo
 []
 ```
 
-Pairs and slices may be used to print several values at once.
+Slices may be used to print several values at once.
 
 ```
-  say('foo 42,)
-
-foo42
-[]
   say([1 \n 2 \n 3])
 
 1
@@ -483,8 +479,8 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 Metods allow dispatching on argument types.
 
 ```
-  method: foo (x Int; Pair) {'int x,}
-  method: foo (x String; Pair) {'string x,}
+  method: foo (x Int; Pair) {,'int x}
+  method: foo (x String; Pair) {,'string x}
   foo(42) foo("bar")
 
 ['int 42, 'string "bar",]
@@ -493,11 +489,11 @@ Metods allow dispatching on argument types.
 Arguments may be anonymous, which leaves the value on the stack.
 
 ```
-  method: foo (_ Int; Pair) ('int,)
-  method: foo (_ String; Pair) ('string,)
+  method: foo (_ Int; Id) (_ 'int)
+  method: foo (_ String; Id) (_ 'string)
   foo(42) foo("bar")
 
-[42 'int, "bar" 'string,]
+['int 'string]
 ```
 
 Indexes may be used instead of types to match any type compatible with the specified argument.

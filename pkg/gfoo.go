@@ -21,6 +21,7 @@ func Init() {
 	TMeta.Init("Type", &TAny)
 	TMethod.Init("Method", &TAny)
 	TPair.Init("Pair", &TAny)
+	TPairForm.Init("PairForm", &TAny)
 	TRecord.Init("Record", &TAny)
 	TScope.Init("Scope", &TAny)
 	TScopeForm.Init("ScopeForm", &TAny)

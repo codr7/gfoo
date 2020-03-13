@@ -1,7 +1,6 @@
 package gfoo
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -25,9 +24,7 @@ func (_ *TimeDeltaType) Compare(x, y Val) Order {
 }
 
 func (_ *TimeDeltaType) Dump(val Val, out io.Writer) error {
-	d := val.data.(TimeDelta)
-	_, err := fmt.Fprintf(out, "TimeDelta(%v %v %v)", d.years, d.months, d.days) 
-	return err
+	return val.data.(TimeDelta).Dump(out)
 }
 
 func (_ *TimeDeltaType) New(name string, parents...Type) ValType {
@@ -37,7 +34,7 @@ func (_ *TimeDeltaType) New(name string, parents...Type) ValType {
 }
 
 func (self *TimeDeltaType) Print(val Val, out io.Writer) error {
-	return self.Dump(val, out)
+	return val.data.(TimeDelta).Dump(out)
 }
 
 func (_ *TimeDeltaType) Unquote(val Val, scope *Scope, pos Pos) Form {
