@@ -5,27 +5,23 @@
 ** readme/test
 * demo/bookings.gf
 ** add Resource.min-length/max-length
+*** default min-length to 1 days
 *** use min-length to init end
-*** fail if booking > max-length
+*** fail if booking < min-length or > max-length
+**** add and/or macros
 **** add try:/catch:/fail
 ***** require try: or catch: if code contains fail
 ***** forward error on try:
+* ---
 * add string dump support for \n
 * add negation using !
 ** NotForm
 ** compile value 
 ** emit Not op
 *** call .Bool
-* add and/or macros
-* ---
 * add trait: (...) X
 ** create trait with parents
 * add trait parents to type:
-* add Maybe types
-** handle ? in ParseId
-** create types on demand that inherit from X & TOptional
-** use Type.New
-* --
 * add Table
 ** key/records
 * add Ratio type
