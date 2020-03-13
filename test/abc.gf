@@ -106,6 +106,19 @@ scope: (foo 35)
 }
 
 {
+  method: foo (_ Int; Pair) ('int,)
+  method: foo (_ String; Pair) ('string,)
+
+  foo(42) check: =(42 'int,)
+  foo("bar") check: =("bar" 'string,)
+}
+
+{
+  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  min("foo" "bar") check: =("bar")
+}
+
+{
   method: bar (;Id) {'outer}
 
   {
@@ -114,11 +127,6 @@ scope: (foo 35)
   }
 
   bar check: =('outer)
-}
-
-{
-  method: min (x Any y 0; 0) {x <=(y) ?: x y}
-  min("foo" "bar") check: =("bar")
 }
 
 thread: (35) {+(7)}

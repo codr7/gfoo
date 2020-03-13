@@ -490,6 +490,25 @@ Metods allow dispatching on argument types.
 ['int 42, 'string "bar",]
 ```
 
+Arguments may be anonymous, which leaves the value on the stack.
+
+```
+  method: foo (_ Int; Pair) ('int,)
+  method: foo (_ String; Pair) ('string,)
+  foo(42) foo("bar")
+
+[42 'int, "bar" 'string,]
+```
+
+Indexes may be used instead of types to match any type compatible with the specified argument.
+
+```
+  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  min("foo" "bar")
+
+["bar"]
+```
+
 Methods belong to the containing scope.
 
 ```
@@ -504,15 +523,6 @@ Methods belong to the containing scope.
   bar
 
 ['outer 'inner 'outer]
-```
-
-Indexes may be used instead of types to match any type compatible with the specified argument.
-
-```
-  method: min (x Any y 0; 0) {x <=(y) ?: x y}
-  min("foo" "bar")
-
-["bar"]
 ```
 
 ### macros

@@ -1,4 +1,3 @@
-* don't bind method args with id=_ in methodImp
 * demo/bookings.gf
 ** pull data/time bindings into current scope
 *** add use: X (...) macro

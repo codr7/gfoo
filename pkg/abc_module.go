@@ -342,7 +342,9 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var bodyOps []Op
 	
 	for i := len(args)-1; i >= 0; i-- {
-		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
+		if args[i].name != "_" {
+			bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
+		}
 	}
 
 	methodScope := scope.Clone()
