@@ -46,7 +46,7 @@ func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp)
 		f = b.val.data.(*Function)
 	}
 
-	m := f.NewMethod(args, rets, imp, self)
+	m := f.NewMethod(args, rets, imp)
 	self.AddVal(m.Name(), &TMethod, m)
 	self.methods = append(self.methods, m)
 }

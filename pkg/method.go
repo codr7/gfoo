@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-type MethodImp = func(stack *Slice, scope *Scope, pos Pos) error
+type MethodImp = func(scope *Scope, stack *Slice, pos Pos) error
 
 type Method struct {
 	function *Function
@@ -12,21 +12,18 @@ type Method struct {
 	args []Arg
 	rets []Ret
 	imp MethodImp
-	scope *Scope
 }
 
 func (self *Method) Init(
 	function *Function,
 	args []Arg,
 	rets []Ret,
-	imp MethodImp,
-	scope *Scope) *Method{
+	imp MethodImp) *Method{
 	self.function = function
 	self.index = -1
 	self.args = args
 	self.rets = rets
 	self.imp = imp
-	self.scope = scope
 	return self
 }
 
@@ -51,7 +48,7 @@ func (self *Method) Applicable(stack *Slice) bool {
 	return true
 }
 
-func (self *Method) Call(stack *Slice, pos Pos) error {	
+func (self *Method) Call(scope *Scope, stack *Slice, pos Pos) error {	
 	var in []Val
 	argCount := len(self.args)
 
@@ -60,7 +57,7 @@ func (self *Method) Call(stack *Slice, pos Pos) error {
 		copy(in, stack.items[stack.Len()-argCount:])
 	}
 
-	if err := self.imp(stack, self.scope, pos); err != nil {
+	if err := self.imp(scope, stack, pos); err != nil {
 		return err
 	}
 
@@ -69,7 +66,7 @@ func (self *Method) Call(stack *Slice, pos Pos) error {
 	
 	for i := offs; i < stack.Len(); i++ {
 		if !self.rets[i-offs].Match(in, stack.items, i) {
-			return self.scope.Error(pos, "Invalid method result: %v %v", self.Name(), stack)
+			return scope.Error(pos, "Invalid method result: %v %v", self.Name(), stack)
 		}
 	}
 

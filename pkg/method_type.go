@@ -17,7 +17,7 @@ func (_ *MethodType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error
 		return scope.Error(pos, "Method not applicable: %v %v", m.Name(), stack)
 	}
 
-	return m.Call(stack, pos)
+	return m.Call(scope, stack, pos)
 }
 
 func (_ *MethodType) Compare(x, y Val) Order {

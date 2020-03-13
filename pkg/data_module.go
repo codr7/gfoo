@@ -38,18 +38,18 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewRecordOp(form, fieldOps)), nil
 }
 
-func recordLengthImp(stack *Slice, scope *Scope, pos Pos) error {
+func recordLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(*Record).Len()))))
 	return nil
 }
 
-func recordUnionImp(stack *Slice, scope *Scope, pos Pos) error {
+func recordUnionImp(scope *Scope, stack *Slice, pos Pos) error {
 	source := stack.Pop().data.(*Record)
 	stack.Pop().data.(*Record).Union(source)
 	return nil
 }
 
-func recordSetImp(stack *Slice, scope *Scope, pos Pos) error {
+func recordSetImp(scope *Scope, stack *Slice, pos Pos) error {
 	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
 	r.data.(*Record).Set(k.data.(string), *v)
 	return nil

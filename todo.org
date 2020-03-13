@@ -1,8 +1,5 @@
+* don't bind method args with id=_ in methodImp
 * demo/bookings.gf
-** remove scope arg from MethodImp
-*** remove Method.scope field
-** don't bind method args with id=_ in methodImp
-* --
 ** pull data/time bindings into current scope
 *** add use: X (...) macro
 **** add ValType.Use(val, scope)

@@ -359,7 +359,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, err
 	}
 	
-	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
+	scope.AddMethod(id.name, args, rets, func(scope *Scope, stack *Slice, pos Pos) error {
 		if cloneScope {
 			methodScope = methodScope.Clone()
 		}
@@ -494,7 +494,7 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	scope.AddMethod("as",
 		[]Arg{AType("val", impType), AVal("type", NewVal(&TMeta, t))},
 		[]Ret{RType(t)},
-		func(stack *Slice, scope *Scope, pos Pos) error {
+		func(scope *Scope, stack *Slice, pos Pos) error {
 			stack.Pop()
 			v := stack.Peek()
 			v.dataType = t
@@ -504,55 +504,55 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return out, nil
 }
 
-func boolImp(stack *Slice, scope *Scope, pos Pos) error {
+func boolImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
 }
 
-func cloneImp(stack *Slice, scope *Scope, pos Pos) error {
+func cloneImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(stack.Pop().Clone())
 	return nil
 }
 
-func dumpImp(stack *Slice, scope *Scope, pos Pos) error {
+func dumpImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Pop().Dump(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func eqImp(stack *Slice, scope *Scope, pos Pos) error {
+func eqImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Eq))
 	return nil
 }
 
-func gtImp(stack *Slice, scope *Scope, pos Pos) error {
+func gtImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Gt))
 	return nil
 }
 
-func gteImp(stack *Slice, scope *Scope, pos Pos) error {
+func gteImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) >= Eq))
 	return nil
 }
 
-func intAddImp(stack *Slice, scope *Scope, pos Pos) error {
+func intAddImp(scope *Scope, stack *Slice, pos Pos) error {
 	var z Int
 	z.Add(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func intMulImp(stack *Slice, scope *Scope, pos Pos) error {
+func intMulImp(scope *Scope, stack *Slice, pos Pos) error {
 	var z Int
 	z.Mul(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
-func intSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
+func intSpreadImp(scope *Scope, stack *Slice, pos Pos) error {
 	v := stack.Pop().data.(*Int)
 	
 	for i := int64(0); i < v.Int64(); i++  {
@@ -562,7 +562,7 @@ func intSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func intSubImp(stack *Slice, scope *Scope, pos Pos) error {
+func intSubImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	var z Int
 	z.Sub(stack.Pop().data.(*Int), y.data.(*Int))
@@ -570,7 +570,7 @@ func intSubImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func isaImp(stack *Slice, scope *Scope, pos Pos) error {
+func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 	parent := stack.Pop().data.(Type)
 	out := stack.Pop().data.(Type).Isa(parent)
 	
@@ -583,41 +583,41 @@ func isaImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func loadImp(stack *Slice, scope *Scope, pos Pos) error {
+func loadImp(scope *Scope, stack *Slice, pos Pos) error {
 	return scope.Load(stack.Pop().data.(string), stack)
 }
 
-func ltImp(stack *Slice, scope *Scope, pos Pos) error {
+func ltImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Lt))
 	return nil
 }
 
-func lteImp(stack *Slice, scope *Scope, pos Pos) error {
+func lteImp(scope *Scope, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) <= Eq))
 	return nil
 }
 
-func pairSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
+func pairSpreadImp(scope *Scope, stack *Slice, pos Pos) error {
 	p := stack.Pop().data.(Pair)
 	stack.Push(p.left)
 	stack.Push(p.right)
 	return nil
 }
 
-func sayImp(stack *Slice, scope *Scope, pos Pos) error {
+func sayImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) error {
+func sliceLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(*Slice).Len()))))
 	return nil
 }
 
-func slicePeekImp(stack *Slice, scope *Scope, pos Pos) error {
+func slicePeekImp(scope *Scope, stack *Slice, pos Pos) error {
 	in := stack.Pop().data.(*Slice).Peek()
 	var out Val
 	
@@ -631,7 +631,7 @@ func slicePeekImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func slicePopImp(stack *Slice, scope *Scope, pos Pos) error {
+func slicePopImp(scope *Scope, stack *Slice, pos Pos) error {
 	in := stack.Pop().data.(*Slice).Pop()
 	var out Val
 	
@@ -645,13 +645,13 @@ func slicePopImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func slicePushImp(stack *Slice, scope *Scope, pos Pos) error {
+func slicePushImp(scope *Scope, stack *Slice, pos Pos) error {
 	v := stack.Pop()
 	stack.Pop().data.(*Slice).Push(*v)
 	return nil
 }
 
-func sliceSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
+func sliceSpreadImp(scope *Scope, stack *Slice, pos Pos) error {
 	for _, v := range stack.Pop().data.(*Slice).items {
 		stack.Push(v)
 	}
@@ -659,12 +659,12 @@ func sliceSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func stringLengthImp(stack *Slice, scope *Scope, pos Pos) error {
+func stringLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, NewInt(int64(len(stack.Pop().data.(string))))))
 	return nil
 }
 
-func stringSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
+func stringSpreadImp(scope *Scope, stack *Slice, pos Pos) error {
 	for _, c := range stack.Pop().data.(string) {
 		stack.Push(NewVal(&TChar, c))
 	}
@@ -672,7 +672,7 @@ func stringSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 	return nil
 }
 
-func typeImp(stack *Slice, scope *Scope, pos Pos) error {
+func typeImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }

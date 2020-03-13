@@ -14,8 +14,8 @@ func (self *Function) Init(name string) *Function {
 	return self
 }
 
-func (self *Function) NewMethod(args []Arg, rets []Ret, imp MethodImp, scope *Scope) *Method {
-	m := new(Method).Init(self, args, rets, imp, scope)
+func (self *Function) NewMethod(args []Arg, rets []Ret, imp MethodImp) *Method {
+	m := new(Method).Init(self, args, rets, imp)
 	self.AddMethod(m)
 	return m
 }
@@ -40,7 +40,7 @@ func (self *Function) RemoveMethod(method *Method) {
 func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
 	for i := len(self.methods)-1; i >= 0; i-- {
 		if m := self.methods[i]; m.Applicable(stack) {
-			return m.Call(stack, pos)
+			return m.Call(scope, stack, pos)
 		}
 	}
 	
