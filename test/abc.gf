@@ -22,13 +22,7 @@ check: =(42)
 42 bool check: =(T)
 "" bool check: =(F)
 
-Number check: <(Int)
-Number check: <=(Int)
-Number check: <=(Number)
-
-Number check: >(Any)
-Number check: >=(Any)
-Number check: >=(Number)
+Int check: isa(Number)
 
 [3 ...] check: =([0 1 2])
 

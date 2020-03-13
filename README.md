@@ -87,6 +87,14 @@ New types are derived from their implementation and may be used as such without 
 [Int]
 ```
 
+`isa` returns the direct parent type or `NIL`.
+
+```
+  Int isa(Number)
+
+[Number]
+```
+
 #### Bool
 All values have boolean representations; non-zero integers are true, empty strings and slices false etc.
 
@@ -260,11 +268,32 @@ Strings may be spread using `...`.
 ```
 
 #### Time
-`now` may be used to get the current time.
+`now` may be used to get the current time,
 
 ```
   time.now
 [2020-03-01T01:30:30.3399994Z]
+```
+
+while `today` truncates to whole days.
+
+```
+  time.today
+
+[2020-03-01T00:00:00.00Z]
+```
+
+#### TimeDelta
+TimeDeltas may be used to perform date arithmetics.
+
+```
+  time.today
+  10 time.days
+
+[2020-03-01T00:00:00Z TimeDelta(0 0 10)]
+  +
+
+[2020-03-10T00:00:00Z TimeDelta(0 0 10)]
 ```
 
 ### values

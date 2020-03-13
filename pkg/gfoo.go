@@ -27,6 +27,7 @@ func Init() {
 	TSlice.Init("Slice", &TAny)
 	TString.Init("String", &TAny)
 	TTime.Init("Time", &TAny)
+	TTimeDelta.Init("TimeDelta", &TAny)
 
 	Nil.dataType = &TNil
 }

@@ -1,3 +1,19 @@
+* demo/bookings.gf
+** remove scope arg from MethodImp
+*** remove Method.scope field
+** don't bind method args with id=_ in methodImp
+* --
+** pull data/time bindings into current scope
+*** add use: X (...) macro
+**** add ValType.Use(val, scope)
+***** error on dup in Base
+***** append function methods
+** add Resource.min-length/max-length
+*** use min-length to init end
+*** fail if booking > max-length
+**** add try:/catch:/fail
+***** require try: or catch: if code contains fail
+***** forward error on try:
 * add string dump support for \n
 * add negation using !
 ** NotForm
@@ -40,10 +56,8 @@ macro: while: (cond body) {
   '(loop: (@cond else: break @body))
 }
 
-* add union types
-** add Union with list of types
+* add optional type literals
+** create optional if lookup for X? fails
+* add union type literals
 ** parse X|Y as union
 *** handle in ParseId
-** add Type.ReverseIsa
-*** call Isa for all types
-** replace uses of Isa with ReverseIsa

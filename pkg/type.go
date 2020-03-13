@@ -47,6 +47,18 @@ func (self *TypeBase) DirectParents() []Type {
 
 
 func (self *TypeBase) Isa(other Type) Type {
+	if self.name == other.Name() {
+		return other
+	}
+	
+	if u, ok := other.(*UnionType); ok {
+		for _, t := range u.types {
+			if out := self.Isa(t); out != nil {
+				return out
+			}
+		}
+	}
+	
 	return self.parents[other]
 }
 

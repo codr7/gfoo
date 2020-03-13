@@ -1,7 +1,6 @@
 package gfoo
 
 import (
-	"math/big"
 	"os"
 )
 
@@ -292,39 +291,32 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, scope.Error(f.Pos(), "Invalid result list: %v", f)
 	}
 
-	f = in.Pop()
-	var body *ScopeForm
-
-	if body, ok = f.(*ScopeForm); !ok {
-		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
-	}
-
+	body := in.Pop()
 	var args []Arg
 	
 	for i := 0; i < len(argsForm.body)-1; i++ {
 		anf := argsForm.body[i]
 		an := anf.(*Id).name
 		i++
+		atf := argsForm.body[i]
 
-		atnf := argsForm.body[i]
-		atn := atnf.(*Id).name
-		atb := scope.Get(atn)
+		if ati, ok := atf.(*Literal); ok && ati.val.dataType == &TInt {
+			args = append(args, AIndex(an, int(ati.val.data.(*Int).Int64())))
+		} else if atn, ok := atf.(*Id); ok {
+			atb := scope.Get(atn.name)
 
-		if atb == nil {
-			return out, scope.Error(atnf.Pos(), "Type not found: %v", atn)
+			if atb == nil {
+				return out, scope.Error(atf.Pos(), "Type not found: %v", atn)
+			}
+
+			if atb.val.dataType != &TMeta {
+				return out, scope.Error(atf.Pos(), "Expected type: %v", atb.val.dataType.Name())
+			}
+
+			args = append(args, AType(an, atb.val.data.(Type)))
+		} else {
+			return out, scope.Error(atf.Pos(), "Invalid argument type: %v", atf)
 		}
-
-		if atb.val.dataType != &TMeta {
-			return out, scope.Error(atnf.Pos(), "Expected type: %v", atb.val.dataType.Name())
-		}
-
-		args = append(args, AType(an, atb.val.data.(Type)))
-	}
-
-	var bodyOps []Op
-
-	for i := len(args)-1; i >= 0; i-- {
-		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
 	}
 
 	var rets []Ret
@@ -344,17 +336,37 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		rets = append(rets, RType(rtb.val.data.(Type)))
 	}
 	
-	methodScope := scope.Clone()
-	var err error
+	var bodyOps []Op
 	
-	if bodyOps, err = methodScope.Compile(body.body, bodyOps); err != nil {
-		return out, err
+	for i := len(args)-1; i >= 0; i-- {
+		bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
 	}
 
+	methodScope := scope.Clone()
+	var err error
+	var bodyForms []Form
+	var cloneScope bool
+	
+	if s, ok := body.(*ScopeForm); ok {
+		bodyForms = s.body
+		cloneScope = true
+	} else {
+		bodyForms = append(bodyForms, body)
+		cloneScope = false
+	}
+	
+	if bodyOps, err = methodScope.Compile(bodyForms, bodyOps); err != nil {
+		return out, err
+	}
+	
 	scope.AddMethod(id.name, args, rets, func(stack *Slice, scope *Scope, pos Pos) error {
+		if cloneScope {
+			methodScope = methodScope.Clone()
+		}
+		
 		return methodScope.EvalOps(bodyOps, stack)
 	})
-
+	
 	return out, nil
 }
 
@@ -527,24 +539,24 @@ func gteImp(stack *Slice, scope *Scope, pos Pos) error {
 }
 
 func intAddImp(stack *Slice, scope *Scope, pos Pos) error {
-	var z big.Int
-	z.Add(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
+	var z Int
+	z.Add(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
 func intMulImp(stack *Slice, scope *Scope, pos Pos) error {
-	var z big.Int
-	z.Mul(stack.Pop().data.(*big.Int), stack.Pop().data.(*big.Int))
+	var z Int
+	z.Mul(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
 	stack.Push(NewVal(&TInt, &z))
 	return nil
 }
 
 func intSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
-	v := stack.Pop().data.(*big.Int)
+	v := stack.Pop().data.(*Int)
 	
 	for i := int64(0); i < v.Int64(); i++  {
-		stack.Push(NewVal(&TInt, big.NewInt(i)))
+		stack.Push(NewVal(&TInt, NewInt(i)))
 	}
 
 	return nil
@@ -552,9 +564,22 @@ func intSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 
 func intSubImp(stack *Slice, scope *Scope, pos Pos) error {
 	y := stack.Pop()
-	var z big.Int
-	z.Sub(stack.Pop().data.(*big.Int), y.data.(*big.Int))
+	var z Int
+	z.Sub(stack.Pop().data.(*Int), y.data.(*Int))
 	stack.Push(NewVal(&TInt, &z))
+	return nil
+}
+
+func isaImp(stack *Slice, scope *Scope, pos Pos) error {
+	parent := stack.Pop().data.(Type)
+	out := stack.Pop().data.(Type).Isa(parent)
+	
+	if out == nil {
+		stack.Push(Nil)
+	} else {
+		stack.Push(NewVal(&TMeta, out))
+	}
+	
 	return nil
 }
 
@@ -588,7 +613,7 @@ func sayImp(stack *Slice, scope *Scope, pos Pos) error {
 }
 
 func sliceLengthImp(stack *Slice, scope *Scope, pos Pos) error {
-	stack.Push(NewVal(&TInt, big.NewInt(int64(stack.Pop().data.(*Slice).Len()))))
+	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(*Slice).Len()))))
 	return nil
 }
 
@@ -635,7 +660,7 @@ func sliceSpreadImp(stack *Slice, scope *Scope, pos Pos) error {
 }
 
 func stringLengthImp(stack *Slice, scope *Scope, pos Pos) error {
-	stack.Push(NewVal(&TInt, big.NewInt(int64(len(stack.Pop().data.(string))))))
+	stack.Push(NewVal(&TInt, NewInt(int64(len(stack.Pop().data.(string))))))
 	return nil
 }
 
@@ -701,7 +726,7 @@ func (self *Scope) InitAbc() *Scope {
 	
 	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
 	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)
-	self.AddMethod("dump", []Arg{AType("val", &TAny)}, nil, dumpImp)
+	self.AddMethod("dump", []Arg{AType("val", &TOptional)}, nil, dumpImp)
 	self.AddMethod("=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, eqImp)
 	self.AddMethod(">", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gtImp)
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
@@ -709,6 +734,12 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("...", []Arg{AType("val", &TInt)}, nil, intSpreadImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
+
+	self.AddMethod("isa",
+		[]Arg{AType("child", &TMeta), AType("parent", &TMeta)},
+		[]Ret{RType(Optional(&TMeta))},
+		isaImp)
+	
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)

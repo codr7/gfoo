@@ -55,5 +55,5 @@ func (self *Arg) Match(stack []Val, index int) bool {
 	}
 
 	xt, yt := stack[index].dataType, stack[self.index].dataType
-	return xt.Isa(yt) != nil
+	return oxt.Isa(yt) != nil
 }

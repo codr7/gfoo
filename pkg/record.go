@@ -57,7 +57,7 @@ func (self *Record) Dump(out io.Writer) error {
 			return err
 		}
 		
-		return f.val.Dump(out)
+		f.val.Dump(out)
 	}
 
 	if _, err := io.WriteString(out, ")"); err != nil {

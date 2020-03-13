@@ -2,7 +2,6 @@ package gfoo
 
 import (
 	"io"
-	"math/big"
 )
 
 var TInt IntType
@@ -12,16 +11,16 @@ type IntType struct {
 }
 
 func (_ *IntType) Bool(val Val) bool {
-	v := val.data.(*big.Int)
+	v := val.data.(*Int)
 	return !(v.IsInt64() && v.Int64() == 0)
 }
 
 func (_ *IntType) Compare(x, y Val) Order {
-	return Order(x.data.(*big.Int).Cmp(y.data.(*big.Int)))
+	return Order(x.data.(*Int).Cmp(y.data.(*Int)))
 }
 
 func (_ *IntType) Dump(val Val, out io.Writer) error {
-	_, err := io.WriteString(out, val.data.(*big.Int).String())
+	_, err := io.WriteString(out, val.data.(*Int).String())
 	return err
 }
 
