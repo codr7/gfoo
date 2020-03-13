@@ -284,7 +284,7 @@ while `today` truncates to whole days.
 ```
 
 #### TimeDelta
-TimeDeltas may be used to perform date arithmetics.
+Time deltas may be used to perform date arithmetics.
 
 ```
   time.today
