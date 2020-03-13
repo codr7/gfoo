@@ -293,7 +293,7 @@ TimeDeltas may be used to perform date arithmetics.
 [2020-03-01T00:00:00Z TimeDelta(0 0 10)]
   +
 
-[2020-03-10T00:00:00Z TimeDelta(0 0 10)]
+[2020-03-10T00:00:00Z]
 ```
 
 ### values
