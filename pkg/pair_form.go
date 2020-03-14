@@ -68,7 +68,18 @@ func (self *PairForm) Dump(out io.Writer) error {
 }
 
 func (self *PairForm) Quote(scope *Scope, pos Pos) (Val, error) {
-	return NewVal(&TPairForm, self), nil
+	var left, right Val
+	var err error
+
+	if left, err = self.left.Quote(scope, pos); err != nil {
+		return Nil, err
+	}
+
+	if right, err = self.right.Quote(scope, pos); err != nil {
+		return Nil, err
+	}
+
+	return NewVal(&TPair, NewPair(left, right)), nil
 }
 
 func (self *PairForm) Unquote(val Val, scope *Scope, pos Pos) Form {

@@ -761,7 +761,6 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddType(&TNumber)
 	self.AddType(&TOptional)
 	self.AddType(&TPair)
-	self.AddType(&TPairForm)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
 	self.AddType(&TSlice)

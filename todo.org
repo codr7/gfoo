@@ -3,13 +3,13 @@
 ** compile value 
 ** emit Not op
 *** call .Bool
-* add try:/catch:/fail
-** require try: or catch: if code contains fail
-** forward error on try:
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
 * add trait parents to type:
+* add try:/catch:/fail
+** require try: or catch: if code contains fail
+** forward error on try:
 * add Table
 ** key/records
 * add Ratio type
