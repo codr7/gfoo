@@ -8,6 +8,7 @@
 * add trait: (...) X
 ** create trait with parents
 * add trait parents to type:
+* add support for group binding to let:/define:
 * add try:/catch:/fail
 ** require try: or catch: if code contains fail
 ** forward error on try:
@@ -42,5 +43,3 @@ macro: while: (cond body) {
 * add union type literals
 ** parse X|Y as union
 *** handle in ParseId
-
- data.record: (foo 1) data.merge(data.record: ())

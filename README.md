@@ -544,8 +544,8 @@ and evaluated using `call`, or `call:` which pushes specified arguments after th
 Metods allow dispatching on argument types.
 
 ```
-  method: foo (x Int; Pair) {,'int x}
-  method: foo (x String; Pair) {,'string x}
+  method: foo(x Int; Pair) {,'int x}
+  method: foo(x String; Pair) {,'string x}
   foo(42) foo("bar")
 
 ['int 42, 'string "bar",]
@@ -554,8 +554,8 @@ Metods allow dispatching on argument types.
 Arguments may be anonymous, which leaves the value on the stack.
 
 ```
-  method: foo (_ Int; Id) (_ 'int)
-  method: foo (_ String; Id) (_ 'string)
+  method: foo(_ Int; Id) (_ 'int)
+  method: foo(_ String; Id) (_ 'string)
   foo(42) foo("bar")
 
 ['int 'string]
@@ -564,7 +564,7 @@ Arguments may be anonymous, which leaves the value on the stack.
 Indexes may be used instead of types to match any type compatible with the specified argument.
 
 ```
-  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  method: min(x Any y 0; 0) {x <=(y) ?: x y}
   min("foo" "bar")
 
 ["bar"]
@@ -573,17 +573,26 @@ Indexes may be used instead of types to match any type compatible with the speci
 Methods belong to the containing scope.
 
 ```
-  method: bar (;Id) {'outer}
+  method: bar(;Id) 'outer
   bar
 
   {
-    method: bar (;Id) {'inner}
+    method: bar(;Id) 'inner
     bar
   }
 
   bar
 
 ['outer 'inner 'outer]
+```
+
+Calls may be negated using `!`.
+
+```
+  method: foo(;Int) 42
+  !foo
+
+[-42]
 ```
 
 ### macros

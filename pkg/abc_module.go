@@ -9,7 +9,7 @@ func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var rightOps []Op
 	var err error
 	
-	if rightOps, err = right.Compile(nil, nil, scope); err != nil {
+	if rightOps, err = right.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -21,14 +21,14 @@ func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var trueOps []Op
 	var err error
 	
-	if trueOps, err = f.Compile(nil, nil, scope); err != nil {
+	if trueOps, err = f.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 
 	f = in.Pop()
 	var falseOps []Op
 
-	if falseOps, err = f.Compile(nil, nil, scope); err != nil {
+	if falseOps, err = f.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 
@@ -44,7 +44,7 @@ func callArgsImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var argOps []Op
 	var err error
 	
-	if argOps, err = arg.Compile(nil, nil, scope); err != nil {
+	if argOps, err = arg.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -56,7 +56,7 @@ func checkImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var condOps []Op
 	var err error
 	
-	if condOps, err = cond.Compile(nil, nil, scope); err != nil {
+	if condOps, err = cond.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -137,10 +137,6 @@ func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		
 		return nil
 	})
-}
-
-func isImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewIs(form, nil)), nil
 }
 
 func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -392,7 +388,7 @@ func orImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var rightOps []Op
 	var err error
 	
-	if rightOps, err = right.Compile(nil, nil, scope); err != nil {
+	if rightOps, err = right.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -404,7 +400,7 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var resultOps []Op
 	var err error
 	
-	if resultOps, err = result.Compile(nil, nil, scope); err != nil {
+	if resultOps, err = result.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 	
@@ -463,7 +459,7 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var argOps []Op
 	var err error
 	
-	if argOps, err = args.Compile(nil, nil, scope); err != nil {
+	if argOps, err = args.Compile(in, nil, scope); err != nil {
 		return out, err
 	}
 
@@ -639,6 +635,12 @@ func intSubImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func isImp(scope *Scope, stack *Slice, pos Pos) error {
+	y := stack.Pop()
+	stack.Push(NewVal(&TBool, stack.Pop().Is(*y)))
+	return nil
+}
+
 func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 	parent := stack.Pop().data.(Type)
 	out := stack.Pop().data.(Type).Isa(parent)
@@ -780,7 +782,6 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("include:", 1, includeImp)
-	self.AddMacro("is", 0, isImp)
 	self.AddMacro("\\:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
@@ -804,7 +805,8 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("...", []Arg{AType("val", &TInt)}, nil, intSpreadImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
-
+	self.AddMethod("is", []Arg{AType("x", &TOptional), AType("y", &TOptional)}, []Ret{RType(&TBool)}, isImp)
+	
 	self.AddMethod("isa",
 		[]Arg{AType("child", &TMeta), AType("parent", &TMeta)},
 		[]Ret{RType(Optional(&TMeta))},

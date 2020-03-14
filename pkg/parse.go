@@ -183,29 +183,6 @@ func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 		pos.column++
 	}
 
-	if pc != ':' {
-		c, _, err = in.ReadRune()
-		
-		if err != nil && err != io.EOF {
-			return nil, err
-		}
-		
-		if err == nil {
-			if c == '(' {
-				var f Form
-				
-				if f, err = self.ParseGroup(in, pos); err != nil {
-					return nil, err
-				}
-				
-				f.(*Group).Push(NewId(buffer.String(), fpos))
-				return f, nil
-			} else if err = in.UnreadRune(); err != nil {
-				return nil, err
-			}
-		}
-	}
-		
 	return NewId(buffer.String(), fpos), nil
 }
 

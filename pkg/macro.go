@@ -13,8 +13,14 @@ func NewMacro(name string, argCount int, imp MacroImp) *Macro {
 }
 
 func (self *Macro) Expand(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	if l := in.Len(); l < self.argCount {
-		scope.Error(form.Pos(), "Not enough arguments: %v (%v)", l, self.argCount)
+	inLen := 0
+
+	if in != nil {
+		inLen = in.Len()
+	}
+	
+	if inLen < self.argCount {
+		scope.Error(form.Pos(), "Not enough arguments: %v (%v)", inLen, self.argCount)
 	}
 	
 	return self.imp(form, in, out, scope)

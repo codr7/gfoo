@@ -1,5 +1,4 @@
-42 .. check: =(42)
-check: =(42)
+42 .. check: =(42) _
 
 42 'fail _ check: =(42)
 
@@ -116,30 +115,35 @@ scope: (foo 35)
 .bar check: =(42)
 
 {
-  method: foo (x Int; Pair) {,'int x}
-  method: foo (x String; Pair) {,'string x}
+  method: foo(;Int) 42
+  !foo check: =(!42)
+}
+
+{
+  method: foo(x Int; Pair) {,'int x}
+  method: foo(x String; Pair) {,'string x}
   foo(42) check: =(,'int 42)
   foo("bar") check: =(,'string "bar")
 }
 
 {
-  method: foo (_ Int; Id) (_ 'int)
-  method: foo (_ String; Id) (_ 'string)
+  method: foo(_ Int; Id) (_ 'int)
+  method: foo(_ String; Id) (_ 'string)
 
   foo(42) check: =('int)
   foo("bar") check: =('string)
 }
 
 {
-  method: min (x Any y 0; 0) {x <=(y) ?: x y}
+  method: min(x Any y 0; 0) {x <=(y) ?: x y}
   min("foo" "bar") check: =("bar")
 }
 
 {
-  method: bar (;Id) {'outer}
+  method: bar(;Id) 'outer
 
   {
-    method: bar (;Id) {'inner}
+    method: bar(;Id) 'inner
     bar check: =('inner)
   }
 
