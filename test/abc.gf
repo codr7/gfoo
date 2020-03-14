@@ -1,15 +1,17 @@
+42 .. check: =(42)
+check: =(42)
+
+42 'fail _ check: =(42)
+
 NIL check: is(NIL)
+
+!T check: is(F)
 
 T and: 42 check: =(42)
 F and: 42 check: =(F)
 
 F or: 42 check: =(42)
 42 or: F check: =(42)
-
-42 .. check: =(42)
-check: =(42)
-
-42 'fail _ check: =(42)
 
 35 +(7) check: =(42)
 42 -(7) check: =(35)
@@ -26,17 +28,24 @@ check: =(42)
 1 check: >=(1)
 
 42 bool check: =(T)
-"" bool check: =(F)
 
 Int check: isa(Number)
 
+!42 +(42) check: =(0)
+
 [3 ...] check: =([0 1 2])
+
+"" bool check: =(F)
 
 length("abc") check: =(3)
 
 ["foo"...] check: =([\'f \'o \'o])
 
+!,1 2 check: =(,!1 !2)
+
 [,'foo 42...] check: =(['foo 42])
+
+![1 2 3] check: =([!1 !2 !3])
 
 peek([]) check: is(NIL)
 
@@ -76,6 +85,8 @@ length([1 2 3]) check: =(3)
   foo check: =('bar)
 }
 
+!data.record: (foo 1 bar 2) check: =(data.record: (foo !1 bar !2))
+
 {
   let: r (data.record: (foo 1 bar 2 baz 3))
   r length check: =(3)
@@ -93,7 +104,7 @@ length([1 2 3]) check: =(3)
 }
 
 data.record: (foo 1 bar 2) ..
-union(data.record: (foo 3 bar 4 baz 5))
+data.merge(data.record: (foo 3 bar 4 baz 5))
 check: =(data.record: (foo 1 bar 2 baz 5))
 
 scope: (foo 35)

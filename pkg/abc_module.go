@@ -793,7 +793,6 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("use:", 2, useImp)
 
 	self.AddFunction("set")
-	self.AddFunction("union")
 	
 	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
 	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)

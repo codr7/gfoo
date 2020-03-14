@@ -26,6 +26,12 @@ func (_ *QuoteType) Dump(val Val, out io.Writer) error {
 	return val.data.(Val).Dump(out)
 }
 
+func (_ *QuoteType) Negate(val *Val) {
+	v := val.data.(Val)
+	v.Negate()
+	val.data = v
+}
+
 func (_ *QuoteType) New(name string, parents...Type) ValType {
 	t := new(QuoteType)
 	t.Init(name, parents...)

@@ -44,6 +44,10 @@ func (_ *TimeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *TimeType) Negate(val *Val) {
+	val.Init(&TBool, !self.Bool(*val))
+}
+
 func (_ *TimeType) New(name string, parents...Type) ValType {
 	t := new(TimeType)
 	t.Init(name, parents...)

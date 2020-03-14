@@ -31,6 +31,16 @@ func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, er
 	return source.data.(*Record).Get(key, Nil), nil
 }
 
+func (_ *RecordType) Negate(val *Val) {
+	v := val.data.(*Record).Clone()
+	
+	for i := 0; i < v.Len(); i++ {
+		v.fields[i].val.Negate()
+	}
+
+	val.data = v
+}
+
 func (_ *RecordType) New(name string, parents...Type) ValType {
 	t := new(RecordType)
 	t.Init(name, parents...)

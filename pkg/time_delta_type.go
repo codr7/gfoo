@@ -27,6 +27,10 @@ func (_ *TimeDeltaType) Dump(val Val, out io.Writer) error {
 	return val.data.(TimeDelta).Dump(out)
 }
 
+func (self *TimeDeltaType) Negate(val *Val) {
+	val.Init(&TBool, !self.Bool(*val))
+}
+
 func (_ *TimeDeltaType) New(name string, parents...Type) ValType {
 	t := new(TimeDeltaType)
 	t.Init(name, parents...)

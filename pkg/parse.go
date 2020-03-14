@@ -106,6 +106,8 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	}
 
 	switch c {
+	case '!':
+		return self.ParseNegate(in, pos)
 	case ',':
 		return self.ParsePair(in, pos)
 	case '\'':
@@ -289,6 +291,19 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	}
 	
 	return NewLiteral(NewVal(&TInt, big.NewInt(v)), fpos), nil
+}
+
+func (self *Scope) ParseNegate(in *bufio.Reader, pos *Pos) (Form, error) {
+	fpos := *pos
+	pos.column++
+	var f Form
+	var err error
+	
+	if f, err = self.ParseForm(in, pos); err != nil {
+		return nil, err
+	}
+
+	return NewNegateForm(f, fpos), nil
 }
 
 func (self *Scope) ParsePair(in *bufio.Reader, pos *Pos) (Form, error) {

@@ -24,6 +24,10 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (self *StringType) Negate(val *Val) {
+	val.Init(&TBool, !self.Bool(*val))
+}
+
 func (_ *StringType) New(name string, parents...Type) ValType {
 	t := new(StringType)
 	t.Init(name, parents...)

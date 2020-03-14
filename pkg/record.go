@@ -116,21 +116,13 @@ func (self *Record) Len() int {
 	return len(self.fields)
 }
 
-func (self *Record) Set(key string, val Val) {
-	if i, ok := self.Find(key); ok {
-		self.fields[i].val = val
-	} else {
-		self.Insert(i, key, val)
-	}
-}
-
-func (self *Record) Union(other *Record) {
+func (self *Record) Merge(source *Record) {
 	xi, yi := 0, 0
-	xl, yl := self.Len(), other.Len()
+	xl, yl := self.Len(), source.Len()
 	var out []RecordField
 	
 	for xi < xl && yi < yl {
-		x, y := self.fields[xi], other.fields[yi]
+		x, y := self.fields[xi], source.fields[yi]
 		
 		switch CompareString(x.key, y.key) {
 		case Lt:
@@ -152,7 +144,17 @@ func (self *Record) Union(other *Record) {
 	}
 
 	for yi < yl {
-		out = append(out, other.fields[yi])
+		out = append(out, source.fields[yi])
 		yi++
+	}
+
+	self.fields = out
+}
+
+func (self *Record) Set(key string, val Val) {
+	if i, ok := self.Find(key); ok {
+		self.fields[i].val = val
+	} else {
+		self.Insert(i, key, val)
 	}
 }

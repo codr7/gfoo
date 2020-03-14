@@ -105,6 +105,14 @@ All values have boolean representations; non-zero integers are true, empty strin
 [T F]
 ```
 
+Booleans may be negated using `!`.
+
+```
+  !T
+
+[F]
+```
+
 `and:` returns the value on top of the stack if it's false, otherwise the right operand is evaluated.
 
 ```
@@ -167,7 +175,15 @@ Integers may be specified using decimal, hexadecimal or binary notation.
 [42 42 42]
 ```
 
-Integers may be spread using `...`.
+Integers may be negated using `!`,
+
+```
+  !42
+
+[-42]
+```
+
+and spread using `...`.
 
 ```
   3...
@@ -184,7 +200,15 @@ Pairs allow treating two values as one, and may be created using `,`.
 [,1 2]
 ```
 
-Pairs may be spread using `...`.
+Pairs may be negated using `!`,
+
+```
+  !,1 2
+
+[.-1 -2]
+```
+
+and spread using `...`.
 
 ```
   ...
@@ -196,7 +220,8 @@ Pairs may be spread using `...`.
 Records are ordered mappings from identifiers to values.
 
 ```
-  data.record: (foo 1 bar 2)
+  use: data (record: merge)
+  record: (foo 1 bar 2)
 
 [Record(bar 2 foo 1)]
 ```
@@ -217,7 +242,7 @@ Missing fields return `NIL`.
 [NIL]
 ```
 
-`set` may be used to insert/update fields.
+`set` may be used to insert/update fields;
 
 ```
   .. set('baz 3)
@@ -225,12 +250,20 @@ Missing fields return `NIL`.
 [Record(bar 2 baz 3 foo 1)]
 ```
 
-`union` may be used to update several fields at once, the left value is kept for duplicates.
+and `merge` to update several fields at once, keeping the left value for duplicates.
 
 ```
-  data.record: (foo 1 bar 2) .. union(data.record: (foo 3 bar 4 baz 5))
+  record: (foo 1 bar 2) .. merge(record: (foo 3 bar 4 baz 5))
 
 [Record(bar 2 baz 5 foo 1)]
+```
+
+Records may be negated using `!`.
+
+```
+  !record: (foo 1 bar 2)
+
+[Record(bar -2 foo -1)]
 ```
 
 #### Slice
@@ -257,6 +290,14 @@ Slices support basic stack operations,
   _ length
 
 [2]
+```
+
+negation using `!`,
+
+```
+  ![1 2 3]
+
+[-1 -2 -3]
 ```
 
 and spreading using `...`.

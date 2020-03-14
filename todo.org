@@ -1,8 +1,9 @@
-* add negation using !
-** NotForm
-** compile value 
-** emit Not op
-*** call .Bool
+* use in bookings.gf/update
+** add support for id groups in method argument list
+** add map method
+*** lazy/iter
+*** cache if multiple results
+*** skip NIL returns
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
@@ -41,3 +42,5 @@ macro: while: (cond body) {
 * add union type literals
 ** parse X|Y as union
 *** handle in ParseId
+
+ data.record: (foo 1) data.merge(data.record: ())

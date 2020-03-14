@@ -41,6 +41,10 @@ func (_ *BoolType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *BoolType) Negate(val *Val) {
+	val.data = !val.data.(bool)
+}
+
 func (_ *BoolType) New(name string, parents...Type) ValType {
 	t := new(BoolType)
 	t.Init(name, parents...)

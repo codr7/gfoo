@@ -30,6 +30,16 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
+func (_ *SliceType) Negate(val *Val) {
+	v := val.data.(*Slice).Clone()
+	
+	for i := 0; i < v.Len(); i++ {
+		v.items[i].Negate()
+	}
+
+	val.data = v
+}
+
 func (_ *SliceType) New(name string, parents...Type) ValType {
 	t := new(SliceType)
 	t.Init(name, parents...)

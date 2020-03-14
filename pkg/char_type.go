@@ -38,11 +38,15 @@ func (_ *CharType) New(name string, parents...Type) ValType {
 	return t
 }
 
-func (self *CharType) Print(val Val, out io.Writer) error {
+func (self *CharType) Negate(val *Val) {
+	val.Init(&TBool, !self.Bool(*val))
+}
+
+func (_ *CharType) Print(val Val, out io.Writer) error {
 	_, err := fmt.Fprintf(out, "%c", val.data.(rune))
 	return err
 }
 
-func (self *CharType) Unquote(val Val, scope *Scope, pos Pos) Form {
+func (_ *CharType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	return NewLiteral(val, pos)
 }

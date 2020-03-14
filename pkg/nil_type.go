@@ -27,6 +27,8 @@ func (_ *NilType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error
 	return Nil, nil
 }
 
+func (_ *NilType) Negate(val *Val) {}
+
 func (_ *NilType) New(name string, parents...Type) ValType {
 	t := new(NilType)
 	t.Init(name, parents...)

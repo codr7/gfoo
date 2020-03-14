@@ -24,6 +24,13 @@ func (_ *PairType) New(name string, parents...Type) ValType {
 	return t
 }
 
+func (_ *PairType) Negate(val *Val) {
+	v := val.data.(Pair)
+	v.left.Negate()
+	v.right.Negate()
+	val.data = v
+}
+
 func (_ *PairType) Print(val Val, out io.Writer) error {
 	return val.data.(Pair).Print(out)
 }

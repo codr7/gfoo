@@ -16,10 +16,14 @@ func (self *Lambda) Init(argCount int, body []Op, scope *Scope) *Lambda {
 	return self
 }
 
-func (self *Lambda) Call(stack *Slice, pos Pos) error {
+func (self *Lambda) Call(scope *Scope, stack *Slice, pos Pos) error {
 	if sl := stack.Len(); sl < self.argCount {
 		return self.scope.Error(pos, "Not enough arguments: %v (%v)", sl, self.argCount)
 	}
+
+	if self.scope != nil {
+		scope = self.scope.Clone()
+	}
 	
-	return self.scope.Clone().EvalOps(self.body, stack)
+	return scope.EvalOps(self.body, stack)
 }

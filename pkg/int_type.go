@@ -28,6 +28,12 @@ func (self *IntType) Is(x, y Val) bool {
 	return self.Compare(x, y) == Eq 
 }
 
+func (_ *IntType) Negate(val *Val) {
+	var v Int
+	v.Neg(val.data.(*Int))
+	val.data = &v
+}
+
 func (_ *IntType) New(name string, parents...Type) ValType {
 	t := new(IntType)
 	t.Init(name, parents...)

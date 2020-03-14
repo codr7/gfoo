@@ -63,6 +63,11 @@ func (self Val) Literal(pos Pos) *Literal {
 	return NewLiteral(self, pos)
 }
 
+func (self *Val) Negate() {
+	self.dataType.Negate(self)
+}
+
+
 func (self Val) Print(out io.Writer) error {
 	return self.dataType.Print(self, out)
 }

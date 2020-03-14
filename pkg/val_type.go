@@ -14,6 +14,7 @@ type ValType interface {
 	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
+	Negate(val *Val)
 	New(name string, parents...Type) ValType
 	Unquote(val Val, scope *Scope, pos Pos) Form
 }
@@ -50,4 +51,9 @@ func (self *ValTypeBase) Is(x, y Val) bool {
 func (self *ValTypeBase) Name() string {
 	return self.name
 }
+
+func (self *ValTypeBase) Negate(val *Val) {
+	val.Init(&TBool, false)
+}
+
 
