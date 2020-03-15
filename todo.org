@@ -1,9 +1,9 @@
-* use in bookings.gf/update
-** add support for id groups in method argument list
-** add map method
-*** lazy/iter
-*** cache if multiple results
+* add support for id groups in method argument list
+* add map method
+*** lazy iterator
+*** cache multiple results
 *** skip NIL returns
+*** bookings.gf
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents

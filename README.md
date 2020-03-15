@@ -524,10 +524,10 @@ Identifiers starting with `.` get their scope from the stack.
 ```
 
 ### lambdas
-Lambdas may be created using `\:`;
+Lambdas may be created using `/:`;
 
 ```
-  \: (x y) {x y 3}
+  /: (x y) {x y 3}
 
 [Lambda(0xc0000483c0)]
 ```

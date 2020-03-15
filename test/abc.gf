@@ -114,6 +114,9 @@ scope: (foo 35)
 
 .bar check: =(42)
 
+/:(x) !x
+call: (42) check: =(!42)
+
 {
   method: foo(;Int) 42
   !foo check: =(!42)

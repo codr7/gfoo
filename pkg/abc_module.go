@@ -148,13 +148,6 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
-	f = in.Pop()
-	var body *ScopeForm
-
-	if body, ok = f.(*ScopeForm); !ok {
-		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
-	}
-	
 	var bodyOps []Op
 
 	for i := len(args.body)-1; i >= 0; i-- {
@@ -167,15 +160,26 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		
 		bodyOps = append(bodyOps, NewLet(id, id.name))
 	}
-	
+
+	body := in.Pop()
+	var bodyForms []Form
+	var lambdaScope *Scope
 	scope = scope.Clone()
+	
+	if s, ok := body.(*ScopeForm); ok {
+		bodyForms = s.body
+		lambdaScope = scope
+	} else {
+		bodyForms = append(bodyForms, body)
+	}
+	
 	var err error
 	
-	if bodyOps, err = scope.Compile(body.body, bodyOps); err != nil {
+	if bodyOps, err = scope.Compile(bodyForms, bodyOps); err != nil {
 		return out, err
 	}
 
-	return append(out, NewPush(form, NewVal(&TLambda, NewLambda(len(args.body), bodyOps, scope)))), nil
+	return append(out, NewPush(form, NewVal(&TLambda, NewLambda(len(args.body), bodyOps, lambdaScope)))), nil
 }
 
 func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -782,7 +786,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
 	self.AddMacro("include:", 1, includeImp)
-	self.AddMacro("\\:", 2, lambdaImp)
+	self.AddMacro("/:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
 	self.AddMacro("method:", 3, methodImp)
