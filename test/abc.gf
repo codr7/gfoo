@@ -114,6 +114,9 @@ scope: (foo 35)
 
 .bar check: =(42)
 
+42 ?: $ 'fail
+check: =(42)
+
 /:(x) !x
 call: (42) check: =(!42)
 

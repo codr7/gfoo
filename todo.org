@@ -1,5 +1,9 @@
+* add for: body macro
+** add ValType.For(func action(Val) error) error
+** update scope.val
 * add map method
-*** lazy iterator
+*** add IteratorType
+*** store Iterator closure as value
 *** cache multiple results
 *** skip NIL returns
 *** bookings.gf

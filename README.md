@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.14
+gfoo v0.15
 
 Press Return on empty line to evaluate.
 
@@ -511,6 +511,14 @@ Identifiers starting with `.` get their scope from the stack.
   F ?: 'fail 'ok
 
 ['ok 'ok]
+```
+
+The condition is bound to `$`.
+
+```
+  42 ?= $ 'fail
+
+[42]
 ```
 
 `if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module.

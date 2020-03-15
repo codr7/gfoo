@@ -592,6 +592,10 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return out, nil
 }
 
+func valImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewValOp(form)), nil
+}
+
 func boolImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
@@ -815,6 +819,7 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
 	self.AddMacro("use:", 2, useImp)
+	self.AddMacro("$", 0, valImp)
 
 	self.AddFunction("set")
 	
