@@ -1,3 +1,4 @@
+* move !-logic from parser to macro
 * add for: body macro
 ** add ValType.For(func action(Val) error) error
 ** update scope.val
