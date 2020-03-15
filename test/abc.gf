@@ -130,6 +130,11 @@ call: (42) check: =(!42)
 }
 
 {
+  method: foo((x y) Int;Int) {x +(y)}
+  foo(35 7) check: =(42)
+}
+
+{
   method: foo(_ Int; Id) (_ 'int)
   method: foo(_ String; Id) (_ 'string)
 

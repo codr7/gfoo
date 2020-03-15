@@ -1,4 +1,3 @@
-* add support for id groups in method argument list
 * add map method
 *** lazy iterator
 *** cache multiple results

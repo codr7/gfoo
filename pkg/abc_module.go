@@ -308,12 +308,29 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	
 	for i := 0; i < len(argsForm.body)-1; i++ {
 		anf := argsForm.body[i]
-		an := anf.(*Id).name
+		var ans []string
+		
+		if id, ok := anf.(*Id); ok {
+			ans = append(ans, id.name)
+		} else if g, ok := anf.(*Group); ok {
+			for _, anf = range g.body {
+				if id, ok := anf.(*Id); ok {
+					ans = append(ans, id.name)
+				} else {
+					return out, scope.Error(anf.Pos(), "Invalid argument name: %v", anf)
+				}
+			}
+		} else {
+			return out, scope.Error(anf.Pos(), "Invalid argument name: %v", anf)
+		}
+		
 		i++
 		atf := argsForm.body[i]
 
 		if ati, ok := atf.(*Literal); ok && ati.val.dataType == &TInt {
-			args = append(args, AIndex(an, int(ati.val.data.(*Int).Int64())))
+			for _, an := range ans {
+				args = append(args, AIndex(an, int(ati.val.data.(*Int).Int64())))
+			}
 		} else if atn, ok := atf.(*Id); ok {
 			atb := scope.Get(atn.name)
 
@@ -325,7 +342,9 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 				return out, scope.Error(atf.Pos(), "Expected type: %v", atb.val.dataType.Name())
 			}
 
-			args = append(args, AType(an, atb.val.data.(Type)))
+			for _, an := range ans {
+				args = append(args, AType(an, atb.val.data.(Type)))
+			}
 		} else {
 			return out, scope.Error(atf.Pos(), "Invalid argument type: %v", atf)
 		}

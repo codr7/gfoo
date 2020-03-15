@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.13
+gfoo v0.14
 
 Press Return on empty line to evaluate.
 
@@ -551,7 +551,16 @@ Metods allow dispatching on argument types.
 ['int 42, 'string "bar",]
 ```
 
-Arguments may be anonymous, which leaves the value on the stack.
+Arguments may be grouped per type;
+
+```
+  method: foo((x y) Int; Int) {x +(y)}
+  foo(35 7)
+
+[42]
+```
+
+or anonymous, which leaves the value on the stack.
 
 ```
   method: foo(_ Int; Id) (_ 'int)

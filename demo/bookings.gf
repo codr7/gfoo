@@ -1,9 +1,9 @@
 use: data (Record record:)
-use: time (days today)
+use: time (Time days today)
 
 type: Quantity Record
 
-method: new-quantity (; Quantity) {
+method: new-quantity(; Quantity) {
   record: (
     start     time.MIN
     end       time.MAX
@@ -11,7 +11,7 @@ method: new-quantity (; Quantity) {
     available 0) as(Quantity)
 }
 
-method: update (in Quantity (start end) Time (total available) Int; Quantity) {
+method: update(in Quantity (start end) Time (total available) Int; Quantity) {
   in.end <=(start) or: in.start >=(end) ?: in {
     say(["match: " in.start in.end])
   }
@@ -19,27 +19,27 @@ method: update (in Quantity (start end) Time (total available) Int; Quantity) {
 
 type: Calendar Slice
 
-method: new-calendar (; Calendar) {
+method: new-calendar(; Calendar) {
   [new-quantity] as(Calendar)
 }
 
-method: update-quantity (in Calendar (start end) Time (total available) Int; Calendar) {
+method: update-quantity(in Calendar (start end) Time (total available) Int; Calendar) {
   in map(/: (in) {in update(start end total available)}) as(Calendar)
 }
 
 type: Resource Record
 
-method: new-resource (; Resource) {
+method: new-resource(; Resource) {
   record: (calendar new-calendar) as(Resource)
 }
 
-method: update-calendar (in Resource (start end) Time (total available) Int;) {
+method: update-calendar(in Resource (start end) Time (total available) Int;) {
   in set('calendar in.calendar update-quantity(start end total available))
 }
 
 type: Booking Record
 
-method: new-booking (; Booking) {
+method: new-booking(; Booking) {
   let: t today
   
   record: (
@@ -49,7 +49,7 @@ method: new-booking (; Booking) {
     quantity 1) as(Booking)
 }
 
-method: store (in Booking) {
+method: store(in Booking;) {
   in.resource update-calendar(in.start in.end 0 !in.quantity)
 }
 
