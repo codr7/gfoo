@@ -118,6 +118,28 @@ func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDup(form)), nil
 }
 
+func forImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	body := in.Pop()
+	var bodyForms []Form
+	var forScope *Scope
+	
+	if s, ok := body.(*ScopeForm); ok {
+		bodyForms = s.body
+		scope = scope.Clone()
+		forScope = scope
+	} else {
+		bodyForms = append(bodyForms, body)
+	}
+	
+	bodyOps, err := scope.Compile(bodyForms, nil)
+	
+	if err != nil {
+		return out, err
+	}
+	
+	return append(out, NewFor(form, bodyOps, forScope)), nil
+}
+
 func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	f := in.Pop()
 	path, ok := f.(*Literal)
@@ -808,6 +830,7 @@ func (self *Scope) InitAbc() *Scope {
  	self.AddMacro("do:", 1, doImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
+ 	self.AddMacro("for:", 1, forImp)
 	self.AddMacro("include:", 1, includeImp)
 	self.AddMacro("/:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)

@@ -21,6 +21,18 @@ func (self *ScopeType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *ScopeType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	s := val.data.(*Scope)
+
+	for k, b := range s.bindings {
+		if err := action(NewVal(&TPair, NewPair(NewVal(&TId, k), b.val))); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (_ *ScopeType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
 	scope = source.data.(*Scope)
 	found := scope.Get(key)

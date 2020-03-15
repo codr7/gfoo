@@ -11,6 +11,7 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
+	For(val Val, action func(Val) error, scope *Scope, pos Pos) error
 	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
@@ -38,6 +39,10 @@ func (_ *ValTypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) erro
 
 func (self *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
+}
+
+func (self *ValTypeBase) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	return scope.Error(pos, "For not supported for type: %v", self.name)
 }
 
 func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {

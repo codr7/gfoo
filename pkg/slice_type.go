@@ -30,6 +30,18 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
+func (_ *SliceType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	v := val.data.(*Slice)
+
+	for _, v := range v.items {
+		if err := action(v); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (_ *SliceType) Negate(val *Val) {
 	v := val.data.(*Slice).Clone()
 	

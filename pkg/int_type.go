@@ -24,6 +24,22 @@ func (_ *IntType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *IntType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	var i Int
+	max := val.data.(*Int)
+	step := NewInt(1)
+	
+	for i.Cmp(max) == -1 {
+		if err := action(NewVal(&TInt, &i)); err != nil {
+			return err
+		}
+
+		i.Add(&i, step)
+	}
+
+	return nil
+}
+
 func (self *IntType) Is(x, y Val) bool {
 	return self.Compare(x, y) == Eq 
 }

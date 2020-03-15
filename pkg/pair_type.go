@@ -18,6 +18,20 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 	return val.data.(Pair).Dump(out)
 }
 
+func (_ *PairType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	v := val.data.(Pair)
+
+	if err := action(v.left); err != nil {
+		return err
+	}
+
+	if err := action(v.right); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (_ *PairType) New(name string, parents...Type) ValType {
 	t := new(PairType)
 	t.Init(name, parents...)

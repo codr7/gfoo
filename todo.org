@@ -1,9 +1,6 @@
-* move !-logic from parser to macro
-* move ,-logic from parser to macro
-* add for: body macro
-** add ValType.For(func action(Val) error) error
-** update scope.val
+* reimplement spread to use For
 * add map method
+*** use For
 *** add IteratorType
 *** store Iterator closure as value
 *** cache multiple results

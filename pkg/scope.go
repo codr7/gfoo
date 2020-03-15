@@ -78,6 +78,7 @@ func (self *Scope) Copy(out *Scope) {
 	out.Debug = self.Debug
 	out.thread = self.thread
 	out.loadPath = self.loadPath
+	out.val = self.val
 	
 	for k, b := range self.bindings {
 		out.bindings[k] = b

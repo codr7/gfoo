@@ -24,6 +24,18 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *StringType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+	s := val.data.(string)
+
+	for _, c := range s {
+		if err := action(NewVal(&TChar, c)); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (self *StringType) Negate(val *Val) {
 	val.Init(&TBool, !self.Bool(*val))
 }
