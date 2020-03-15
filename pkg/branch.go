@@ -20,7 +20,6 @@ func (self *Branch) Eval(scope *Scope, stack *Slice) error {
 		scope.Error(self.form.Pos(), "Missing condition")
 	}
 
-	scope.val = *v
 	var body []Op
 	
 	if v.Bool() {
@@ -29,5 +28,7 @@ func (self *Branch) Eval(scope *Scope, stack *Slice) error {
 		body = self.falseBody
 	}
 	
+	scope.val.Push(*v)
+	defer scope.val.Pop()
 	return scope.EvalOps(body, stack)
 }

@@ -15,7 +15,7 @@ type Scope struct {
 	loadPath string
 	bindings Bindings
 	methods []*Method
-	val Val
+	val Slice
 }
 
 func NewScope() *Scope {
@@ -24,7 +24,6 @@ func NewScope() *Scope {
 
 func (self *Scope) Init() *Scope {
 	self.bindings = make(Bindings)
-	self.val = Nil
 	return self
 }
 

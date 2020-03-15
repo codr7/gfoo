@@ -430,6 +430,10 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPause(form, resultOps)), nil
 }
 
+func peekValImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
+	return append(out, NewPeekVal(form)), nil
+}
+
 func scopeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var bindings *Group
@@ -590,10 +594,6 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	}
 
 	return out, nil
-}
-
-func valImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewValOp(form)), nil
 }
 
 func boolImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -815,11 +815,11 @@ func (self *Scope) InitAbc() *Scope {
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
+	self.AddMacro("$", 0, peekValImp)
 	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
 	self.AddMacro("use:", 2, useImp)
-	self.AddMacro("$", 0, valImp)
 
 	self.AddFunction("set")
 	

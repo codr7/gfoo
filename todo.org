@@ -1,4 +1,5 @@
 * move !-logic from parser to macro
+* move ,-logic from parser to macro
 * add for: body macro
 ** add ValType.For(func action(Val) error) error
 ** update scope.val
@@ -8,6 +9,7 @@
 *** cache multiple results
 *** skip NIL returns
 *** bookings.gf
+* --
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
