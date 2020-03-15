@@ -30,7 +30,10 @@ func (_ *IntType) For(val Val, action func(Val) error, scope *Scope, pos Pos) er
 	step := NewInt(1)
 	
 	for i.Cmp(max) == -1 {
-		if err := action(NewVal(&TInt, &i)); err != nil {
+		v := NewInt(0)
+		v.Add(v, &i)
+		
+		if err := action(NewVal(&TInt, v)); err != nil {
 			return err
 		}
 
