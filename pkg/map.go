@@ -27,7 +27,7 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 
 	var buffer Slice
 	
-	stack.Push(NewVal(&TIterator, func (scope *Scope, pos Pos) (*Val, error) {
+	stack.Push(NewVal(&TIterator, Iterator(func (scope *Scope, pos Pos) (*Val, error) {
 		for {			
 			v := buffer.PopFront()
 
@@ -62,7 +62,7 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 		}
 
 		return nil, nil
-	}))
+	})))
 
 	return nil
 }

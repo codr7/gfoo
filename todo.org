@@ -1,8 +1,3 @@
-* convert Int to int64
-** implement Int iterator
-* add int(char) char(int) methods to string module
-* add for:/map: test/readme
-* --
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
@@ -13,10 +8,8 @@
 ** forward error on try:
 * add Table
 ** key/records
-* add Ratio type
-** add math module
-** use big.Rat
-** add Int / with Ratio result
+* add Fix
+** copy from gfoo
 * add String interpolation
 ** read form following @ & print last value
 ** add Writer type

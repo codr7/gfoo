@@ -4,7 +4,7 @@ import (
 	"io"
 )
 
-var TAny, TNumber, TOptional Trait
+var TAny, TNumber, TOptional, TSequence Trait
 
 type Trait struct {
 	TypeBase

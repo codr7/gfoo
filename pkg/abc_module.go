@@ -351,7 +351,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 		if ati, ok := atf.(*Literal); ok && ati.val.dataType == &TInt {
 			for _, an := range ans {
-				args = append(args, AIndex(an, int(ati.val.data.(*Int).Int64())))
+				args = append(args, AIndex(an, int(ati.val.data.(Int))))
 			}
 		} else if atn, ok := atf.(*Id); ok {
 			atb := scope.Get(atn.name)
@@ -376,7 +376,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 	for _, f := range retsForm.body {
 		if rti, ok := f.(*Literal); ok && rti.val.dataType == &TInt {
-			rets = append(rets, RIndex(int(rti.val.data.(*Int).Int64())))
+			rets = append(rets, RIndex(int(rti.val.data.(Int))))
 		} else if rtn, ok := f.(*Id); ok {
 			rtb := scope.Get(rtn.name)
 			
@@ -608,8 +608,12 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 			return out, err
 		}
 
-		if scope.Get(k.name) != nil {
-			return out, scope.Error(k.Pos(), "Duplicate identifier: %v", k)
+		if found := scope.Get(k.name); found != nil {
+			if v.dataType == &TFunction && found.val.dataType == &TFunction {
+				v.data.(*Function).AddMethod(found.val.data.(*Function).methods...)
+			} else {
+				return out, scope.Error(k.Pos(), "Duplicate identifier: %v", k)
+			}
 		}
 
 		scope.Set(k.name, v)
@@ -653,30 +657,23 @@ func gteImp(scope *Scope, stack *Slice, pos Pos) error {
 }
 
 func intAddImp(scope *Scope, stack *Slice, pos Pos) error {
-	var z Int
-	z.Add(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
-	stack.Push(NewVal(&TInt, &z))
+	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) + stack.Pop().data.(Int)))
 	return nil
 }
 
 func intMulImp(scope *Scope, stack *Slice, pos Pos) error {
-	var z Int
-	z.Mul(stack.Pop().data.(*Int), stack.Pop().data.(*Int))
-	stack.Push(NewVal(&TInt, &z))
+	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) * stack.Pop().data.(Int)))
 	return nil
 }
 
 func intSubImp(scope *Scope, stack *Slice, pos Pos) error {
-	y := stack.Pop()
-	var z Int
-	z.Sub(stack.Pop().data.(*Int), y.data.(*Int))
-	stack.Push(NewVal(&TInt, &z))
+	y := stack.Pop().data.(Int)
+	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) - y))
 	return nil
 }
 
 func isImp(scope *Scope, stack *Slice, pos Pos) error {
-	y := stack.Pop()
-	stack.Push(NewVal(&TBool, stack.Pop().Is(*y)))
+	stack.Push(NewVal(&TBool, stack.Pop().Is(*stack.Pop())))
 	return nil
 }
 
@@ -690,6 +687,17 @@ func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 		stack.Push(NewVal(&TMeta, out))
 	}
 	
+	return nil
+}
+
+func iteratorImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iterator(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIterator, in))
 	return nil
 }
 
@@ -716,7 +724,7 @@ func sayImp(scope *Scope, stack *Slice, pos Pos) error {
 }
 
 func sliceLengthImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(*Slice).Len()))))
+	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Slice).Len())))
 	return nil
 }
 
@@ -768,7 +776,7 @@ func spreadImp(scope *Scope, stack *Slice, pos Pos) error {
 }
 
 func stringLengthImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TInt, NewInt(int64(len(stack.Pop().data.(string))))))
+	stack.Push(NewVal(&TInt, Int(len(stack.Pop().data.(string)))))
 	return nil
 }
 
@@ -794,6 +802,7 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddType(&TPair)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
+	self.AddType(&TSequence)
 	self.AddType(&TSlice)
 	self.AddType(&TString)
 
@@ -815,6 +824,7 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMacro("/:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
+ 	self.AddMacro("map:", 1, mapImp)
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
@@ -824,8 +834,6 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMacro("type:", 2, typeDefImp)
 	self.AddMacro("use:", 2, useImp)
 
-	self.AddFunction("set")
-	
 	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
 	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)
 	self.AddMethod("dump", []Arg{AType("val", &TOptional)}, nil, dumpImp)
@@ -842,6 +850,7 @@ func (self *Scope) InitAbcModule() *Scope {
 		[]Ret{RType(Optional(&TMeta))},
 		isaImp)
 	
+	self.AddMethod("iterator", []Arg{AType("val", &TSequence)}, nil, iteratorImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
@@ -850,7 +859,7 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePeekImp)
 	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePopImp)
 	self.AddMethod("push", []Arg{AType("target", &TSlice), AType("val", &TAny)}, nil, slicePushImp)
-	self.AddMethod("...", []Arg{AType("val", &TAny)}, nil, spreadImp)
+	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
 	return self

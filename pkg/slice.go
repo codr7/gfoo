@@ -34,7 +34,7 @@ func (self *Slice) Clone() *Slice {
 }
 
 func (self Slice) Compare(other Slice) Order {
-	xl, yl := len(self.items), len(other.items)
+	xl, yl := self.Len(), other.Len()
 	
 	for i := 0; i < MinInt(xl, yl); i++ {
 		if o := self.items[i].Compare(other.items[i]); o != Eq {

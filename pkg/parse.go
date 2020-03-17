@@ -3,7 +3,6 @@ package gfoo
 import (
 	"bufio"
 	"io"
-	"math/big"
 	"strings"
 	"unicode"
 )
@@ -187,8 +186,8 @@ func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 }
 
 func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
-	v := int64(0)
-	base := int64(10)
+	var v Int
+	base := Int(10)
 	var err error
 	fpos := *pos
 	
@@ -209,7 +208,7 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 	if c == '0' {
 		if c, _, err = in.ReadRune(); err != nil {
 			if err == io.EOF {
-				return NewLiteral(NewVal(&TInt, big.NewInt(v)), fpos), nil
+				return NewLiteral(NewVal(&TInt, v), fpos), nil
 			}
 			
 			return nil, err
@@ -235,12 +234,12 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 
 	for {
 		if c > 0 {
-			var dv int64
+			var dv Int
 			
 			if base == 16 && c >= 'a' && c <= 'f' {
-				dv = 10 + int64(c - 'a')
+				dv = 10 + Int(c - 'a')
 			} else {
-				dv = int64(c - '0')
+				dv = Int(c - '0')
 			}
 
 			v = v * base + dv
@@ -267,7 +266,7 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 		pos.column++
 	}
 	
-	return NewLiteral(NewVal(&TInt, big.NewInt(v)), fpos), nil
+	return NewLiteral(NewVal(&TInt, v), fpos), nil
 }
 
 func (self *Scope) ParseNegate(in *bufio.Reader, pos *Pos) (Form, error) {

@@ -88,17 +88,17 @@ length([1 2 3]) check: =(3)
 
 {
   let: r (data.record: (foo 1 bar 2 baz 3))
-  r length check: =(3)
+  r data.length check: =(3)
   r .foo check: =(1)
   r .bar check: =(2)
   r .baz check: =(3)
  
   r .qux check: is(NIL)
-  r set('qux 4)
+  r data.set('qux 4)
   r .qux check: =(4)
 
   let: c clone(r)
-  c set('qux 5)
+  c data.set('qux 5)
   r .qux check: =(4)
 }
 
@@ -116,6 +116,10 @@ scope: (foo 35)
 
 42 ?: $ 'fail
 check: =(42)
+
+[] 3 for: (.. push($ *(2))) check: =([0 2 4])
+[3 map: ($ *(2))...] check: =([0 2 4])
+[3 iterator...] check: =([0 1 2])
 
 /:(x) !x
 call: (42) check: =(!42)

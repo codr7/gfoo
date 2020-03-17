@@ -31,12 +31,14 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 }
 
 func (_ *SliceType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
-	v := val.data.(*Slice)
+	in := val.data.(*Slice)
 	i := 0
 	
 	return func(scope *Scope, pos Pos) (*Val, error) {
-		if i < v.Len() {
-			return &v.items[i], nil
+		if i < in.Len() {
+			v := &in.items[i]
+			i++
+			return v, nil
 		}
 
 		return nil, nil

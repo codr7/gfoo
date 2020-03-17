@@ -19,17 +19,19 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 }
 
 func (_ *PairType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
-	v := val.data.(Pair)
+	in := val.data.(Pair)
 	i := 0
 	
 	return func(scope *Scope, pos Pos) (*Val, error) {
 		switch i {
 		case 0:
-			return &v.left, nil
+			i++
+			return &in.left, nil
 		case 1:
-			return &v.right, nil
+			i++
+			return &in.right, nil
 		}
-
+		
 		return nil, nil
 	}, nil
 }

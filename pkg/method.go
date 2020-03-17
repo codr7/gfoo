@@ -1,26 +1,22 @@
 package gfoo
 
-import (
-	"strings"
-)
-
 type MethodImp = func(scope *Scope, stack *Slice, pos Pos) error
 
 type Method struct {
-	function *Function
-	index int
+	indexes map[*Function]int
+	name string
 	args []Arg
 	rets []Ret
 	imp MethodImp
 }
 
 func (self *Method) Init(
-	function *Function,
+	name string,
 	args []Arg,
 	rets []Ret,
 	imp MethodImp) *Method{
-	self.function = function
-	self.index = -1
+	self.indexes = make(map[*Function]int)
+	self.name = name
 	self.args = args
 	self.rets = rets
 	self.imp = imp
@@ -62,42 +58,18 @@ func (self *Method) Call(scope *Scope, stack *Slice, pos Pos) error {
 	}
 
 	retCount := len(self.rets)
+
+	if stack.Len() < retCount {
+		return scope.Error(pos, "Missing method result: %v %v", self.name, stack)
+	}
+	
 	offs := stack.Len()-retCount
 	
 	for i := offs; i < stack.Len(); i++ {
 		if !self.rets[i-offs].Match(in, stack.items, i) {
-			return scope.Error(pos, "Invalid method result: %v %v", self.Name(), stack)
+			return scope.Error(pos, "Invalid method result: %v %v", self.name, stack)
 		}
 	}
 
 	return nil
-}
-
-func (self *Method) Name() string {
-	var name strings.Builder
-	name.WriteString(self.function.name)
-	name.WriteRune('<')
-
-	for i, a := range self.args {
-		if i > 0 {
-			name.WriteRune(' ')
-		}
-
-		a.Dump(&name)
-	}
-
-	if self.rets != nil {
-		name.WriteString("; ")
-	}
-
-	for i, r := range self.rets {
-		r.Dump(&name)
-		
-		if i > 0 {
-			name.WriteRune(' ')
-		}
-	}
-
-	name.WriteRune('>')
-	return name.String()
 }

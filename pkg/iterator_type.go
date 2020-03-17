@@ -39,6 +39,10 @@ func (self *IteratorType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *IteratorType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	return val.data.(Iterator), nil
+}
+
 func (_ *IteratorType) New(name string, parents...Type) ValType {
 	t := new(IteratorType)
 	t.Init(name, parents...)

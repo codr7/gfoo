@@ -1,5 +1,9 @@
 package gfoo
 
+import (
+	"strings"
+)
+
 type Function struct {
 	name string
 	methods []*Method
@@ -14,27 +18,11 @@ func (self *Function) Init(name string) *Function {
 	return self
 }
 
-func (self *Function) NewMethod(args []Arg, rets []Ret, imp MethodImp) *Method {
-	m := new(Method).Init(self, args, rets, imp)
-	self.AddMethod(m)
-	return m
-}
-
-func (self *Function) AddMethod(method *Method) {
-	method.index = len(self.methods)
-	self.methods = append(self.methods, method)
-}
-
-func (self *Function) RemoveMethod(method *Method) {
-	if method.index == -1 {
-		panic("Method not added")
+func (self *Function) AddMethod(methods...*Method) {
+	for _, m := range methods {
+		m.indexes[self] = len(self.methods)
+		self.methods = append(self.methods, m)
 	}
-	
-	if len(self.methods) > method.index {
-		self.methods = self.methods[:method.index]
-	}
-	
-	method.index = -1
 }
 
 func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
@@ -47,4 +35,54 @@ func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
 	return scope.Error(pos, "Function not applicable: %v %v", self.name, stack)
 }
 
+func (self *Function) MethodName(args []Arg, rets []Ret) string {
+	var out strings.Builder
+	out.WriteString(self.name)
+	out.WriteRune('<')
+
+	for i, a := range args {
+		if i > 0 {
+			out.WriteRune(' ')
+		}
+
+		a.Dump(&out)
+	}
+
+	if len(rets) == 0 {
+		out.WriteString("; ")
+	}
+
+	for i, r := range rets {
+		r.Dump(&out)
+		
+		if i > 0 {
+			out.WriteRune(' ')
+		}
+	}
+
+	out.WriteRune('>')
+	return out.String()
+}
+
+func (self *Function) NewMethod(args []Arg, rets []Ret, imp MethodImp) *Method {
+	m := new(Method).Init(self.MethodName(args, rets), args, rets, imp)
+	self.AddMethod(m)
+	return m
+}
+
+func (self *Function) RemoveMethod(method *Method) {
+	index, ok := method.indexes[self]
+	
+	if !ok {
+		panic("Method not added")
+	}
+
+	if len(self.methods) > index {
+		for i := index; i < len(self.methods); i++ {
+			delete(self.methods[i].indexes, self)
+		}
+		
+		self.methods = self.methods[:index]
+	}
+}
 

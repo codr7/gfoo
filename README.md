@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.15
+gfoo v0.16
 
 Press Return on empty line to evaluate.
 
@@ -513,7 +513,7 @@ Identifiers starting with `.` get their scope from the stack.
 ['ok 'ok]
 ```
 
-The condition is bound to `$`.
+`$` is bound to the condition while evaluating branches.
 
 ```
   42 ?= $ 'fail
@@ -529,6 +529,37 @@ The condition is bound to `$`.
   F else: 'ok
 
 ['ok 'ok]
+```
+
+### sequences
+`for:` may be used to execute code once for each item in a sequence, `$` is bound to the current item.
+
+```
+  3 for: ($ *(2))
+
+[0 2 4]
+```
+
+`map:` may be used to lazily transform sequences, `$` is bound to the current item.
+
+```
+  3 map: ($ *(2))
+
+[Iterator(0xc000090130)]
+  ...
+
+[0 2 4]
+```
+
+`iterator` may be used to get a new iterator for any sequence.
+
+```
+  3 iterator
+
+[Iterator(0xc000006148)]
+  ...
+
+[0 1 2]
 ```
 
 ### lambdas

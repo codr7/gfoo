@@ -5,7 +5,7 @@ import (
 )
 
 func daysImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TTimeDelta, Days(int(stack.Pop().data.(*Int).Int64()))))
+	stack.Push(NewVal(&TTimeDelta, Days(int(stack.Pop().data.(Int)))))
 	return nil
 }
 

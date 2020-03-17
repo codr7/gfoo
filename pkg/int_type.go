@@ -2,6 +2,7 @@ package gfoo
 
 import (
 	"io"
+	"strconv"
 )
 
 var TInt IntType
@@ -11,33 +12,39 @@ type IntType struct {
 }
 
 func (_ *IntType) Bool(val Val) bool {
-	v := val.data.(*Int)
-	return !(v.IsInt64() && v.Int64() == 0)
+	return val.data.(Int) != 0
 }
 
 func (_ *IntType) Compare(x, y Val) Order {
-	return Order(x.data.(*Int).Cmp(y.data.(*Int)))
+	return CompareInt64(x.data.(Int), y.data.(Int))
 }
 
 func (_ *IntType) Dump(val Val, out io.Writer) error {
-	_, err := io.WriteString(out, val.data.(*Int).String())
+	_, err := io.WriteString(out, strconv.FormatInt(val.data.(Int), 10))
 	return err
 }
 
 func (self *IntType) Is(x, y Val) bool {
-	return self.Compare(x, y) == Eq 
+	return x.data == y.data 
 }
 
 func (_ *IntType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
-	return func(scope *Scope, pos Pos) (*Val, error) {
+	var i Int
+	max := val.data.(Int)
+	
+	return Iterator(func(scope *Scope, pos Pos) (*Val, error) {
+		if i < max {
+			v := NewVal(&TInt, i)
+			i++
+			return &v, nil
+		}
+		
 		return nil, nil
-	}, nil
+	}), nil
 }
 
 func (_ *IntType) Negate(val *Val) {
-	var v Int
-	v.Neg(val.data.(*Int))
-	val.data = &v
+	val.data = -val.data.(Int)
 }
 
 func (_ *IntType) New(name string, parents...Type) ValType {

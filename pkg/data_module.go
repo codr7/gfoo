@@ -39,7 +39,7 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func recordLengthImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TInt, NewInt(int64(stack.Pop().data.(*Record).Len()))))
+	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Record).Len())))
 	return nil
 }
 

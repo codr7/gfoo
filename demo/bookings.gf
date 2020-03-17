@@ -1,5 +1,5 @@
-use: data (Record record:)
-use: time (Time days today)
+use: data (Record record: set)
+use: time (Time + days today)
 
 type: Quantity Record
 
@@ -14,6 +14,7 @@ method: new-quantity(; Quantity) {
 method: update(in Quantity (start end) Time (total available) Int; Quantity) {
   in.end <=(start) or: in.start >=(end) ?: in {
     say(["match: " in.start in.end])
+    in
   }
 }
 
@@ -24,7 +25,7 @@ method: new-calendar(; Calendar) {
 }
 
 method: update-quantity(in Calendar (start end) Time (total available) Int; Calendar) {
-  in map(/: (in) {in update(start end total available)}) as(Calendar)
+  [in map: ($ update(start end total available))...] as(Calendar)
 }
 
 type: Resource Record

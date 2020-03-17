@@ -32,8 +32,10 @@ func (self *ScopeOp) Eval(scope *Scope, stack *Slice) error {
 	}
 	
 	for _, m := range s.methods {
-		if m.index == -1 {
-			m.function.AddMethod(m)
+		for f, i := range m.indexes {
+			if i == -1 {
+				f.AddMethod(m)
+			}
 		}
 	}
 
@@ -46,7 +48,11 @@ func (self *ScopeOp) Eval(scope *Scope, stack *Slice) error {
 	err := es.EvalOps(self.body, stack)
 
 	for _, m := range s.methods {
-		m.function.RemoveMethod(m)
+		for f, i := range m.indexes {
+			if i > -1 {
+				f.RemoveMethod(m)
+			}
+		}
 	}
 
 	return err

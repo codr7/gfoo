@@ -25,6 +25,18 @@ func CompareInt(x, y int) Order {
 	return Eq
 }
 
+func CompareInt64(x, y Int) Order {
+	if x < y {
+		return Lt
+	}
+
+	if x > y {
+		return Gt
+	}
+
+	return Eq
+}
+
 func ComparePointer(x, y unsafe.Pointer) Order {
 	xp, yp := uintptr(x), uintptr(y)
 	
@@ -55,3 +67,10 @@ func CompareString(x, y string) Order {
 	return Order(strings.Compare(x, y))
 }
 
+func MinInt(x, y int) int {
+	if y < x {
+		return y
+	}
+
+	return x
+}

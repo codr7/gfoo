@@ -25,12 +25,13 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 }
 
 func (_ *StringType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
-	in := val.data.(string)
+	in := []rune(val.data.(string))
 	i := 0
 	
 	return func(scope *Scope, pos Pos) (*Val, error) {
 		if i < len(in) {
 			v := NewVal(&TChar, in[i])
+			i++
 			return &v, nil
 		}
 
