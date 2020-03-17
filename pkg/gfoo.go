@@ -34,8 +34,9 @@ func Init() {
 
 func New() *Scope {
 	s := new(Scope).Init()
-	s.InitAbc()
-	s.AddVal("time", &TScope, s.Clone().InitTime())	
-	s.AddVal("data", &TScope, s.Clone().InitData())	
+	s.InitAbcModule()
+	s.AddVal("data", &TScope, NewScope().InitDataModule())	
+	s.AddVal("string", &TScope, NewScope().InitStringModule())	
+	s.AddVal("time", &TScope, NewScope().InitTimeModule())	
 	return s
 }

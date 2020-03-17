@@ -55,7 +55,7 @@ func recordSetImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitData() *Scope {
+func (self *Scope) InitDataModule() *Scope {
 	self.AddType(&TRecord)
 
 	self.AddMacro("record:", 1, recordImp)

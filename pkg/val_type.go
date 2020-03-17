@@ -11,10 +11,10 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
-	For(val Val, action func(Val) error, scope *Scope, pos Pos) error
 	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
+	Iterator(val Val, scope *Scope, pos Pos) (Iterator, error)
 	Negate(val *Val)
 	New(name string, parents...Type) ValType
 	Unquote(val Val, scope *Scope, pos Pos) Form
@@ -41,16 +41,16 @@ func (self *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
 }
 
-func (self *ValTypeBase) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
-	return scope.Error(pos, "For not supported for type: %v", self.name)
-}
-
 func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
 	return Nil, scope.Error(pos, "Dot access not supported for type: %v", self.name)
 }
 
 func (self *ValTypeBase) Is(x, y Val) bool {
 	return x.data == y.data
+}
+
+func (self *ValTypeBase) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	return nil, scope.Error(pos, "Iteration not supported for type: %v", self.name)
 }
 
 func (self *ValTypeBase) Name() string {

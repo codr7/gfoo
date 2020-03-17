@@ -24,27 +24,14 @@ func (_ *IntType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *IntType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
-	var i Int
-	max := val.data.(*Int)
-	step := NewInt(1)
-	
-	for i.Cmp(max) == -1 {
-		v := NewInt(0)
-		v.Add(v, &i)
-		
-		if err := action(NewVal(&TInt, v)); err != nil {
-			return err
-		}
-
-		i.Add(&i, step)
-	}
-
-	return nil
-}
-
 func (self *IntType) Is(x, y Val) bool {
 	return self.Compare(x, y) == Eq 
+}
+
+func (_ *IntType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		return nil, nil
+	}, nil
 }
 
 func (_ *IntType) Negate(val *Val) {

@@ -27,20 +27,23 @@ func (self *RecordType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Record).Dump(out)
 }
 
-func (_ *RecordType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
-	v := val.data.(*Record)
-
-	for _, f := range v.fields {
-		if err := action(NewVal(&TPair, NewPair(NewVal(&TId, f.key), f.val))); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
 	return source.data.(*Record).Get(key, Nil), nil
+}
+
+func (_ *RecordType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	in := val.data.(*Record)
+	i := 0
+	
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		if i < in.Len() {
+			f := in.fields[i]
+			v := NewVal(&TPair, NewPair(NewVal(&TId, f.key), f.val))
+			return &v, nil
+		}
+
+		return nil, nil
+	}, nil
 }
 
 func (_ *RecordType) Negate(val *Val) {

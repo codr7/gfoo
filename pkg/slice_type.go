@@ -30,16 +30,17 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
-func (_ *SliceType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+func (_ *SliceType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
 	v := val.data.(*Slice)
-
-	for _, v := range v.items {
-		if err := action(v); err != nil {
-			return err
+	i := 0
+	
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		if i < v.Len() {
+			return &v.items[i], nil
 		}
-	}
 
-	return nil
+		return nil, nil
+	}, nil
 }
 
 func (_ *SliceType) Negate(val *Val) {

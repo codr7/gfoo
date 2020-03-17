@@ -18,18 +18,20 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 	return val.data.(Pair).Dump(out)
 }
 
-func (_ *PairType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
+func (_ *PairType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
 	v := val.data.(Pair)
+	i := 0
+	
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		switch i {
+		case 0:
+			return &v.left, nil
+		case 1:
+			return &v.right, nil
+		}
 
-	if err := action(v.left); err != nil {
-		return err
-	}
-
-	if err := action(v.right); err != nil {
-		return err
-	}
-
-	return nil
+		return nil, nil
+	}, nil
 }
 
 func (_ *PairType) New(name string, parents...Type) ValType {

@@ -47,10 +47,6 @@ func (self Val) Dump(out io.Writer) error {
 	return self.dataType.Dump(self, out)
 }
 
-func (self Val) For(action func(Val) error, scope *Scope, pos Pos) error {
-	return self.dataType.For(self, action, scope, pos)
-}
-
 func (self Val) Get(key string, scope *Scope, pos Pos) (Val, error) {
 	return self.dataType.Get(self, key, scope, pos)
 }
@@ -61,6 +57,10 @@ func (self Val) Is(other Val) bool {
 	}
 	
 	return self.dataType.Is(self, other)
+}
+
+func (self Val) Iterator(scope *Scope, pos Pos) (Iterator, error) {
+	return self.dataType.Iterator(self, scope, pos)
 }
 
 func (self Val) Literal(pos Pos) *Literal {

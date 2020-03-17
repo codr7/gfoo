@@ -23,12 +23,14 @@ func (_ *NilType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *NilType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
-	return nil
-}
-
 func (_ *NilType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
 	return Nil, nil
+}
+
+func (_ *NilType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		return nil, nil
+	}, nil
 }
 
 func (_ *NilType) Negate(val *Val) {}

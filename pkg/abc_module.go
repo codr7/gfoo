@@ -16,7 +16,7 @@ func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return append(out, NewAnd(form, rightOps)), nil
 }
 
-func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+func branchImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var trueOps []Op
 	var err error
@@ -119,25 +119,14 @@ func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func forImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	body := in.Pop()
-	var bodyForms []Form
-	var forScope *Scope
-	
-	if s, ok := body.(*ScopeForm); ok {
-		bodyForms = s.body
-		scope = scope.Clone()
-		forScope = scope
-	} else {
-		bodyForms = append(bodyForms, body)
-	}
-	
-	bodyOps, err := scope.Compile(bodyForms, nil)
+	body := in.Pop()	
+	bodyOps, err := body.Compile(in, nil, scope)
 	
 	if err != nil {
 		return out, err
 	}
 	
-	return append(out, NewFor(form, bodyOps, forScope)), nil
+	return append(out, NewFor(form, bodyOps)), nil
 }
 
 func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -302,6 +291,17 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	})
 		
 	return out, nil
+}
+
+func mapImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	body := in.Pop()	
+	bodyOps, err := body.Compile(in, nil, scope)
+	
+	if err != nil {
+		return out, err
+	}
+	
+	return append(out, NewMap(form, bodyOps)), nil
 }
 
 func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -755,7 +755,13 @@ func slicePushImp(scope *Scope, stack *Slice, pos Pos) error {
 }
 
 func spreadImp(scope *Scope, stack *Slice, pos Pos) error {
-	return stack.Pop().For(func(v Val) error {
+	in, err := stack.Pop().Iterator(scope, pos)
+
+	if err != nil {
+		return err
+	}
+	
+	return in.For(func(v Val, scope *Scope, pos Pos) error {
 		stack.Push(v)
 		return nil
 	}, scope, pos)
@@ -771,7 +777,7 @@ func typeImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitAbc() *Scope {
+func (self *Scope) InitAbcModule() *Scope {
 	self.AddType(&TAny)
 	self.AddType(&TBool)
 	self.AddType(&TChar)

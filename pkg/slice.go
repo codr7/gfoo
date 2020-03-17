@@ -95,6 +95,16 @@ func (self *Slice) Pop() *Val {
 	return &v
 }
 
+func (self *Slice) PopFront() *Val {
+	if len(self.items) == 0 {
+		return nil
+	}
+	
+	v := self.items[0]
+	self.items = self.items[1:]
+	return &v
+}
+
 func (self Slice) Print(out io.Writer) error {
 	for _, v := range self.items {
 		if err := v.Print(out); err != nil {

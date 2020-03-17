@@ -26,7 +26,7 @@ func todayImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitTime() *Scope {
+func (self *Scope) InitTimeModule() *Scope {
 	self.AddType(&TTime)
 	self.AddType(&TTimeDelta)
 

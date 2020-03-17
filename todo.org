@@ -1,10 +1,8 @@
-* add map method
-*** use For
-*** add IteratorType
-*** store Iterator closure as value
-*** cache multiple results
-*** skip NIL returns
-*** bookings.gf
+* convert Int to int64
+** implement Int iterator
+* add int(char) char(int) methods to string module
+* add for:/map: test/readme
+* --
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents

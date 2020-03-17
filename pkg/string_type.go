@@ -24,16 +24,18 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *StringType) For(val Val, action func(Val) error, scope *Scope, pos Pos) error {
-	s := val.data.(string)
-
-	for _, c := range s {
-		if err := action(NewVal(&TChar, c)); err != nil {
-			return err
+func (_ *StringType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+	in := val.data.(string)
+	i := 0
+	
+	return func(scope *Scope, pos Pos) (*Val, error) {
+		if i < len(in) {
+			v := NewVal(&TChar, in[i])
+			return &v, nil
 		}
-	}
 
-	return nil
+		return nil, nil
+	}, nil
 }
 
 func (self *StringType) Negate(val *Val) {
