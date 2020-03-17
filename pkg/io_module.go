@@ -8,6 +8,7 @@ import (
 
 type IoModule struct {
 	Scope
+	ARGS Slice
 	OUT *bufio.Writer
 }
 
@@ -41,6 +42,7 @@ func (self *IoModule) Init() *Scope {
 	self.AddType(&TBuffer)
 	self.AddType(&TWriter)
 
+	self.AddVal("ARGS", &TSlice, &self.ARGS)
 	self.OUT = bufio.NewWriter(os.Stdout)
 	self.AddVal("OUT", &TWriter, self.OUT)
 

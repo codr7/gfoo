@@ -79,16 +79,13 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
-	argVals := gfoo.NewSlice(nil)
-	g.Io.Set("ARGS", gfoo.NewVal(&gfoo.TSlice, argVals))
-	
 	stack := gfoo.NewSlice(nil)
 	
 	if len(args) == 0 {
 		repl(g, stack)
 	} else {
 		for i := 1; i < len(args); i++ {
-			argVals.Push(gfoo.NewVal(&gfoo.TString, args[i]))
+			g.Io.ARGS.Push(gfoo.NewVal(&gfoo.TString, args[i]))
 		}
 
 		if err := g.Load(args[0], stack); err != nil {
