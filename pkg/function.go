@@ -48,16 +48,11 @@ func (self *Function) MethodName(args []Arg, rets []Ret) string {
 		a.Dump(&out)
 	}
 
-	if len(rets) == 0 {
-		out.WriteString("; ")
-	}
+	out.WriteRune(';')
 
-	for i, r := range rets {
+	for _, r := range rets {
+		out.WriteRune(' ')
 		r.Dump(&out)
-		
-		if i > 0 {
-			out.WriteRune(' ')
-		}
 	}
 
 	out.WriteRune('>')

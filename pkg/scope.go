@@ -90,6 +90,7 @@ func (self *Scope) Extend(in *Scope) *Scope {
 		self.bindings[k] = b
 	}
 
+	self.val.Push(in.val.items...)
 	return self
 }
 

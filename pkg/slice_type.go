@@ -6,10 +6,6 @@ import (
 
 var TSlice SliceType
 
-func init() {
-	TSlice.Init("Slice")
-}
-
 type SliceType struct {
 	ValTypeBase
 }

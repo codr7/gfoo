@@ -1,0 +1,40 @@
+package gfoo
+
+import (
+	"archive/zip"
+)
+
+func zipAddImp(scope *Scope, stack *Slice, pos Pos) error {
+	p := stack.Pop().data.(string)
+	w, err := stack.Pop().data.(*zip.Writer).Create(p)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TWriter, w))
+	return nil
+}
+
+func zipCloseImp(scope *Scope, stack *Slice, pos Pos) error {
+	return stack.Pop().data.(*zip.Writer).Close()
+}
+
+func zipWriterNewImp(scope *Scope, stack *Slice, pos Pos) error {
+	out := stack.Pop().data.(*Buffer)
+	stack.Push(NewVal(&TZipWriter, zip.NewWriter(out)))
+	return nil
+}
+
+func (self *Scope) InitZipModule() *Scope {
+	self.AddType(&TZipWriter)
+
+	self.AddMethod("add",
+		[]Arg{AType("zip", &TZipWriter), AType("path", &TString)},
+		[]Ret{RType(&TWriter)},
+		zipAddImp)
+
+	self.AddMethod("close", []Arg{AType("zip", &TZipWriter)}, nil, zipCloseImp)
+	self.AddMethod("new-writer", []Arg{AType("out", &TBuffer)}, []Ret{RType(&TZipWriter)}, zipWriterNewImp)
+	return self
+}

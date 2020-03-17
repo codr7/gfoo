@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func repl(g *gfoo.Scope, stack *gfoo.Slice) {
+func repl(g *gfoo.Core, stack *gfoo.Slice) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VersionMajor, gfoo.VersionMinor)
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
 
@@ -80,7 +80,7 @@ func main() {
 
 	args := flag.Args()
 	argVals := gfoo.NewSlice(nil)
-	g.Set("ARGS", gfoo.NewVal(&gfoo.TSlice, argVals))
+	g.Io.Set("ARGS", gfoo.NewVal(&gfoo.TSlice, argVals))
 	
 	stack := gfoo.NewSlice(nil)
 	
@@ -94,5 +94,9 @@ func main() {
 		if err := g.Load(args[0], stack); err != nil {
 			log.Fatal(err)
 		}
-	}	
+	}
+
+	if err := g.Io.OUT.Flush(); err != nil {
+		log.Fatal(err)
+	}
 }

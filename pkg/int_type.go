@@ -7,6 +7,8 @@ import (
 
 var TInt IntType
 
+type Int = int64
+
 type IntType struct {
 	ValTypeBase
 }

@@ -2,7 +2,7 @@ package gfoo
 
 const (
 	VersionMajor = 0
-	VersionMinor = 16
+	VersionMinor = 17
 )
 
 func Init() {
@@ -13,6 +13,7 @@ func Init() {
 	TSequence.Init("Sequence", &TAny)
 
 	TBool.Init("Bool", &TAny)
+	TBuffer.Init("Buffer", &TAny)
 	TChar.Init("Char", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
@@ -31,15 +32,8 @@ func Init() {
 	TString.Init("String", &TAny, &TSequence)
 	TTime.Init("Time", &TAny)
 	TTimeDelta.Init("TimeDelta", &TAny)
+	TWriter.Init("Writer", &TAny)
+	TZipWriter.Init("Writer", &TAny)
 
 	Nil.dataType = &TNil
-}
-
-func New() *Scope {
-	s := new(Scope).Init()
-	s.InitAbcModule()
-	s.AddVal("data", &TScope, NewScope().InitDataModule())	
-	s.AddVal("string", &TScope, NewScope().InitStringModule())	
-	s.AddVal("time", &TScope, NewScope().InitTimeModule())	
-	return s
 }
