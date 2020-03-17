@@ -77,17 +77,22 @@ func main() {
 
 	flag.BoolVar(&g.Debug, "debug", false, "Enable debug mode")
 	flag.Parse()
+
 	args := flag.Args()
+	argVals := gfoo.NewSlice(nil)
+	g.Set("ARGS", gfoo.NewVal(&gfoo.TSlice, argVals))
 	
 	stack := gfoo.NewSlice(nil)
 	
 	if len(args) == 0 {
 		repl(g, stack)
 	} else {
-		for _, path := range args {
-			if err := g.Load(path, stack); err != nil {
-				log.Fatal(err)
-			}
+		for i := 1; i < len(args); i++ {
+			argVals.Push(gfoo.NewVal(&gfoo.TString, args[i]))
+		}
+
+		if err := g.Load(args[0], stack); err != nil {
+			log.Fatal(err)
 		}
 	}	
 }
