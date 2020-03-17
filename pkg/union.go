@@ -19,6 +19,6 @@ func (self *UnionType) Init(name string, types...Type) *UnionType {
 	return self
 }
 
-func Optional(in Type) Type {
+func Option(in Type) Type {
 	return Union(fmt.Sprintf("%v?", in.Name()), in, &TNil)
 }

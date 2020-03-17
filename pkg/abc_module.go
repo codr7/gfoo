@@ -798,7 +798,7 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddType(&TMethod)
 	self.AddType(&TNil)
 	self.AddType(&TNumber)
-	self.AddType(&TOptional)
+	self.AddType(&TOption)
 	self.AddType(&TPair)
 	self.AddType(&TScope)
 	self.AddType(&TScopeForm)
@@ -836,18 +836,18 @@ func (self *Scope) InitAbcModule() *Scope {
 
 	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
 	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)
-	self.AddMethod("dump", []Arg{AType("val", &TOptional)}, nil, dumpImp)
+	self.AddMethod("dump", []Arg{AType("val", &TOption)}, nil, dumpImp)
 	self.AddMethod("=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, eqImp)
 	self.AddMethod(">", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gtImp)
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
-	self.AddMethod("is", []Arg{AType("x", &TOptional), AType("y", &TOptional)}, []Ret{RType(&TBool)}, isImp)
+	self.AddMethod("is", []Arg{AType("x", &TOption), AType("y", &TOption)}, []Ret{RType(&TBool)}, isImp)
 	
 	self.AddMethod("isa",
 		[]Arg{AType("child", &TMeta), AType("parent", &TMeta)},
-		[]Ret{RType(Optional(&TMeta))},
+		[]Ret{RType(Option(&TMeta))},
 		isaImp)
 	
 	self.AddMethod("iterator", []Arg{AType("val", &TSequence)}, nil, iteratorImp)
@@ -856,8 +856,8 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
-	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePeekImp)
-	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOptional)}, slicePopImp)
+	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePeekImp)
+	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePopImp)
 	self.AddMethod("push", []Arg{AType("target", &TSlice), AType("val", &TAny)}, nil, slicePushImp)
 	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)

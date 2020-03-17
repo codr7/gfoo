@@ -6,9 +6,9 @@ const (
 )
 
 func Init() {
-	TOptional.Init("Any?")
-	TAny.Init("Any", &TOptional)
-	TNil.Init("Nil", &TOptional)
+	TOption.Init("Any?")
+	TAny.Init("Any", &TOption)
+	TNil.Init("Nil", &TOption)
 
 	TSequence.Init("Sequence", &TAny)
 

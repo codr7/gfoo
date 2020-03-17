@@ -1,3 +1,8 @@
+* add png module
+* use separate thread to read files
+* add bang line support
+* implement denojs.gf
+* --
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
