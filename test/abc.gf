@@ -189,6 +189,5 @@ call check: =(42)
   foo foo
 }
 
-include: "../lib/abc.gf"
 T if: 'ok check: =('ok)
 F else: 'ok check: =('ok)

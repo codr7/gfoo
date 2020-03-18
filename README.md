@@ -430,7 +430,7 @@ Rebinding in the same scope results in a compile time error,
 ```
   let: foo "bar"
 
-Error in 'repl', line 1, column 5: Duplicate binding: foo
+Error in 'n/a', line 1, column 5: Duplicate binding: foo
 ```
 
 while child scopes are allowed to override inherited bindings.
@@ -473,7 +473,7 @@ Overriding compile time bindings is not allowed.
 ```
   {let: foo 42}
 
-Error in 'repl', line 1, column 6: Attempt to override compile time binding: foo
+Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 ```
 
 ### scopes
@@ -521,10 +521,9 @@ Identifiers starting with `.` get their scope from the stack.
 [42]
 ```
 
-`if:` and `else:` are defined in the [abc](https://github.com/codr7/gfoo/tree/master/lib/abc.gf) module.
+`if:` and `else:` may be used instead for single branch conditions.
 
 ```
-  include: "lib/abc.gf"
   T if: 'ok
   F else: 'ok
 
@@ -660,7 +659,7 @@ Macros are called during compilation and expand to the unquoted contents of thei
 [42]
   foo
 
-Error in 'repl', line 1, column 0: Duplicate binding: bar
+Error in 'n/a', line 1, column 0: Duplicate binding: bar
 ```
 
 Identifiers may be prefixed with `#` to avoid capturing bindings at the point of expansion.
@@ -673,11 +672,11 @@ Identifiers may be prefixed with `#` to avoid capturing bindings at the point of
 []
   foo bar
 
-Error in 'repl', line 1, column 0: Unknown identifier: bar
+Error in 'n/a', line 1, column 0: Unknown identifier: bar
 []
   #bar
 
-Error in 'repl', line 1, column 0: Unknown identifier: #bar
+Error in 'n/a', line 1, column 0: Unknown identifier: #bar
 []
   foo
 
@@ -726,7 +725,7 @@ Threads may be paused until next call, which then returns the specified argument
 [Thread(0xc0000a2000) 3]
   _ call
 
-Error in 'repl', line 1, column 2: Thread is done
+Error in 'n/a', line 1, column 2: Thread is done
 ```
 
 ### tests
@@ -735,7 +734,7 @@ Conditions may be asserted using `check:`, which signals an error describing the
 ```
   T check: =(F)
 
-Error in 'repl', line 1, column 2: Check failed: (F =) [T]
+Error in 'n/a', line 1, column 2: Check failed: (F =) [T]
 ```
 
 ### license

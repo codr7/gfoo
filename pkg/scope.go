@@ -5,6 +5,7 @@ import (
 	"io"
 	"path"
 	"os"
+	"strings"
 )
 
 type Bindings = map[string]Binding
@@ -98,6 +99,29 @@ func (self *Scope) Clone() *Scope {
 	out := new(Scope).Init()
 	self.Copy(out)
 	return out
+}
+
+func (self *Scope) Eval(source string, stack *Slice) error {
+	in := bufio.NewReader(strings.NewReader(source))
+	pos := NewPos("n/a")
+	var forms []Form
+	var err error
+	
+	if forms, err = self.Parse(in, nil, &pos); err != nil {
+		return err
+	}
+	
+	var ops []Op
+	
+	if ops, err = self.Compile(forms, nil); err != nil {
+		return err
+	}
+
+	if err = self.EvalOps(ops, stack); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (self *Scope) EvalOps(ops []Op, stack *Slice) error {

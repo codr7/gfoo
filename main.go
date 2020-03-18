@@ -39,23 +39,7 @@ func repl(g *gfoo.Core, stack *gfoo.Slice) {
 			if source == "" {
 				stack.Clear()
 			} else {
-				in := bufio.NewReader(strings.NewReader(source))
-				pos := gfoo.NewPos("repl")
-				var forms []gfoo.Form
-			
-				if forms, err = g.Parse(in, nil, &pos); err != nil {
-					fmt.Println(err)
-					continue
-				}
-				
-				var ops []gfoo.Op
-				
-				if ops, err = g.Compile(forms, nil); err != nil {
-					fmt.Println(err)
-					continue
-				}
-				
-				if err = g.EvalOps(ops, stack); err != nil {
+				if err = g.Eval(source, stack); err != nil {
 					fmt.Println(err)
 				}
 			}

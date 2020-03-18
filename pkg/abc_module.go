@@ -899,5 +899,18 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
+
+
+	self.Eval(`
+
+macro: if: (body) {
+  '(?: @body ())
+}
+
+macro: else: (body) {
+  '(?: () @body)
+}
+        `, nil)
+	
 	return self
 }
