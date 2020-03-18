@@ -12,6 +12,9 @@ F and: 42 check: =(F)
 F or: 42 check: =(42)
 42 or: F check: =(42)
 
+41 +1 check: =(42)
+43 -1 check: =(42)
+
 35 +(7) check: =(42)
 42 -(7) check: =(35)
 6 *(7) check: =(42)

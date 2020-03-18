@@ -1,13 +1,16 @@
-* add next(Iter) method
-* rename Thread call to resume
-* add ~(Iter Iter)
+* add to-byte(int) method
 * implement Buffer byte iter
 ** add Byte type / uint8
-* add to-byte(int) method
+* add ~(Iter Iter)
 * add png.encode method
 ** scratch
 * add write(writer byte) method
 * add Rgba.set(x y r g b a) method
+* move Thread call imp to wait method
+** add TTarget trait
+*** derive lambda/method/function
+*** change arg type in call method
+** update readme
 * use separate thread to read files
 * add bang line support
 * implement denojs.gf

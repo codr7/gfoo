@@ -662,6 +662,18 @@ func intAddImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func intDecImp(scope *Scope, stack *Slice, pos Pos) error {
+	v := stack.Pop().data.(Int)
+	stack.Push(NewVal(&TInt, v-1))
+	return nil
+}
+
+func intIncImp(scope *Scope, stack *Slice, pos Pos) error {
+	v := stack.Pop().data.(Int)
+	stack.Push(NewVal(&TInt, v+1))
+	return nil
+}
+
 func intMulImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) * stack.Pop().data.(Int)))
 	return nil
@@ -859,6 +871,8 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod(">", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gtImp)
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
+	self.AddMethod("-1", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, intDecImp)
+	self.AddMethod("+1", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, intIncImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
 	self.AddMethod("to-string", []Arg{AType("val", &TInt)}, []Ret{RType(&TString)}, intToStringImp)

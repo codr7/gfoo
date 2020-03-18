@@ -557,9 +557,12 @@ Identifiers starting with `.` get their scope from the stack.
   3 iter
 
 [Iter(0xc000006148)]
-  ...
+  .. next
 
-[0 1 2]
+[Iter(0xc000006148) 0]
+  _ ...
+
+[1 2]
 ```
 
 ### lambdas

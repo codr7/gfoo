@@ -169,6 +169,7 @@ func (self *Scope) ParseId(in *bufio.Reader, c rune, pos *Pos) (Form, error) {
 		}
 
 		if !IsId(c) ||
+			c == '~' || 
 			(c == ',' && pc != 0) ||
  			(c == '_' && pc != 0) ||
 			(c == '.' && pc != 0 && pc != '.') {
