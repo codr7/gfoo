@@ -12,15 +12,14 @@ type IoModule struct {
 	OUT *bufio.Writer
 }
 
-func bufferNewImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TBuffer, new(Buffer)))
+func bufferLengthImp(scope *Scope, stack *Slice, pos Pos) error {
+	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Buffer).Len())))
 	return nil
 }
 
-func bufferWriteImp(scope *Scope, stack *Slice, pos Pos) error {
-	out := stack.Pop().data.(io.Writer)
-	_, err := stack.Pop().data.(*Buffer).WriteTo(out)
-	return err
+func bufferNewImp(scope *Scope, stack *Slice, pos Pos) error {
+	stack.Push(NewVal(&TBuffer, new(Buffer)))
+	return nil
 }
 
 func slurpImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -37,6 +36,20 @@ func slurpImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func writeBufferImp(scope *Scope, stack *Slice, pos Pos) error {
+	d := stack.Pop().data.(*Buffer)
+	w := stack.Pop().data.(io.Writer)
+	_, err := d.WriteTo(w)
+	return err
+}
+
+func writeStringImp(scope *Scope, stack *Slice, pos Pos) error {
+	s := stack.Pop().data.(string)
+	w := stack.Pop().data.(io.Writer)
+	_, err := io.WriteString(w, s)
+	return err
+}
+
 func (self *IoModule) Init() *Scope {
 	self.Scope.Init()
 	self.AddType(&TBuffer)
@@ -46,8 +59,10 @@ func (self *IoModule) Init() *Scope {
 	self.OUT = bufio.NewWriter(os.Stdout)
 	self.AddVal("OUT", &TWriter, self.OUT)
 
+	self.AddMethod("length", []Arg{AType("val", &TBuffer)}, []Ret{RType(&TInt)}, bufferLengthImp)
 	self.AddMethod("new-buffer", nil, []Ret{RType(&TBuffer)}, bufferNewImp)
-	self.AddMethod("write", []Arg{AType("data", &TBuffer), AType("out", &TWriter)}, nil, bufferWriteImp)
 	self.AddMethod("slurp", []Arg{AType("path", &TString)}, []Ret{RType(&TBuffer)}, slurpImp)
+	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TBuffer)}, nil, writeBufferImp)
+	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TString)}, nil, writeStringImp)
 	return &self.Scope
 }

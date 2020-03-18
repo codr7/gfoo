@@ -2,6 +2,7 @@ package gfoo
 
 import (
 	"os"
+	"strconv"
 )
 
 func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -672,6 +673,11 @@ func intSubImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func intToStringImp(scope *Scope, stack *Slice, pos Pos) error {
+	stack.Push(NewVal(&TString, strconv.FormatInt(stack.Pop().data.(Int), 10)))
+	return nil
+}
+
 func isImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Is(*stack.Pop())))
 	return nil
@@ -843,6 +849,7 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
+	self.AddMethod("to-string", []Arg{AType("val", &TInt)}, []Ret{RType(&TString)}, intToStringImp)
 	self.AddMethod("is", []Arg{AType("x", &TOption), AType("y", &TOption)}, []Ret{RType(&TBool)}, isImp)
 	
 	self.AddMethod("isa",

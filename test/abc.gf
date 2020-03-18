@@ -34,6 +34,8 @@ Int check: isa(Number)
 
 [3 ...] check: =([0 1 2])
 
+42 to-string check: =("42")
+
 "" bool check: =(F)
 
 length("abc") check: =(3)

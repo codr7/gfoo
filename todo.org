@@ -1,4 +1,15 @@
-* add png module
+* add png.encode method
+** scratch
+* move out arg to first pos in write method
+** update enojs1
+* rename iterator to iter
+* add next(Iterator) method
+* implement Buffer byte iterator
+** add Byte type / uint8
+* add to-byte(int) method
+* add write(writer byte) method
+* add ~(Iter Iter)
+* add Rgba.set(x y r g b a) method
 * use separate thread to read files
 * add bang line support
 * implement denojs.gf
