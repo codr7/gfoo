@@ -68,12 +68,12 @@ Besides first class features described elsewhere in this document, the following
 
 ```
   type: Foo Int
-  35 as(Foo)
+  35 as-foo
 
 [35]
-  .. type
+  type
 
-[35 Foo]
+[Foo]
 ```
 
 New types are derived from their implementation and may be used as such without conversion.

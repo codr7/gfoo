@@ -22,6 +22,23 @@ func bufferNewImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func byteToIntImp(scope *Scope, stack *Slice, pos Pos) error {
+	v := stack.Pop().data.(Byte)
+	stack.Push(NewVal(&TInt, Int(v)))
+	return nil
+}
+
+func intToByteImp(scope *Scope, stack *Slice, pos Pos) error {
+	v := stack.Pop().data.(Int)
+
+	if v < 0 || v > 255 {
+		return scope.Error(pos, "Invalid byte value: %v", v)
+	}
+	
+	stack.Push(NewVal(&TByte, Byte(v)))
+	return nil
+}
+
 func slurpImp(scope *Scope, stack *Slice, pos Pos) error {
 	p := stack.Pop().data.(string)
 	f, err := os.Open(p)
@@ -52,6 +69,7 @@ func writeStringImp(scope *Scope, stack *Slice, pos Pos) error {
 
 func (self *IoModule) Init() *Scope {
 	self.Scope.Init()
+	self.AddType(&TByte)
 	self.AddType(&TBuffer)
 	self.AddType(&TWriter)
 
@@ -61,6 +79,10 @@ func (self *IoModule) Init() *Scope {
 
 	self.AddMethod("length", []Arg{AType("val", &TBuffer)}, []Ret{RType(&TInt)}, bufferLengthImp)
 	self.AddMethod("new-buffer", nil, []Ret{RType(&TBuffer)}, bufferNewImp)
+
+	self.AddMethod("to-int", []Arg{AType("val", &TByte)}, []Ret{RType(&TInt)}, byteToIntImp)
+	self.AddMethod("to-byte", []Arg{AType("val", &TInt)}, []Ret{RType(&TByte)}, intToByteImp)
+	
 	self.AddMethod("slurp", []Arg{AType("path", &TString)}, []Ret{RType(&TBuffer)}, slurpImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TBuffer)}, nil, writeBufferImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TString)}, nil, writeStringImp)

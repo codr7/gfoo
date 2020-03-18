@@ -1,8 +1,10 @@
 package gfoo
 
 import (
+	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -562,11 +564,10 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	t := impType.New(traitId.name, impType)
 	scope.AddType(t)
 
-	scope.AddMethod("as",
-		[]Arg{AType("val", impType), AVal("type", NewVal(&TMeta, t))},
+	scope.AddMethod(fmt.Sprintf("as-%v", strings.ToLower(t.Name())),
+		[]Arg{AType("val", impType)},
 		[]Ret{RType(t)},
 		func(scope *Scope, stack *Slice, pos Pos) error {
-			stack.Pop()
 			v := stack.Peek()
 			v.dataType = t
 			return nil
@@ -875,7 +876,9 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMethod("+1", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, intIncImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
 	self.AddMethod("-", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intSubImp)
+
 	self.AddMethod("to-string", []Arg{AType("val", &TInt)}, []Ret{RType(&TString)}, intToStringImp)
+
 	self.AddMethod("is", []Arg{AType("x", &TOption), AType("y", &TOption)}, []Ret{RType(&TBool)}, isImp)
 	
 	self.AddMethod("isa",

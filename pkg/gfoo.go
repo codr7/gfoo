@@ -12,6 +12,7 @@ func Init() {
 
 	TSequence.Init("Sequence", &TAny)
 	TBool.Init("Bool", &TAny)
+	TByte.Init("Byte", &TAny)
 	TWriter.Init("Writer", &TAny)
 	TBuffer.Init("Buffer", &TWriter)
 	TChar.Init("Char", &TAny)

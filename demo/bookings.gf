@@ -8,7 +8,7 @@ method: new-quantity(; Quantity) {
     start     time.MIN
     end       time.MAX
     total     0
-    available 0) as(Quantity)
+    available 0) as-quantity
 }
 
 method: update(in Quantity (start end) Time (total available) Int; Quantity) {
@@ -21,17 +21,17 @@ method: update(in Quantity (start end) Time (total available) Int; Quantity) {
 type: Calendar Slice
 
 method: new-calendar(; Calendar) {
-  [new-quantity] as(Calendar)
+  [new-quantity] as-calendar
 }
 
 method: update-quantity(in Calendar (start end) Time (total available) Int; Calendar) {
-  [in map: ($ update(start end total available))...] as(Calendar)
+  [in map: ($ update(start end total available))...] as-calendar
 }
 
 type: Resource Record
 
 method: new-resource(; Resource) {
-  record: (calendar new-calendar) as(Resource)
+  record: (calendar new-calendar) as-resource
 }
 
 method: update-calendar(in Resource (start end) Time (total available) Int;) {
@@ -47,7 +47,7 @@ method: new-booking(; Booking) {
     resource NIL
     start    t
     end      (t +(1 days))
-    quantity 1) as(Booking)
+    quantity 1) as-booking
 }
 
 method: store(in Booking;) {

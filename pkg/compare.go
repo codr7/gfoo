@@ -13,6 +13,18 @@ const (
 	Gt = Order(1)
 )
 
+func CompareByte(x, y uint8) Order {
+	if x < y {
+		return Lt
+	}
+
+	if x > y {
+		return Gt
+	}
+
+	return Eq
+}
+
 func CompareInt(x, y int) Order {
 	if x < y {
 		return Lt
