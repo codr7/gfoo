@@ -31,18 +31,18 @@ func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, er
 	return source.data.(*Record).Get(key, Nil), nil
 }
 
-func (_ *RecordType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+func (_ *RecordType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
 	in := val.data.(*Record)
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (*Val, error) {
+	return func(scope *Scope, pos Pos) (Val, error) {
 		if i < in.Len() {
 			f := in.fields[i]
 			v := NewVal(&TPair, NewPair(NewVal(&TId, f.key), f.val))
-			return &v, nil
+			return v, nil
 		}
 
-		return nil, nil
+		return Nil, nil
 	}, nil
 }
 

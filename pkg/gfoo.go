@@ -19,7 +19,7 @@ func Init() {
 	TId.Init("Id", &TAny)
 	TNumber.Init("Number", &TAny)
 	TInt.Init("Int", &TNumber, &TSequence)
-	TIterator.Init("Iterator", &TSequence)
+	TIter.Init("Iter", &TSequence)
 	TLambda.Init("Lambda", &TAny)
 	TMacro.Init("Macro", &TAny)
 	TMeta.Init("Type", &TAny)

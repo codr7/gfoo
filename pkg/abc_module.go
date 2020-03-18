@@ -696,14 +696,26 @@ func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iteratorImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iterator(scope, pos)
+func iterImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
 
 	if err != nil {
 		return err
 	}
 
-	stack.Push(NewVal(&TIterator, in))
+	stack.Push(NewVal(&TIter, in))
+	return nil
+}
+
+func iterNextImp(scope *Scope, stack *Slice, pos Pos) error {
+	in := stack.Pop().data.(Iter)
+	
+	if v, err := in(scope, pos); err != nil {
+		return err
+	} else {
+		stack.Push(v)
+	}
+			
 	return nil
 }
 
@@ -769,7 +781,7 @@ func slicePushImp(scope *Scope, stack *Slice, pos Pos) error {
 }
 
 func spreadImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iterator(scope, pos)
+	in, err := stack.Pop().Iter(scope, pos)
 
 	if err != nil {
 		return err
@@ -857,7 +869,8 @@ func (self *Scope) InitAbcModule() *Scope {
 		[]Ret{RType(Option(&TMeta))},
 		isaImp)
 	
-	self.AddMethod("iterator", []Arg{AType("val", &TSequence)}, nil, iteratorImp)
+	self.AddMethod("iter", []Arg{AType("val", &TSequence)}, []Ret{RType(&TIter)}, iterImp)
+	self.AddMethod("next", []Arg{AType("in", &TIter)}, []Ret{RType(&TOption)}, iterNextImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)

@@ -545,18 +545,18 @@ Identifiers starting with `.` get their scope from the stack.
 ```
   3 map: ($ *(2))
 
-[Iterator(0xc000090130)]
+[Iter(0xc000090130)]
   ...
 
 [0 2 4]
 ```
 
-`iterator` may be used to get a new iterator for any sequence.
+`iter` may be used to get a new iterator for any sequence.
 
 ```
-  3 iterator
+  3 iter
 
-[Iterator(0xc000006148)]
+[Iter(0xc000006148)]
   ...
 
 [0 1 2]

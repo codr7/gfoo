@@ -18,21 +18,21 @@ func (_ *PairType) Dump(val Val, out io.Writer) error {
 	return val.data.(Pair).Dump(out)
 }
 
-func (_ *PairType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+func (_ *PairType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
 	in := val.data.(Pair)
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (*Val, error) {
+	return func(scope *Scope, pos Pos) (Val, error) {
 		switch i {
 		case 0:
 			i++
-			return &in.left, nil
+			return in.left, nil
 		case 1:
 			i++
-			return &in.right, nil
+			return in.right, nil
 		}
 		
-		return nil, nil
+		return Nil, nil
 	}, nil
 }
 

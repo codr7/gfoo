@@ -26,18 +26,18 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Slice).Dump(out)
 }
 
-func (_ *SliceType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
+func (_ *SliceType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
 	in := val.data.(*Slice)
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (*Val, error) {
+	return func(scope *Scope, pos Pos) (Val, error) {
 		if i < in.Len() {
-			v := &in.items[i]
+			v := in.items[i]
 			i++
 			return v, nil
 		}
 
-		return nil, nil
+		return Nil, nil
 	}, nil
 }
 

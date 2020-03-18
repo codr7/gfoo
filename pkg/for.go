@@ -19,7 +19,7 @@ func (self *For) Eval(scope *Scope, stack *Slice) error {
 		return scope.Error(self.form.Pos(), "Missing value")
 	}
 
-	in, err := v.Iterator(scope, self.form.Pos())
+	in, err := v.Iter(scope, self.form.Pos())
 
 	if err != nil {
 		return err

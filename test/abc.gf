@@ -121,7 +121,11 @@ check: =(42)
 
 [] 3 for: (.. push($ *(2))) check: =([0 2 4])
 [3 map: ($ *(2))...] check: =([0 2 4])
-[3 iterator...] check: =([0 1 2])
+[3 iter...] check: =([0 1 2])
+
+1 iter ..
+next check: =(0)
+next check: is(NIL)
 
 /:(x) !x
 call: (42) check: =(!42)

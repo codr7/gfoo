@@ -27,9 +27,9 @@ func (_ *NilType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error
 	return Nil, nil
 }
 
-func (_ *NilType) Iterator(val Val, scope *Scope, pos Pos) (Iterator, error) {
-	return func(scope *Scope, pos Pos) (*Val, error) {
-		return nil, nil
+func (_ *NilType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+	return func(scope *Scope, pos Pos) (Val, error) {
+		return Nil, nil
 	}, nil
 }
 

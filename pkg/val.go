@@ -59,8 +59,8 @@ func (self Val) Is(other Val) bool {
 	return self.dataType.Is(self, other)
 }
 
-func (self Val) Iterator(scope *Scope, pos Pos) (Iterator, error) {
-	return self.dataType.Iterator(self, scope, pos)
+func (self Val) Iter(scope *Scope, pos Pos) (Iter, error) {
+	return self.dataType.Iter(self, scope, pos)
 }
 
 func (self Val) Literal(pos Pos) *Literal {

@@ -19,7 +19,7 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 		return scope.Error(self.form.Pos(), "Missing value")
 	}
 
-	in, err := v.Iterator(scope, self.form.Pos())
+	in, err := v.Iter(scope, self.form.Pos())
 
 	if err != nil {
 		return err
@@ -27,41 +27,35 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 
 	var buffer Slice
 	
-	stack.Push(NewVal(&TIterator, Iterator(func (scope *Scope, pos Pos) (*Val, error) {
+	stack.Push(NewVal(&TIter, Iter(func (scope *Scope, pos Pos) (Val, error) {
 		for {			
-			v := buffer.PopFront()
-
-			if v != nil {
-				if *v == Nil {
-					continue
-				}
-				
-				return v, nil
+			if v := buffer.PopFront(); v != nil {
+				return *v, nil
 			}
 			
-			v, err = in(scope, pos)
+			v, err := in(scope, pos)
 			
 			if err != nil {
-				return nil, err
+				return Nil, err
 			}
 			
-			if v == nil {
+			if v == Nil {
+				if buffer.Len() > 0 {
+					continue
+				}
+
 				break
 			}
-			
-			if *v == Nil {
-				continue
-			}
 
-			scope.val.Push(*v)
+			scope.val.Push(v)
 			defer scope.val.Pop()
 
 			if err = scope.EvalOps(self.body, &buffer); err != nil {
-				return nil, err
+				return Nil, err
 			}
 		}
 
-		return nil, nil
+		return Nil, nil
 	})))
 
 	return nil
