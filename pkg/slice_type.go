@@ -27,12 +27,12 @@ func (_ *SliceType) Dump(val Val, out io.Writer) error {
 }
 
 func (_ *SliceType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
-	in := val.data.(*Slice)
+	in := val.data.(*Slice).items
 	i := 0
 	
 	return func(scope *Scope, pos Pos) (Val, error) {
-		if i < in.Len() {
-			v := in.items[i]
+		if i < len(in) {
+			v := in[i]
 			i++
 			return v, nil
 		}

@@ -67,6 +67,13 @@ func writeStringImp(scope *Scope, stack *Slice, pos Pos) error {
 	return err
 }
 
+func writeByteImp(scope *Scope, stack *Slice, pos Pos) error {
+	b := stack.Pop().data.(byte)
+	w := stack.Pop().data.(io.Writer)
+	_, err := w.Write([]byte{b})
+	return err
+}
+
 func (self *IoModule) Init() *Scope {
 	self.Scope.Init()
 	self.AddType(&TByte)
@@ -85,6 +92,7 @@ func (self *IoModule) Init() *Scope {
 	
 	self.AddMethod("slurp", []Arg{AType("path", &TString)}, []Ret{RType(&TBuffer)}, slurpImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TBuffer)}, nil, writeBufferImp)
+	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TByte)}, nil, writeByteImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TString)}, nil, writeStringImp)
 	return &self.Scope
 }

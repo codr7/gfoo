@@ -32,6 +32,21 @@ func (self *BufferType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
+func (_ *BufferType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+	in := val.data.(*Buffer).Bytes()
+	i := 0
+	
+	return func(scope *Scope, pos Pos) (Val, error) {
+		if i < len(in) {
+			v := in[i]
+			i++
+			return NewVal(&TByte, v), nil
+		}
+
+		return Nil, nil
+	}, nil
+}
+
 func (_ *BufferType) New(name string, parents...Type) ValType {
 	t := new(BufferType)
 	t.Init(name, parents...)

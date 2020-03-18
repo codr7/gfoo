@@ -14,7 +14,7 @@ func Init() {
 	TBool.Init("Bool", &TAny)
 	TByte.Init("Byte", &TAny)
 	TWriter.Init("Writer", &TAny)
-	TBuffer.Init("Buffer", &TWriter)
+	TBuffer.Init("Buffer", &TSequence, &TWriter)
 	TChar.Init("Char", &TAny)
 	TFunction.Init("Function", &TAny)
 	TId.Init("Id", &TAny)
