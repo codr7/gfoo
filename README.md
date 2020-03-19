@@ -208,14 +208,6 @@ Pairs may be negated using `!`,
 [.-1 -2]
 ```
 
-and spread using `...`.
-
-```
-  ...
-
-[1 2]
-```
-
 #### Record
 Records are ordered mappings from identifiers to values.
 
