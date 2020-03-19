@@ -47,8 +47,6 @@ length("abc") check: =(3)
 
 !,1 2 check: =(,!1 !2)
 
-[,'foo 42...] check: =(['foo 42])
-
 ![1 2 3] check: =([!1 !2 !3])
 
 peek([]) check: is(NIL)
