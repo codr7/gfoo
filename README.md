@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.17
+gfoo v0.18
 
 Press Return on empty line to evaluate.
 
@@ -351,6 +351,32 @@ Time deltas may be used to perform date arithmetics.
   +
 
 [2020-03-10T00:00:00Z]
+```
+
+### modules
+Definitions belong to modules and have to be imported into the current scope to be used without prefix.
+
+```
+  time.today
+
+[]
+  use: time (today)
+  today
+
+[]
+```
+
+Fundamental definitions are defined in the `abc` module, which is fully imported by default in the REPL. The same thing may be accomplished in scripts by using `abc...`.
+
+test.gf
+```
+use: abc...
+say(35 +(7))
+```
+
+```
+$ gfoo test.gf
+42
 ```
 
 ### values

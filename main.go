@@ -17,6 +17,7 @@ func repl(g *gfoo.Core, stack *gfoo.Slice) {
 
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
+	g.Eval("use: abc...", nil)
 	
 	for {
 		fmt.Print("  ")

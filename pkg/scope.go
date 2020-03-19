@@ -53,6 +53,10 @@ func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp)
 	self.methods = append(self.methods, m)
 }
 
+func (self *Scope) AddModule(name string, module *Module) {
+	self.AddVal(name, &TModule, module)
+}
+
 func (self *Scope) AddType(val Type) {
 	self.AddVal(val.Name(), &TMeta, val)
 }
@@ -232,4 +236,33 @@ func (self *Scope) Parse(in *bufio.Reader, out []Form, pos *Pos) ([]Form, error)
 
 func (self *Scope) Set(key string, val Val) {
 	self.bindings[key] = NewBinding(self, val)
+}
+
+func (self *Scope) Use(source Val, names []string, pos Pos) error {
+	useAll := false
+	
+	if len(names) == 0 {
+		names = source.Keys()
+		useAll = true
+	}
+
+	for _, n := range names {
+		v, err := source.Get(n, self, pos)
+
+		if err != nil {
+			return err
+		}
+
+		if found := self.Get(n); found != nil {
+			if v.dataType == &TFunction && found.val.dataType == &TFunction {
+				v.data.(*Function).AddMethod(found.val.data.(*Function).methods...)
+			} else if !useAll {
+				return self.Error(pos, "Duplicate identifier: %v", n)
+			}
+		}
+
+		self.Set(n, v)
+	}
+
+	return nil
 }

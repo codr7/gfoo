@@ -5,7 +5,7 @@ import (
 )
 
 type ImageModule struct {
-	Scope
+	Module
 }
 
 func rgbaNewImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -29,8 +29,8 @@ func rgbaSetImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *ImageModule) Init() *Scope {
-	self.Scope.Init()
+func (self *ImageModule) Init() *Module {
+	self.Module.Init()
 	self.AddType(&TRgba)
 
 	self.AddMethod("new-rgba",
@@ -45,5 +45,5 @@ func (self *ImageModule) Init() *Scope {
 		nil,
 		rgbaSetImp)
 
-	return &self.Scope
+	return &self.Module
 }

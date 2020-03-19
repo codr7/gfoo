@@ -5,7 +5,7 @@ import (
 )
 
 type MathModule struct {
-	Scope
+	Module
 }
 
 func divImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -19,9 +19,11 @@ func sqrtImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *MathModule) Init() *Scope {
-	self.Scope.Init()
+func (self *MathModule) Init() *Module {
+	self.Module.Init()
+	
 	self.AddMethod("div", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, divImp)
 	self.AddMethod("sqrt", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, sqrtImp)
-	return &self.Scope
+
+	return &self.Module
 }

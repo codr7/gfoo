@@ -1,12 +1,6 @@
-* scoping clean up
-** rename scope_type to module_type
-*** add module type embedding Scope
-**** convert existing modules
-** rename scope_form_type to scope_type
-** check unknown identifiers in id compile
-*** signal error if no binding found
+* check unknown identifiers in id compile
+** signal error if no binding found
 ** replace Extend calls with lookup of identifiers with Nil values
-** update readme
 * add iter module
 ** move next/~
 ** add value(val;iter) method

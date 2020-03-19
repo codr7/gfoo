@@ -7,7 +7,7 @@ import (
 )
 
 type IoModule struct {
-	Scope
+	Module
 	ARGS Slice
 	IN *bufio.Reader
 	OUT *bufio.Writer
@@ -82,8 +82,9 @@ func writeByteImp(scope *Scope, stack *Slice, pos Pos) error {
 	return err
 }
 
-func (self *IoModule) Init() *Scope {
-	self.Scope.Init()
+func (self *IoModule) Init() *Module {
+	self.Module.Init()
+	
 	self.AddType(&TByte)
 	self.AddType(&TBuffer)
 	self.AddType(&TReader)
@@ -108,5 +109,6 @@ func (self *IoModule) Init() *Scope {
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TBuffer)}, nil, writeBufferImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TByte)}, nil, writeByteImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TString)}, nil, writeStringImp)
-	return &self.Scope
+
+	return &self.Module
 }

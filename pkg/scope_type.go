@@ -1,7 +1,6 @@
 package gfoo
 
 import (
-	"fmt"
 	"io"
 	"unsafe"
 )
@@ -13,23 +12,12 @@ type ScopeType struct {
 }
 
 func (_ *ScopeType) Compare(x, y Val) Order {
-	return ComparePointer(unsafe.Pointer(x.data.(*Scope)), unsafe.Pointer(y.data.(*Scope)))
+	return ComparePointer(unsafe.Pointer(x.data.(*ScopeForm)), unsafe.Pointer(y.data.(*ScopeForm)))
 }
 
-func (self *ScopeType) Dump(val Val, out io.Writer) error {
-	_, err := fmt.Fprintf(out, "%v(%v)", self.name, unsafe.Pointer(val.data.(*Scope)))
-	return err
-}
-
-func (_ *ScopeType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
-	scope = source.data.(*Scope)
-	found := scope.Get(key)
-	
-	if found == nil || found.val == Nil {
-		return Nil, scope.Error(pos, "Unknown identifier: %v", key)
-	}
-
-	return found.val, nil
+func (_ *ScopeType) Dump(val Val, out io.Writer) error {
+	io.WriteString(out, "'");
+	return val.data.(*ScopeForm).Dump(out)
 }
 
 func (_ *ScopeType) New(name string, parents...Type) ValType {
@@ -42,6 +30,6 @@ func (self *ScopeType) Print(val Val, out io.Writer) error {
 	return self.Dump(val, out)
 }
 
-func (_ *ScopeType) Unquote(val Val, scope *Scope, pos Pos) Form {
-	return NewLiteral(val, pos)
+func (self *ScopeType) Unquote(val Val, scope *Scope, pos Pos) Form {
+	return val.data.(*ScopeForm)
 }

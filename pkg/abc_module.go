@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type AbcModule struct {
+	Module
+}
+
 func andImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	right := in.Pop()
 	var rightOps []Op
@@ -522,51 +526,37 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 }
 
 func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	f := in.Pop()
-	sourceForm, ok := f.(*Id)
+	sourceForm := in.Pop()
+	id, ok := sourceForm.(*Id)
 	
 	if !ok {
-		return out, scope.Error(form.Pos(), "Invalid source: %v", f)
+		return out, scope.Error(form.Pos(), "Expected identifier: %v", sourceForm)
 	}
 
-	source := scope.Get(sourceForm.name);
+	source := scope.Get(id.name)
 
 	if source == nil || source.val == Nil {
-		return out, scope.Error(form.Pos(), "Unknown identifier: %v", f)
-	}
-	
-	f = in.Pop()
-	ids, ok := f.(*Group)
-	
-	if !ok {
-		return out, scope.Error(form.Pos(), "Invalid identifier list: %v", f)
+		return out, scope.Error(form.Pos(), "Unknown identifier: %v", id)
 	}
 
-	for _, f := range ids.body {
-		k, ok := f.(*Id)
-		
-		if !ok {
-			return out, scope.Error(f.Pos(), "Invalid identifier: %v", f)
-		}
+	namesForm := in.Pop()
+	var names []string
 
-		v, err := source.val.Get(k.name, scope, k.Pos())
-
-		if err != nil {
-			return out, err
-		}
-
-		if found := scope.Get(k.name); found != nil {
-			if v.dataType == &TFunction && found.val.dataType == &TFunction {
-				v.data.(*Function).AddMethod(found.val.data.(*Function).methods...)
-			} else {
-				return out, scope.Error(k.Pos(), "Duplicate identifier: %v", k)
+	if f, ok := namesForm.(*Group); ok {
+		for _, f := range f.body {
+			id, ok = f.(*Id)
+			
+			if !ok {
+				return out, scope.Error(f.Pos(), "Expected identifier: %v", f)
 			}
+
+			names = append(names, id.name)
 		}
-
-		scope.Set(k.name, v)
+	} else if id, ok := namesForm.(*Id); !ok || id.name != "..." {
+		return out, scope.Error(form.Pos(), "Invalid identifier list: %v", namesForm)
 	}
-
-	return out, nil
+	
+	return out, scope.Use(source.val, names, form.Pos())
 }
 
 func boolImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -800,7 +790,9 @@ func typeImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitAbcModule() *Scope {
+func (self *AbcModule) Init() *Module {
+	self.Module.Init()
+	
 	self.AddType(&TAny)
 	self.AddType(&TBool)
 	self.AddType(&TChar)
@@ -811,12 +803,12 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddType(&TMacro)
 	self.AddType(&TMeta)
 	self.AddType(&TMethod)
+	self.AddType(&TModule)
 	self.AddType(&TNil)
 	self.AddType(&TNumber)
 	self.AddType(&TOption)
 	self.AddType(&TPair)
 	self.AddType(&TScope)
-	self.AddType(&TScopeForm)
 	self.AddType(&TSequence)
 	self.AddType(&TSlice)
 	self.AddType(&TString)
@@ -894,5 +886,5 @@ macro: else: (body) {
 }
         `, nil)
 	
-	return self
+	return &self.Module
 }

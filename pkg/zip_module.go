@@ -4,6 +4,10 @@ import (
 	"archive/zip"
 )
 
+type ZipModule struct {
+	Module
+}
+
 func zipAddImp(scope *Scope, stack *Slice, pos Pos) error {
 	p := stack.Pop().data.(string)
 	w, err := stack.Pop().data.(*zip.Writer).Create(p)
@@ -26,7 +30,9 @@ func zipWriterNewImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitZipModule() *Scope {
+func (self *ZipModule) Init() *Module {
+	self.Module.Init()
+	
 	self.AddType(&TZipWriter)
 
 	self.AddMethod("add",
@@ -36,5 +42,6 @@ func (self *Scope) InitZipModule() *Scope {
 
 	self.AddMethod("close", []Arg{AType("zip", &TZipWriter)}, nil, zipCloseImp)
 	self.AddMethod("new-writer", []Arg{AType("out", &TBuffer)}, []Ret{RType(&TZipWriter)}, zipWriterNewImp)
-	return self
+
+	return &self.Module
 }

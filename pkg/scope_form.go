@@ -59,5 +59,5 @@ func (self *ScopeForm) Dump(out io.Writer) error {
 }
 
 func (self *ScopeForm) Quote(scope *Scope, pos Pos) (Val, error) {
-	return NewVal(&TScopeForm, self), nil
+	return NewVal(&TScope, self), nil
 }

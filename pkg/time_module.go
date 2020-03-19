@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+type TimeModule struct {
+	Module
+}
+
 func daysImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TTimeDelta, Days(int(stack.Pop().data.(Int)))))
 	return nil
@@ -26,7 +30,9 @@ func todayImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitTimeModule() *Scope {
+func (self *TimeModule) Init() *Module {
+	self.Module.Init()
+	
 	self.AddType(&TTime)
 	self.AddType(&TTimeDelta)
 
@@ -37,5 +43,6 @@ func (self *Scope) InitTimeModule() *Scope {
 	self.AddMethod("now", nil, []Ret{RType(&TTime)}, nowImp)
 	self.AddMethod("+", []Arg{AType("x", &TTime), AType("y", &TTimeDelta)}, []Ret{RType(&TTime)}, timeAddImp)
 	self.AddMethod("today", nil, []Ret{RType(&TTime)}, todayImp)
-	return self
+
+	return &self.Module
 }

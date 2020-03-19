@@ -6,7 +6,7 @@ import (
 )
 
 type PngModule struct {
-	Scope
+	Module
 }
 
 func pngEncode(scope *Scope, stack *Slice, pos Pos) error {
@@ -15,8 +15,10 @@ func pngEncode(scope *Scope, stack *Slice, pos Pos) error {
 	return png.Encode(out, image)
 }
 
-func (self *PngModule) Init() *Scope {
-	self.Scope.Init()
+func (self *PngModule) Init() *Module {
+	self.Module.Init()
+
 	self.AddMethod("encode", []Arg{AType("image", &TRgba), AType("out", &TWriter)}, nil, pngEncode)
-	return &self.Scope
+
+	return &self.Module
 }

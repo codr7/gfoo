@@ -63,6 +63,10 @@ func (self Val) Iter(scope *Scope, pos Pos) (Iter, error) {
 	return self.dataType.Iter(self, scope, pos)
 }
 
+func (self Val) Keys() []string {
+	return self.dataType.Keys(self)
+}
+
 func (self Val) Literal(pos Pos) *Literal {
 	return NewLiteral(self, pos)
 }

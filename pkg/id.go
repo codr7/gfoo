@@ -88,7 +88,7 @@ func (self *Id) compileName(
 			return v.data.(*Macro).Expand(self, in, out, scope)
 		case &TMethod:
 			return self.compileMethod(v.data.(*Method), in, out, scope)
-		case &TScope:
+		case &TModule:
 			if next := in.Peek(); next != nil {
 				if id, ok := next.(*Id); ok && id.name[0] == '.' {
 					in.Pop()
@@ -97,7 +97,7 @@ func (self *Id) compileName(
 						id.name[1:],
 						in,
 						out,
-						v.data.(*Scope),
+						&v.data.(*Module).Scope,
 						scope)
 				}
 			}

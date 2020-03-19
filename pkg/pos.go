@@ -5,6 +5,8 @@ const (
 	MIN_COLUMN = 0
 )
 
+var NilPos = NewPos("n/a")
+
 type Pos struct {
 	source string
 	line, column uint

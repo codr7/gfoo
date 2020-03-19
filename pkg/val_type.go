@@ -15,6 +15,7 @@ type ValType interface {
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
 	Iter(val Val, scope *Scope, pos Pos) (Iter, error)
+	Keys(val Val) []string
 	Negate(val *Val)
 	New(name string, parents...Type) ValType
 	Unquote(val Val, scope *Scope, pos Pos) Form
@@ -36,7 +37,7 @@ func (self *ValTypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) e
 	return scope.Error(pos, "Call not supported for type: %v", self.name)
 }
 
-func (self *ValTypeBase) Clone(val Val) interface{} {
+func (_ *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
 }
 
@@ -44,7 +45,7 @@ func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val
 	return Nil, scope.Error(pos, "Dot access not supported for type: %v", self.name)
 }
 
-func (self *ValTypeBase) Is(x, y Val) bool {
+func (_ *ValTypeBase) Is(x, y Val) bool {
 	return x.data == y.data
 }
 
@@ -52,11 +53,15 @@ func (self *ValTypeBase) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
 	return nil, scope.Error(pos, "Iteration not supported for type: %v", self.name)
 }
 
+func (_ *ValTypeBase) Keys(val Val) []string {
+	return nil
+}
+
 func (self *ValTypeBase) Name() string {
 	return self.name
 }
 
-func (self *ValTypeBase) Negate(val *Val) {
+func (_ *ValTypeBase) Negate(val *Val) {
 	val.Init(&TBool, false)
 }
 

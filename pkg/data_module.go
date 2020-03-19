@@ -1,5 +1,9 @@
 package gfoo
 
+type DataModule struct {
+	Module
+}
+
 func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var fields *Group
@@ -55,13 +59,13 @@ func recordSetImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func (self *Scope) InitDataModule() *Scope {
-	self.AddType(&TRecord)
+func (self *DataModule) Init() *Module {
+	self.Module.Init()
 
+	self.AddType(&TRecord)
 	self.AddMacro("record:", 1, recordImp)
 
 	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
-
 	self.AddMethod("merge", []Arg{AType("target", &TRecord), AType("source", &TRecord)}, nil, recordMergeImp)
 
 	self.AddMethod("set",
@@ -69,5 +73,5 @@ func (self *Scope) InitDataModule() *Scope {
 		nil,
 		recordSetImp)
 
-	return self
+	return &self.Module
 }
