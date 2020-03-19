@@ -4,34 +4,40 @@ type ScopeOp struct {
 	OpBase
 	body []Op
 	scope *Scope
+	pop bool
 }
 
-func NewScopeOp(form Form, body []Op, scope *Scope) *ScopeOp {
+func NewScopeOp(form Form, body []Op, scope *Scope, pop bool) *ScopeOp {
 	op := new(ScopeOp)
 	op.OpBase.Init(form)
 	op.body = body
 	op.scope = scope
+	op.pop = pop
 	return op
 }
 
 func (self *ScopeOp) Eval(scope *Scope, stack *Slice) error {
-	s := self.scope
-
-	if s == nil {
-		sv := stack.Pop()
+	var methodScope *Scope
+	
+	if self.pop {
+		v := stack.Pop()
 		
-		if sv == nil {
+		if v == nil {
 			return scope.Error(self.form.Pos(), "Missing scope")
 		}
 
-		if sv.dataType != &TScope {
-			return scope.Error(self.form.Pos(), "Expected scope: %v", sv)
+		if v.dataType != &TScope {
+			return scope.Error(self.form.Pos(), "Expected scope: %v", v)
 		}
 
-		s = sv.data.(*Scope)
+		scope = v.data.(*Scope).Extend(self.scope)
+		methodScope = scope
+	} else {
+		scope = self.scope.Clone().Extend(scope)
+		methodScope = self.scope
 	}
 	
-	for _, m := range s.methods {
+	for _, m := range methodScope.methods {
 		for f, i := range m.indexes {
 			if i == -1 {
 				f.AddMethod(m)
@@ -39,15 +45,9 @@ func (self *ScopeOp) Eval(scope *Scope, stack *Slice) error {
 		}
 	}
 
-	es := s
+	err := scope.EvalOps(self.body, stack)
 
-	if self.scope != nil {
-		es = es.Clone().Extend(scope)
-	}
-	
-	err := es.EvalOps(self.body, stack)
-
-	for _, m := range s.methods {
+	for _, m := range methodScope.methods {
 		for f, i := range m.indexes {
 			if i > -1 {
 				f.RemoveMethod(m)

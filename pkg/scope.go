@@ -42,7 +42,7 @@ func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp)
 	var f *Function
 	b := self.Get(name)
 	
-	if b == nil {
+	if b == nil || b.val == Nil {
 		f = self.AddFunction(name)
 	} else {
 		f = b.val.data.(*Function)
@@ -86,12 +86,13 @@ func (self *Scope) Copy(out *Scope) {
 	}
 }
 
-func (self *Scope) Extend(in *Scope) *Scope {
-	for k, b := range in.bindings {
+func (self *Scope) Extend(source *Scope) *Scope {
+	for k, b := range source.bindings {
 		self.bindings[k] = b
 	}
 
-	self.val.Push(in.val.items...)
+	self.methods = append(self.methods, source.methods...)
+	self.val.Push(source.val.items...)
 	return self
 }
 

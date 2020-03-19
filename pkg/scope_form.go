@@ -28,7 +28,7 @@ func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) 
 		return out, err
 	}
 
-	return append(out, NewScopeOp(self, ops, scope)), nil
+	return append(out, NewScopeOp(self, ops, scope, false)), nil
 }
 
 func (self *ScopeForm) Do(action func(Form) error) error {

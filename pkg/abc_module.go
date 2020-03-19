@@ -104,13 +104,14 @@ func doImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
 	}
 
-	bodyOps, err := scope.Clone().Compile(body.body, nil)
+	scope = scope.Clone()
+	bodyOps, err := scope.Compile(body.body, nil)
 	
 	if err != nil {
 		return out, err
 	}
 	
-	return append(out, NewScopeOp(form, bodyOps, nil)), nil
+	return append(out, NewScopeOp(form, bodyOps, scope, true)), nil
 }
 
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -183,6 +184,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	if s, ok := body.(*ScopeForm); ok {
 		bodyForms = s.body
 		lambdaScope = scope
+		out = append(out, NewCapture(form, lambdaScope))
 	} else {
 		bodyForms = append(bodyForms, body)
 	}
@@ -406,14 +408,15 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	methodScope := scope.Clone()
 	var err error
 	var bodyForms []Form
-	var cloneScope bool
+	var scopeBody bool
 	
 	if s, ok := body.(*ScopeForm); ok {
 		bodyForms = s.body
-		cloneScope = true
+		scopeBody = true
+		out = append(out, NewCapture(form, methodScope))
 	} else {
 		bodyForms = append(bodyForms, body)
-		cloneScope = false
+		scopeBody = false
 	}
 	
 	if bodyOps, err = methodScope.Compile(bodyForms, bodyOps); err != nil {
@@ -421,13 +424,13 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	scope.AddMethod(id.name, args, rets, func(scope *Scope, stack *Slice, pos Pos) error {
-		if cloneScope {
+		if scopeBody {
 			methodScope = methodScope.Clone()
 		}
 		
 		return methodScope.EvalOps(bodyOps, stack)
 	})
-	
+
 	return out, nil
 }
 

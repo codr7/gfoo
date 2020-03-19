@@ -9,6 +9,7 @@ import (
 type IoModule struct {
 	Scope
 	ARGS Slice
+	IN *bufio.Reader
 	OUT *bufio.Writer
 }
 
@@ -53,6 +54,13 @@ func slurpImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func slurpReaderImp(scope *Scope, stack *Slice, pos Pos) error {
+	var b Buffer
+	b.ReadFrom(stack.Pop().data.(io.Reader))
+	stack.Push(NewVal(&TBuffer, &b))
+	return nil
+}
+
 func writeBufferImp(scope *Scope, stack *Slice, pos Pos) error {
 	d := stack.Pop().data.(*Buffer)
 	w := stack.Pop().data.(io.Writer)
@@ -78,9 +86,14 @@ func (self *IoModule) Init() *Scope {
 	self.Scope.Init()
 	self.AddType(&TByte)
 	self.AddType(&TBuffer)
+	self.AddType(&TReader)
 	self.AddType(&TWriter)
 
 	self.AddVal("ARGS", &TSlice, &self.ARGS)
+
+	self.IN = bufio.NewReader(os.Stdin)
+	self.AddVal("IN", &TReader, self.IN)
+
 	self.OUT = bufio.NewWriter(os.Stdout)
 	self.AddVal("OUT", &TWriter, self.OUT)
 
@@ -91,6 +104,7 @@ func (self *IoModule) Init() *Scope {
 	self.AddMethod("to-byte", []Arg{AType("val", &TInt)}, []Ret{RType(&TByte)}, intToByteImp)
 	
 	self.AddMethod("slurp", []Arg{AType("path", &TString)}, []Ret{RType(&TBuffer)}, slurpImp)
+	self.AddMethod("slurp", []Arg{AType("source", &TReader)}, []Ret{RType(&TBuffer)}, slurpReaderImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TBuffer)}, nil, writeBufferImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TByte)}, nil, writeByteImp)
 	self.AddMethod("write", []Arg{AType("out", &TWriter), AType("data", &TString)}, nil, writeStringImp)
