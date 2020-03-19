@@ -1,3 +1,15 @@
+* remove do: macro
+** drop pop-support from scope_op
+** signal unknown identifiers in id compile
+** replace Extend with lookup of identifiers with Nil values
+** update readme
+* add iter module
+** move next/~
+** add value(val;iter) method
+*** chain instead of b closure in enojs.gf
+*** compare performance
+** add separate methods items/chars/bytes/fields
+*** update readme
 * use path package to extract filenames
 * move Thread call imp to wait method
 ** add TTarget trait
