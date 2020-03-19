@@ -18,7 +18,6 @@
 *** change arg type in call method
 ** update readme
 * use separate thread to read files
-* add bang line support
 * implement denojs.gf
 * --
 * add string dump support for \n

@@ -167,7 +167,7 @@ func (self *Scope) Get(key string) *Binding {
 	return nil
 }
 
-func (self *Scope) Include(filePath string, action func([]Form) error) (error) {
+func (self *Scope) Include(filePath string, action func([]Form) error) error {
 	var file *os.File
 	var err error
 
@@ -186,6 +186,18 @@ func (self *Scope) Include(filePath string, action func([]Form) error) (error) {
 	in := bufio.NewReader(file)
 	pos := NewPos(filePath)
 	var forms []Form
+
+	if c, _, err := in.ReadRune(); err != nil {
+		if err != io.EOF {
+			return err
+		}
+	} else if c == '#' {
+		if _, err := in.ReadString('\n'); err != nil {
+			return err
+		}
+	} else if err := in.UnreadRune(); err != nil {
+		return err
+	}
 	
 	if forms, err = self.Parse(in, nil, &pos); err != nil {
 		return err
