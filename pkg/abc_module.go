@@ -96,24 +96,6 @@ func defineImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return out, nil
 }
 
-func doImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	f := in.Pop()
-	body, ok := f.(*ScopeForm)
-
-	if !ok {
-		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
-	}
-
-	scope = scope.Clone()
-	bodyOps, err := scope.Compile(body.body, nil)
-	
-	if err != nil {
-		return out, err
-	}
-	
-	return append(out, NewScopeOp(form, bodyOps, scope, true)), nil
-}
-
 func dropImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewDrop(form)), nil
 }
@@ -460,46 +442,6 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 
 func peekValImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPeekVal(form)), nil
-}
-
-func scopeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	f := in.Pop()
-	var bindings *Group
-	var ok bool
-
-	if bindings, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid bindings: %v", f)
-	}
-
-	bindingForms := NewForms(bindings.body)
-	var keys []string
-	var values []Op
-
-	for {
-		if f = bindingForms.Pop(); f == nil {
-			break
-		}
-
-		id, ok := f.(*Id)
-		
-		if !ok {
-			return out, scope.Error(f.Pos(), "Expected id: %v", f)
-		}
-
-		keys = append(keys, id.name)
-		
-		if f = bindingForms.Pop(); f == nil {
-			return out, scope.Error(id.Pos(), "Missing value: %v", id)
-		}
-
-		var err error
-		
-		if values, err = f.Compile(bindingForms, values, scope); err != nil {
-			return out, err
-		}
-	}
-
-	return append(out, NewScopeDef(form, keys, values)), nil
 }
 
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -889,7 +831,6 @@ func (self *Scope) InitAbcModule() *Scope {
  	self.AddMacro("call:", 1, callArgsImp)
 	self.AddMacro("check:", 1, checkImp)
 	self.AddMacro("define:", 2, defineImp)
- 	self.AddMacro("do:", 1, doImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
  	self.AddMacro("for:", 1, forImp)
@@ -902,7 +843,6 @@ func (self *Scope) InitAbcModule() *Scope {
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("$", 0, peekValImp)
-	self.AddMacro("scope:", 1, scopeImp)
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("type:", 2, typeDefImp)
 	self.AddMacro("use:", 2, useImp)

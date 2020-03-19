@@ -1,13 +1,20 @@
-* remove do: macro
-** drop pop-support from scope_op
-** signal unknown identifiers in id compile
-** replace Extend with lookup of identifiers with Nil values
+* scoping clean up
+** rename scope_type to module_type
+*** add module type embedding Scope
+**** convert existing modules
+** rename scope_form_type to scope_type
+** check unknown identifiers in id compile
+*** signal error if no binding found
+** replace Extend calls with lookup of identifiers with Nil values
 ** update readme
 * add iter module
 ** move next/~
 ** add value(val;iter) method
 *** chain instead of b closure in enojs.gf
 *** compare performance
+** add SequenceType interface
+*** move Iterator method
+**** remove default imp
 ** add separate methods items/chars/bytes/fields
 *** update readme
 * use path package to extract filenames

@@ -109,14 +109,6 @@ data.record: (foo 1 bar 2) ..
 data.merge(data.record: (foo 3 bar 4 baz 5))
 check: =(data.record: (foo 1 bar 2 baz 5))
 
-scope: (foo 35)
-
-.. do: {
-  let: bar (foo +(7))
-}
-
-.bar check: =(42)
-
 42 ?: $ 'fail
 check: =(42)
 

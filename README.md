@@ -468,33 +468,6 @@ Overriding compile time bindings is not allowed.
 Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 ```
 
-### scopes
-`scope:` may be used to create a new scope with specified bindings.
-
-```
-  scope: (foo 35)
-
-[Scope(0xc0000447c0)]
-```
-
-`do:` may be used to evaluate code in an external scope.
-
-```
-  .. do: {
-    let: bar (foo +(7))
-  }
-
-[Scope(0xc0000447c0)]
-```
-
-Identifiers starting with `.` get their scope from the stack.
-
-```
-  .bar
-
-[42]
-```
-
 ### branches
 `?:` may be used to conditionally evaluate code.
 

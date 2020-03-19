@@ -2,7 +2,7 @@ package gfoo
 
 const (
 	VersionMajor = 0
-	VersionMinor = 17
+	VersionMinor = 18
 )
 
 func Init() {
