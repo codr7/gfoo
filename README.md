@@ -564,6 +564,18 @@ Identifiers starting with `.` get their scope from the stack.
 [1 2]
 ```
 
+Iterators may be chained using `~`.
+
+```
+  [1 2] iter~([3 4] iter)
+
+[Iter(0xc000090278)]
+  ...
+
+[1 2 3 4]
+```
+
+
 ### lambdas
 Lambdas may be created using `/:`;
 

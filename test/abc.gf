@@ -130,6 +130,8 @@ check: =(42)
 next check: =(0)
 next check: is(NIL)
 
+[[1 2] iter~([3 4] iter)...] check: =([1 2 3 4])
+
 /:(x) !x
 call: (42) check: =(!42)
 

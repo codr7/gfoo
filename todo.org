@@ -1,4 +1,3 @@
-* add ~(Iter Iter)
 * add Rgba.set(x y r g b a) method
 * use path package to extract filenames
 * move Thread call imp to wait method
