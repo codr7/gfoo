@@ -1,8 +1,6 @@
 * add ~(Iter Iter)
-* add png.encode method
-** scratch
 * add Rgba.set(x y r g b a) method
-* --
+* use path package to extract filenames
 * move Thread call imp to wait method
 ** add TTarget trait
 *** derive lambda/method/function
