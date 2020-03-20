@@ -8,15 +8,13 @@
 **** remove default imp
 ** add separate methods items/chars/bytes/fields
 *** update readme
-* use path package to extract filenames
-* implement denojs.gf
+* use path package to extract filenames in enojs
 * move Thread call imp to wait method
 ** add TargetType interface
 ** add TTarget trait
 *** derive lambda/method/function
 *** change arg type in call method
 ** update readme
-* --
 * add string dump support for \n
 * add trait: (...) X
 ** create trait with parents
