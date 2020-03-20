@@ -14,6 +14,13 @@ Press Return on empty line to evaluate.
 [42]
 ```
 
+### status
+While there is much left to do, all examples in this document should work as advertised and I have a couple of projects in progress.
+
+* [bookng](https://github.com/codr7/bookng)
+
+* [nojs](https://github.com/codr7/nojs)
+
 ### syntax
 By default, arguments are expected before operations.
 
