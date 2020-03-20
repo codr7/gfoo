@@ -1,4 +1,3 @@
-* replace Extend calls with lookup of Undefined bindings
 * add iter module
 ** move next/~
 ** add value(val;iter) method

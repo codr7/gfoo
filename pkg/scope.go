@@ -91,8 +91,10 @@ func (self *Scope) Copy(out *Scope) {
 }
 
 func (self *Scope) Extend(source *Scope) *Scope {
-	for k, b := range source.bindings {
-		self.bindings[k] = b
+	for k, b := range self.bindings {
+		if b.val == Undefined {
+			self.bindings[k] = source.bindings[k]
+		}
 	}
 
 	self.methods = append(self.methods, source.methods...)
