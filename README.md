@@ -15,7 +15,7 @@ Press Return on empty line to evaluate.
 ```
 
 ### status
-While there is much left to do, all examples in this document should work as advertised and I have a couple of projects in progress.
+While there is much left to do, all examples in this document should work as advertised and I have a couple of projects in progress using the language.
 
 * [bookng](https://github.com/codr7/bookng)
 
@@ -95,7 +95,7 @@ New types are derived from their implementation type and may be used as such wit
 [Int]
 ```
 
-`isa` returns the direct parent, or `NIL` if none exists.
+`isa` returns the direct parent type, or `NIL` if none exists.
 
 ```
   Bar isa(Foo)
@@ -150,6 +150,15 @@ Booleans may be negated using `!`.
 [F]
 ```
 
+#### Byte
+Bytes are unsigned 8bit integers and may be created from integer literals using `to-byte`.
+
+```
+  42 io.to-byte typeof
+
+[Byte]
+```
+
 #### Char
 Characters are prefixed with `\`.
 
@@ -180,7 +189,7 @@ Identifiers may be quoted and used as values.
 ```
 
 #### Int
-Integers may be specified using decimal, hexadecimal or binary notation.
+Integers are signed 64bit and may be specified using decimal, hexadecimal or binary notation.
 
 ```
   42 0x2a 0b101010
@@ -218,7 +227,7 @@ Pairs may be negated using `!`,
 ```
   !,1 2
 
-[.-1 -2]
+[,-1 -2]
 ```
 
 #### Record
@@ -231,7 +240,7 @@ Records are ordered mappings from identifiers to values.
 [Record(bar 2 foo 1)]
 ```
 
-Fields may be accessed directly without quoting.
+Fields may be accessed without quoting.
 
 ```
   .. .foo
@@ -446,7 +455,7 @@ Slices may be used to print several values at once.
 ```
 
 ### bindings
-Bindings come in two flavors, compile time and runtime.
+Bindings come in two flavors, runtime and compile time.
 
 Identifiers may be bound to values at runtime in the current scope using `let:`.
 ```
@@ -739,7 +748,7 @@ Threads may be paused until next call, which then returns the specified argument
   _ .. wait
 
 [Thread(0xc0000a2000) 3]
-  _ call
+  _ wait
 
 Error in 'n/a', line 1, column 2: Thread is done
 ```
