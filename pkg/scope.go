@@ -42,7 +42,7 @@ func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp)
 	var f *Function
 	b := self.Get(name)
 	
-	if b == nil || b.val == Nil {
+	if b == nil || b.val == Undefined {
 		f = self.AddFunction(name)
 	} else {
 		f = b.val.data.(*Function)

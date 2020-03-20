@@ -33,7 +33,7 @@ func (self *Get) Eval(scope *Scope, stack *Slice) error {
 	} else {
 		found := scope.Get(key)
 		
-		if found == nil || found.val == Nil {
+		if found == nil || found.val == Undefined {
 			return scope.Error(self.form.Pos(), "Unknown identifier: %v", key)
 		}
 		

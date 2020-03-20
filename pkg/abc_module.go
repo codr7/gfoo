@@ -193,11 +193,11 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	if found := scope.Get(id.name); found == nil {
-		scope.Set(id.name, Nil)
-	} else if found.val != Nil {
+		scope.Set(id.name, Undefined)
+	} else if found.val != Undefined {
 	        return out, scope.Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
 	} else if found.scope != scope {
-		found.Init(scope, Nil)
+		found.Init(scope, Undefined)
 	} else {
 	        return out, scope.Error(id.Pos(), "Duplicate binding: %v", id.name) 
 	}
@@ -535,7 +535,7 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 
 	source := scope.Get(id.name)
 
-	if source == nil || source.val == Nil {
+	if source == nil || source.val == Undefined {
 		return out, scope.Error(form.Pos(), "Unknown identifier: %v", id)
 	}
 

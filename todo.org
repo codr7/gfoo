@@ -12,13 +12,13 @@
 ** add separate methods items/chars/bytes/fields
 *** update readme
 * use path package to extract filenames
+* implement denojs.gf
 * move Thread call imp to wait method
+** add TargetType interface
 ** add TTarget trait
 *** derive lambda/method/function
 *** change arg type in call method
 ** update readme
-* use separate thread to read files
-* implement denojs.gf
 * --
 * add string dump support for \n
 * add trait: (...) X

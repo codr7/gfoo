@@ -78,7 +78,7 @@ func (self *Id) compileName(
 	out []Op,
 	nameScope, scope *Scope) ([]Op, error) {		
 
-	if b := nameScope.Get(name); b != nil && (name == "NIL" || b.val != Nil) {
+	if b := nameScope.Get(name); b != nil && (name == "NIL" || b.val != Undefined) {
 		v := &b.val
 
 		switch (v.dataType) {
