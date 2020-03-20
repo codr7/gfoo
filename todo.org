@@ -1,6 +1,4 @@
-* check unknown identifiers in id compile
-** signal error if no binding found
-** replace Extend calls with lookup of identifiers with Nil values
+* replace Extend calls with lookup of Undefined bindings
 * add iter module
 ** move next/~
 ** add value(val;iter) method

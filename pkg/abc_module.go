@@ -150,6 +150,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	var bodyOps []Op
+	scope = scope.Clone()
 
 	for i := len(args.body)-1; i >= 0; i-- {
 		a := args.body[i]
@@ -158,14 +159,14 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		if id, ok = args.body[i].(*Id); !ok {
 			return out, scope.Error(a.Pos(), "Invalid argument: %v", a)
 		}
-		
+
+		scope.Set(id.name, Undefined)
 		bodyOps = append(bodyOps, NewLet(id, id.name))
 	}
 
 	body := in.Pop()
 	var bodyForms []Form
 	var lambdaScope *Scope
-	scope = scope.Clone()
 	
 	if s, ok := body.(*ScopeForm); ok {
 		bodyForms = s.body
@@ -176,7 +177,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	var err error
-	
+
 	if bodyOps, err = scope.Compile(bodyForms, bodyOps); err != nil {
 		return out, err
 	}
@@ -384,14 +385,17 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	var bodyOps []Op
+	methodScope := scope.Clone()
 	
 	for i := len(args)-1; i >= 0; i-- {
-		if args[i].name != "_" {
-			bodyOps = append(bodyOps, NewLet(argsForm, args[i].name))
+		a := args[i]
+		
+		if a.name != "_" {
+			methodScope.Set(a.name, Undefined)
+			bodyOps = append(bodyOps, NewLet(argsForm, a.name))
 		}
 	}
 
-	methodScope := scope.Clone()
 	var err error
 	var bodyForms []Form
 	var scopeBody bool

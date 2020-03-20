@@ -77,34 +77,39 @@ func (self *Id) compileName(
 	in *Forms,
 	out []Op,
 	nameScope, scope *Scope) ([]Op, error) {		
+	b := nameScope.Get(name)
+	
+	if  b == nil && name[0] != '.' {
+		return out, scope.Error(self.pos, "Unknown identifier: %v", name)
+	}
+	
+	if b == nil || b.val == Undefined {
+		return append(out, NewGet(self, name)), nil
+	}
+	
+	v := &b.val
 
-	if b := nameScope.Get(name); b != nil && (name == "NIL" || b.val != Undefined) {
-		v := &b.val
-
-		switch (v.dataType) {
-		case &TFunction:
-			return self.compileFunction(v.data.(*Function), in, out, scope)
-		case &TMacro:
-			return v.data.(*Macro).Expand(self, in, out, scope)
-		case &TMethod:
-			return self.compileMethod(v.data.(*Method), in, out, scope)
-		case &TModule:
-			if next := in.Peek(); next != nil {
-				if id, ok := next.(*Id); ok && id.name[0] == '.' {
-					in.Pop()
-					
-					return self.compileName(
-						id.name[1:],
-						in,
-						out,
-						&v.data.(*Module).Scope,
-						scope)
-				}
+	switch (v.dataType) {
+	case &TFunction:
+		return self.compileFunction(v.data.(*Function), in, out, scope)
+	case &TMacro:
+		return v.data.(*Macro).Expand(self, in, out, scope)
+	case &TMethod:
+		return self.compileMethod(v.data.(*Method), in, out, scope)
+	case &TModule:
+		if next := in.Peek(); next != nil {
+			if id, ok := next.(*Id); ok && id.name[0] == '.' {
+				in.Pop()
+				
+				return self.compileName(
+					id.name[1:],
+					in,
+					out,
+					&v.data.(*Module).Scope,
+					scope)
 			}
 		}
-		
-		return append(out, NewPush(self, *v)), nil
 	}
-
-	return append(out, NewGet(self, name)), nil
+	
+	return append(out, NewPush(self, *v)), nil
 }
