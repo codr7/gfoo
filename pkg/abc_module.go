@@ -760,6 +760,11 @@ func stringLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func threadWaitImp(scope *Scope, stack *Slice, pos Pos) error {
+	stack.Pop().data.(*Thread).Wait(scope, stack, pos)
+	return nil
+}
+
 func typeImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
@@ -848,8 +853,8 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
 	self.AddMethod("chars", []Arg{AType("val", &TString)}, []Ret{RType(&TIter)}, stringCharsImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
+	self.AddMethod("wait", []Arg{AType("thread", &TThread)}, nil, threadWaitImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
-
 
 	self.Eval(`
 macro: if: (body) {

@@ -28,7 +28,13 @@ func (self Val) Bool() bool {
 }
 
 func (self Val) Call(scope *Scope, stack *Slice, pos Pos) error {
-	return self.dataType.Call(self, scope, stack, pos)
+	tt, ok := self.dataType.(TargetType)
+
+	if !ok {
+		scope.Error(pos, "Calling is only supported for target types")
+	}
+
+	return tt.Call(self, scope, stack, pos)
 }
 
 func (self Val) Clone() Val {

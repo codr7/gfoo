@@ -7,7 +7,6 @@ import (
 type ValType interface {
 	Type
 	Bool(val Val) bool
-	Call(target Val, scope *Scope, stack *Slice, pos Pos) error
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
@@ -30,10 +29,6 @@ func (self *ValTypeBase) Init(name string, parents...Type) {
 
 func (_ *ValTypeBase) Bool(val Val) bool {
 	return true
-}
-
-func (self *ValTypeBase) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	return scope.Error(pos, "Call not supported for type: %v", self.name)
 }
 
 func (_ *ValTypeBase) Clone(val Val) interface{} {

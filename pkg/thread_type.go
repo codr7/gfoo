@@ -16,10 +16,6 @@ type ThreadType struct {
 	ValTypeBase
 }
 
-func (_ *ThreadType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	return target.data.(*Thread).Call(stack, pos)
-}
-
 func (_ *ThreadType) Compare(x, y Val) Order {
 	return ComparePointer(unsafe.Pointer(x.data.(*Thread)), unsafe.Pointer(y.data.(*Thread)))
 }

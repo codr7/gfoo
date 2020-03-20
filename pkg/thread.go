@@ -18,20 +18,6 @@ func NewThread(body []Op, scope *Scope) *Thread {
 	return t
 }
 
-func (self *Thread) Call(stack *Slice, pos Pos) error {
-	if result, ok := <-self.results; ok {
-		stack.Push(result...)
-	} else {
-		if self.err != nil {
-			return self.err
-		}
-
-		return NewError(pos, "Thread is done")
-	}
-		
-	return nil
-}
-
 func (self *Thread) Pause(result []Val) {
 	self.results<- result
 }
@@ -44,4 +30,18 @@ func (self *Thread) Start() {
 		
 		close(self.results)
 	}()
+}
+
+func (self *Thread) Wait(scope *Scope, stack *Slice, pos Pos) error {
+	if result, ok := <-self.results; ok {
+		stack.Push(result...)
+	} else {
+		if self.err != nil {
+			return self.err
+		}
+
+		return scope.Error(pos, "Thread is done")
+	}
+		
+	return nil
 }

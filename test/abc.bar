@@ -138,13 +138,13 @@ call: (42) check: =(!42)
 }
 
 thread: (35) {+(7)}
-call check: =(42)
+wait check: =(42)
 
 {
   let: t (thread: () {pause: 1 pause: 2 3})
-  t call check: =(1)
-  t call check: =(2)
-  t call check: =(3)
+  t wait check: =(1)
+  t wait check: =(2)
+  t wait check: =(3)
 }
 
 {
