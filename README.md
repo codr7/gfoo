@@ -90,7 +90,7 @@ New types are derived from their implementation type and may be used as such wit
   _ +(7)
 
 [42]
-  type
+  typeof
 
 [Int]
 ```
@@ -174,7 +174,7 @@ Identifiers may be quoted and used as values.
   'foo
 
 ['foo]
-  type
+  typeof
 
 [Id]
 ```
@@ -627,7 +627,7 @@ or anonymous, which leaves the value on the stack.
 ['int 'string]
 ```
 
-Indexes may be used instead of types to match any type compatible with the specified argument.
+Indexes may be used instead of types to match anything compatible with the specified argument.
 
 ```
   method: min(x Any y 0; 0) {x <=(y) ?: x y}
