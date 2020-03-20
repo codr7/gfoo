@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.18
+gfoo v0.19
 
 Press Return on empty line to evaluate.
 
@@ -64,19 +64,20 @@ Evaluating nothing in the REPL clears the stack.
 ```
 
 ### types
-Besides first class features described elsewhere in this document, the following types are provided. New types may be created using `type:`
+New types may be created using `type:`
 
 ```
-  type: Foo Int
-  35 as-foo
+  trait: Foo ()
+  type: Bar (Foo) Int
+  35 as-bar
 
 [35]
-  type
+  typeof
 
-[Foo]
+[Bar]
 ```
 
-New types are derived from their implementation and may be used as such without conversion.
+New types are derived from their implementation type and may be used as such without conversion.
 
 ```
   _ +(7)
@@ -87,13 +88,18 @@ New types are derived from their implementation and may be used as such without 
 [Int]
 ```
 
-`isa` returns the direct parent type or `NIL`.
+`isa` returns the direct parent, or `NIL` if none exists.
 
 ```
-  Int isa(Number)
+  Bar isa(Foo)
 
-[Number]
+[Foo]
+  isa(Bar)
+
+[NIL]
 ```
+
+Besides first class features described elsewhere in this document, the following types are provided.
 
 #### Bool
 All values have boolean representations; non-zero integers are true, empty strings and slices false etc.

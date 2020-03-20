@@ -31,8 +31,6 @@ F or: 42 check: =(42)
 
 42 bool check: =(T)
 
-Int check: isa(Number)
-
 !42 +(42) check: =(0)
 
 [3 ...] check: =([0 1 2])
@@ -65,6 +63,21 @@ check: =([1 2])
 length([1 2 3]) check: =(3)
 
 [1 2 [3 4 5]...] check: =([1 2 3 4 5])
+
+{
+  trait: Foo (Number)
+  Foo check: isa(Number)
+  
+  type: Bar (Foo) Int
+  Bar check: isa(Foo)
+  Bar check: isa(Int)
+  
+  method: baz(x Foo;) 'ok
+
+  42 as-bar ..
+  typeof check: =(Bar)
+  baz check: =('ok)
+}
 
 {
   let: foo 'bar

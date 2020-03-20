@@ -1,9 +1,6 @@
 * use path package to extract filenames in enojs
-* add trait: (...) X
-** create trait with parents
-* add trait parents to type:
-* --
 * add string dump support for \n
+* add Byte/Buffer/Image types to README
 * add support for group binding to let:/define:
 * add try:/catch:/fail
 ** require try: or catch: if code contains fail

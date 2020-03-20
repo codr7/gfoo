@@ -484,9 +484,14 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
-func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
-	f := in.Pop()
-	traitId, ok := f.(*Id)
+func traitImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	var f Form
+	
+	if f = in.Pop(); f == nil {
+		return out, scope.Error(form.Pos(), "Missing id")
+	}
+
+	id, ok := f.(*Id)
 	
 	if !ok {
 		return out, scope.Error(form.Pos(), "Expected id: %v", f)
@@ -494,6 +499,62 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 
 	var stack Slice
 
+	if err := scope.EvalForm(in, &stack); err != nil {
+		return out, err
+	}
+
+	var parents []Type
+		
+	for _, v := range stack.items {
+		if v.dataType != &TMeta {
+			return out, scope.Error(form.Pos(), "Expected type: %v", v)
+		}
+
+		pt, ok := v.data.(*Trait);
+		
+		if !ok {
+			return out, scope.Error(form.Pos(), "Expected trait: %v", v)
+		}
+
+		parents = append(parents, pt)
+	}
+
+	scope.AddType(NewTrait(id.name, parents...))
+	return out, nil
+}
+
+func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	id, ok := f.(*Id)
+	
+	if !ok {
+		return out, scope.Error(form.Pos(), "Expected id: %v", f)
+	}
+
+	var stack Slice
+
+	if err := scope.EvalForm(in, &stack); err != nil {
+		return out, err
+	}
+
+	var parents []Type
+		
+	for _, v := range stack.items {
+		if v.dataType != &TMeta {
+			return out, scope.Error(form.Pos(), "Expected type: %v", v)
+		}
+
+		pt, ok := v.data.(*Trait);
+		
+		if !ok {
+			return out, scope.Error(form.Pos(), "Expected trait: %v", v)
+		}
+
+		parents = append(parents, pt)
+	}
+
+	stack.Clear()
+	
 	if err := scope.EvalForm(in, &stack); err != nil {
 		return out, err
 	}
@@ -513,8 +574,9 @@ func typeDefImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	if !ok {
 		return out, scope.Error(form.Pos(), "Expected value type: %v", imp)
 	}
-	
-	t := impType.New(traitId.name, impType)
+
+	parents = append(parents, impType)
+	t := impType.New(id.name, parents...)
 	scope.AddType(t)
 
 	scope.AddMethod(fmt.Sprintf("as-%v", strings.ToLower(t.Name())),
@@ -765,7 +827,7 @@ func threadWaitImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func typeImp(scope *Scope, stack *Slice, pos Pos) error {
+func typeofImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }
@@ -816,7 +878,8 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("$", 0, peekValImp)
 	self.AddMacro("thread:", 2, threadImp)
-	self.AddMacro("type:", 2, typeDefImp)
+	self.AddMacro("trait:", 2, traitImp)
+	self.AddMacro("type:", 2, typeImp)
 	self.AddMacro("use:", 2, useImp)
 
 	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
@@ -854,7 +917,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("chars", []Arg{AType("val", &TString)}, []Ret{RType(&TIter)}, stringCharsImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
 	self.AddMethod("wait", []Arg{AType("thread", &TThread)}, nil, threadWaitImp)
-	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
+	self.AddMethod("typeof", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeofImp)
 
 	self.Eval(`
 macro: if: (body) {
