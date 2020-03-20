@@ -1,7 +1,11 @@
 use: iter (~ next)
 
-1 iter ..
+1 count ..
 next check: =(0)
 next check: is(NIL)
 
-[[1 2] iter ~ ([3 4] iter)...] check: =([1 2 3 4])
+[3 count...] check: =([0 1 2])
+
+["foo" chars...] check: =([\'f \'o \'o])
+
+[[1 2] items ~([3 4] items)...] check: =([1 2 3 4])

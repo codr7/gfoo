@@ -1,9 +1,3 @@
-* add iter module
-** add SequenceType interface
-*** move Iterator method
-**** remove default imp
-** add separate methods items/chars/fields
-*** update readme
 * use path package to extract filenames in enojs
 * move Thread call imp to wait method
 ** add TargetType interface

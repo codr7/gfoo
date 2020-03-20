@@ -60,7 +60,13 @@ func (self Val) Is(other Val) bool {
 }
 
 func (self Val) Iter(scope *Scope, pos Pos) (Iter, error) {
-	return self.dataType.Iter(self, scope, pos)
+	st, ok := self.dataType.(SequenceType)
+
+	if !ok {
+		scope.Error(pos, "Iteration is only supported for sequence types")
+	}
+	
+	return st.Iter(self, scope, pos)
 }
 
 func (self Val) Keys() []string {

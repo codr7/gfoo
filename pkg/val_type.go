@@ -14,7 +14,6 @@ type ValType interface {
 	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
-	Iter(val Val, scope *Scope, pos Pos) (Iter, error)
 	Keys(val Val) []string
 	Negate(val *Val)
 	New(name string, parents...Type) ValType
@@ -47,10 +46,6 @@ func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val
 
 func (_ *ValTypeBase) Is(x, y Val) bool {
 	return x.data == y.data
-}
-
-func (self *ValTypeBase) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
-	return nil, scope.Error(pos, "Iteration not supported for type: %v", self.name)
 }
 
 func (_ *ValTypeBase) Keys(val Val) []string {

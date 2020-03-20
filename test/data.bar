@@ -1,0 +1,23 @@
+use: data(length merge record: set)
+
+!record: (foo 1 bar 2) check: =(record: (foo !1 bar !2))
+
+{
+  let: r (record: (foo 1 bar 2 baz 3))
+  r length check: =(3)
+  r .foo check: =(1)
+  r .bar check: =(2)
+  r .baz check: =(3)
+ 
+  r .qux check: is(NIL)
+  r set('qux 4)
+  r .qux check: =(4)
+
+  let: c clone(r)
+  c set('qux 5)
+  r .qux check: =(4)
+}
+
+record: (foo 1 bar 2) ..
+merge(record: (foo 3 bar 4 baz 5))
+check: =(record: (foo 1 bar 2 baz 5))

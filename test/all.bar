@@ -1,6 +1,7 @@
 use: abc...
 
 include: "abc.bar"
+include: "data.bar"
 include: "io.bar"
 include: "iter.bar"
 include: "math.bar"

@@ -602,6 +602,17 @@ func intAddImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func intCountImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIter, in))
+	return nil
+}
+
 func intDecImp(scope *Scope, stack *Slice, pos Pos) error {
 	v := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, v-1))
@@ -670,6 +681,17 @@ func sayImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func sliceItemsImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIter, in))
+	return nil
+}
+
 func sliceLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Slice).Len())))
 	return nil
@@ -720,6 +742,17 @@ func spreadImp(scope *Scope, stack *Slice, pos Pos) error {
 		stack.Push(v)
 		return nil
 	}, scope, pos)
+}
+
+func stringCharsImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIter, in))
+	return nil
 }
 
 func stringLengthImp(scope *Scope, stack *Slice, pos Pos) error {
@@ -788,6 +821,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod(">", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gtImp)
 	self.AddMethod(">=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, gteImp)
 	self.AddMethod("+", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intAddImp)
+	self.AddMethod("count", []Arg{AType("val", &TInt)}, []Ret{RType(&TIter)}, intCountImp)
 	self.AddMethod("-1", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, intDecImp)
 	self.AddMethod("+1", []Arg{AType("val", &TInt)}, []Ret{RType(&TInt)}, intIncImp)
 	self.AddMethod("*", []Arg{AType("x", &TInt), AType("y", &TInt)}, []Ret{RType(&TInt)}, intMulImp)
@@ -806,11 +840,13 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
+	self.AddMethod("items", []Arg{AType("val", &TSlice)}, []Ret{RType(&TIter)}, sliceItemsImp)
 	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
 	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePeekImp)
 	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePopImp)
 	self.AddMethod("push", []Arg{AType("target", &TSlice), AType("val", &TAny)}, nil, slicePushImp)
 	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
+	self.AddMethod("chars", []Arg{AType("val", &TString)}, []Ret{RType(&TIter)}, stringCharsImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
 	self.AddMethod("type", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeImp)
 

@@ -109,7 +109,7 @@ func (self *IoModule) Init() *Module {
 	self.OUT = bufio.NewWriter(os.Stdout)
 	self.AddVal("OUT", &TWriter, self.OUT)
 
-	self.AddMethod("bytes", []Arg{AType("val", &TSequence)}, []Ret{RType(&TIter)}, bufferBytesImp)
+	self.AddMethod("bytes", []Arg{AType("val", &TBuffer)}, []Ret{RType(&TIter)}, bufferBytesImp)
 	self.AddMethod("length", []Arg{AType("val", &TBuffer)}, []Ret{RType(&TInt)}, bufferLengthImp)
 	self.AddMethod("new-buffer", nil, []Ret{RType(&TBuffer)}, bufferNewImp)
 

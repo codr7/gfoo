@@ -42,6 +42,17 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewRecordOp(form, fieldOps)), nil
 }
 
+func recordFieldsImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIter, in))
+	return nil
+}
+
 func recordLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Record).Len())))
 	return nil
@@ -65,6 +76,7 @@ func (self *DataModule) Init() *Module {
 	self.AddType(&TRecord)
 	self.AddMacro("record:", 1, recordImp)
 
+	self.AddMethod("bytes", []Arg{AType("val", &TRecord)}, []Ret{RType(&TIter)}, recordFieldsImp)
 	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
 	self.AddMethod("merge", []Arg{AType("target", &TRecord), AType("source", &TRecord)}, nil, recordMergeImp)
 

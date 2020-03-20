@@ -541,13 +541,13 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 [0 2 4]
 ```
 
-`iter` may be used to get a new iterator for any sequence.
+Iterators may be manually consumed using `next`,
 
 ```
-  3 iter
+  3 count
 
 [Iter(0xc000006148)]
-  .. next
+  .. iter.next
 
 [Iter(0xc000006148) 0]
   _ ...
@@ -555,15 +555,15 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 [1 2]
 ```
 
-Iterators may be chained using `~`.
+and chained using `~`.
 
 ```
-  [1 2] iter~([3 4] iter)
+  3 count iter.~([3 4] items)
 
 [Iter(0xc000090278)]
   ...
 
-[1 2 3 4]
+[0 1 2 3 4]
 ```
 
 
