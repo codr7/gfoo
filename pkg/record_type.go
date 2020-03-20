@@ -39,6 +39,8 @@ func (_ *RecordType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
 		if i < in.Len() {
 			f := in.fields[i]
 			v := NewVal(&TPair, NewPair(NewVal(&TId, f.key), f.val))
+			i++
+			
 			return v, nil
 		}
 

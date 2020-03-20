@@ -76,7 +76,7 @@ func (self *DataModule) Init() *Module {
 	self.AddType(&TRecord)
 	self.AddMacro("record:", 1, recordImp)
 
-	self.AddMethod("bytes", []Arg{AType("val", &TRecord)}, []Ret{RType(&TIter)}, recordFieldsImp)
+	self.AddMethod("fields", []Arg{AType("val", &TRecord)}, []Ret{RType(&TIter)}, recordFieldsImp)
 	self.AddMethod("length", []Arg{AType("val", &TRecord)}, []Ret{RType(&TInt)}, recordLengthImp)
 	self.AddMethod("merge", []Arg{AType("target", &TRecord), AType("source", &TRecord)}, nil, recordMergeImp)
 

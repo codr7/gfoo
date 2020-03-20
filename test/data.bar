@@ -1,4 +1,4 @@
-use: data(length merge record: set)
+use: data(fields length merge record: set)
 
 !record: (foo 1 bar 2) check: =(record: (foo !1 bar !2))
 
@@ -21,3 +21,6 @@ use: data(length merge record: set)
 record: (foo 1 bar 2) ..
 merge(record: (foo 3 bar 4 baz 5))
 check: =(record: (foo 1 bar 2 baz 5))
+
+[record: (foo 1 bar 2) fields...]
+check: =([,'bar 2 ,'foo 1])
