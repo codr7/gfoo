@@ -368,14 +368,14 @@ Definitions belong to modules and have to be imported into the current scope to 
 
 Fundamental definitions are defined in the `abc` module, which is fully imported by default in the REPL. The same thing may be accomplished in scripts by using `abc...`.
 
-test.gf
+test.bar
 ```
 use: abc...
 say(35 +(7))
 ```
 
 ```
-$ gfoo test.gf
+$ gfoo test.bar
 42
 ```
 

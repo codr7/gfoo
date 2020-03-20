@@ -648,68 +648,6 @@ func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iterImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
-
-	if err != nil {
-		return err
-	}
-
-	stack.Push(NewVal(&TIter, in))
-	return nil
-}
-
-func iterChainImp(scope *Scope, stack *Slice, pos Pos) error {
-	y := stack.Pop().data.(Iter)
-	x := stack.Pop().data.(Iter)
-
-	stack.Push(NewVal(&TIter, Iter(func(scope *Scope, pos Pos) (Val, error) {
-		if x != nil {
-			v, err := x(scope, pos)
-
-			if err != nil {
-				return Nil, err
-			}
-
-			if v != Nil {
-				return v, nil
-			}
-
-			x = nil
-		}
-
-		if y != nil {
-			v, err := y(scope, pos)
-
-			if err != nil {
-				return Nil, err
-			}
-
-			if v != Nil {
-				return v, nil
-			}
-
-			y = nil
-		}
-		
-		return Nil, nil
-	})))
-	
-	return nil
-}
-
-func iterNextImp(scope *Scope, stack *Slice, pos Pos) error {
-	in := stack.Pop().data.(Iter)
-	
-	if v, err := in(scope, pos); err != nil {
-		return err
-	} else {
-		stack.Push(v)
-	}
-			
-	return nil
-}
-
 func loadImp(scope *Scope, stack *Slice, pos Pos) error {
 	return scope.Load(stack.Pop().data.(string), stack)
 }
@@ -864,9 +802,6 @@ func (self *AbcModule) Init() *Module {
 		[]Ret{RType(Option(&TMeta))},
 		isaImp)
 	
-	self.AddMethod("iter", []Arg{AType("val", &TSequence)}, []Ret{RType(&TIter)}, iterImp)
-	self.AddMethod("~", []Arg{AType("x", &TIter), AType("y", &TIter)}, []Ret{RType(&TIter)}, iterChainImp)
-	self.AddMethod("next", []Arg{AType("in", &TIter)}, []Ret{RType(&TOption)}, iterNextImp)
 	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)

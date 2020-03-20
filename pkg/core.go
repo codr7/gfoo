@@ -9,6 +9,7 @@ type Core struct {
 	Zip ZipModule
 	Image ImageModule
 	Io IoModule
+	Iter IterModule
 	Math MathModule
 	Png PngModule
 }
@@ -21,6 +22,7 @@ func New() *Core {
 	c.AddModule("data", c.Data.Init())
 	c.AddModule("image", c.Image.Init())
 	c.AddModule("io", c.Io.Init())
+	c.AddModule("iter", c.Iter.Init())
 	c.AddModule("math", c.Math.Init())
 	c.AddModule("string", c.String.Init())	
 	c.AddModule("png", c.Png.Init())

@@ -13,6 +13,17 @@ type IoModule struct {
 	OUT *bufio.Writer
 }
 
+func bufferBytesImp(scope *Scope, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(scope, pos)
+
+	if err != nil {
+		return err
+	}
+
+	stack.Push(NewVal(&TIter, in))
+	return nil
+}
+
 func bufferLengthImp(scope *Scope, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Buffer).Len())))
 	return nil
@@ -98,6 +109,7 @@ func (self *IoModule) Init() *Module {
 	self.OUT = bufio.NewWriter(os.Stdout)
 	self.AddVal("OUT", &TWriter, self.OUT)
 
+	self.AddMethod("bytes", []Arg{AType("val", &TSequence)}, []Ret{RType(&TIter)}, bufferBytesImp)
 	self.AddMethod("length", []Arg{AType("val", &TBuffer)}, []Ret{RType(&TInt)}, bufferLengthImp)
 	self.AddMethod("new-buffer", nil, []Ret{RType(&TBuffer)}, bufferNewImp)
 

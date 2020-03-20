@@ -1,0 +1,7 @@
+use: iter (~ next)
+
+1 iter ..
+next check: =(0)
+next check: is(NIL)
+
+[[1 2] iter ~ ([3 4] iter)...] check: =([1 2 3 4])

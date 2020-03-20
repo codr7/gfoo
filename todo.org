@@ -1,12 +1,8 @@
 * add iter module
-** move next/~
-** add value(val;iter) method
-*** chain instead of b closure in enojs.gf
-*** compare performance
 ** add SequenceType interface
 *** move Iterator method
 **** remove default imp
-** add separate methods items/chars/bytes/fields
+** add separate methods items/chars/fields
 *** update readme
 * use path package to extract filenames in enojs
 * move Thread call imp to wait method
