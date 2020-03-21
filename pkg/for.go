@@ -26,8 +26,7 @@ func (self *For) Eval(scope *Scope, stack *Slice) error {
 	}
 	
 	return in.For(func(v Val, scope *Scope, pos Pos) error {
-		scope.val.Push(v)
-		defer scope.val.Pop()
+		stack.Push(v)
 		return scope.EvalOps(self.body, stack)
 	}, scope, self.form.Pos())
 }

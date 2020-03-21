@@ -448,10 +448,6 @@ func pauseImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewPause(form, resultOps)), nil
 }
 
-func peekValImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewPeekVal(form)), nil
-}
-
 func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	f := in.Pop()
 	var args *Group
@@ -876,7 +872,6 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
-	self.AddMacro("$", 0, peekValImp)
 	self.AddMacro("thread:", 2, threadImp)
 	self.AddMacro("trait:", 2, traitImp)
 	self.AddMacro("type:", 2, typeImp)

@@ -47,8 +47,7 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 				break
 			}
 
-			scope.val.Push(v)
-			defer scope.val.Pop()
+			buffer.Push(v)
 
 			if err = scope.EvalOps(self.body, &buffer); err != nil {
 				return Nil, err

@@ -100,11 +100,11 @@ length([1 2 3]) check: =(3)
   foo check: =('bar)
 }
 
-42 ?: $ 'fail
-check: =(42)
-
-[] 3 for: (.. push($ *(2))) check: =([0 2 4])
-[3 map: ($ *(2))...] check: =([0 2 4])
+[3 for: *(2)] check: =([0 2 4])
+[3 map: *(2)...] check: =([0 2 4])
+[3 map: _...] check: =([])
+[2 map: (_ 'foo 'bar)...] check: =(['foo 'bar 'foo 'bar])
+[['foo 'bar 'baz] map: (.. is('bar) if: (_ NIL))...] check: =(['foo])
 
 /:(x) !x
 call: (42) check: =(!42)

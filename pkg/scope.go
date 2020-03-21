@@ -16,7 +16,6 @@ type Scope struct {
 	loadPath string
 	bindings Bindings
 	methods []*Method
-	val Slice
 }
 
 func NewScope() *Scope {
@@ -83,7 +82,6 @@ func (self *Scope) Copy(out *Scope) {
 	out.Debug = self.Debug
 	out.thread = self.thread
 	out.loadPath = self.loadPath
-	out.val = self.val
 	
 	for k, b := range self.bindings {
 		out.bindings[k] = b
@@ -98,7 +96,6 @@ func (self *Scope) Extend(source *Scope) *Scope {
 	}
 
 	self.methods = append(self.methods, source.methods...)
-	self.val.Push(source.val.items...)
 	return self
 }
 

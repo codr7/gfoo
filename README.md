@@ -526,14 +526,6 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 ['ok 'ok]
 ```
 
-`$` is bound to the condition while evaluating branches.
-
-```
-  42 ?= $ 'fail
-
-[42]
-```
-
 `if:` and `else:` may be used instead for single branch conditions.
 
 ```
@@ -544,18 +536,18 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 ```
 
 ### sequences
-`for:` may be used to execute code once for each item in a sequence, `$` is bound to the current item.
+`for:` may be used to execute code once for each item in a sequence.
 
 ```
-  3 for: ($ *(2))
+  3 for: *(2)
 
 [0 2 4]
 ```
 
-`map:` may be used to lazily transform sequences, `$` is bound to the current item.
+`map:` may be used to lazily transform sequences.
 
 ```
-  3 map: ($ *(2))
+  3 map: *(2)
 
 [Iter(0xc000090130)]
   ...
@@ -563,7 +555,7 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 [0 2 4]
 ```
 
-The specified body may return an arbitrary number of values.
+The specified body may return an arbitrary number of values,
 
 ```
   3 map: ()...
@@ -572,9 +564,17 @@ The specified body may return an arbitrary number of values.
 ```
 
 ```
-  3 map: ('foo 'bar)...
+  2 map: (_ 'foo 'bar)...
 
-['foo 'bar 'foo 'bar 'foo 'bar]
+['foo 'bar 'foo 'bar]
+```
+
+or `NIL` to exit early.
+
+```
+  ['foo 'bar 'baz] map: (.. is('bar) if: (_ NIL))...
+
+['foo]
 ```
 
 ### iterators

@@ -28,7 +28,5 @@ func (self *Branch) Eval(scope *Scope, stack *Slice) error {
 		body = self.falseBody
 	}
 	
-	scope.val.Push(*v)
-	defer scope.val.Pop()
 	return scope.EvalOps(body, stack)
 }

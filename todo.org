@@ -33,3 +33,5 @@ macro: while: (cond body) {
 * add union type literals
 ** parse X|Y as union
 *** handle in ParseId
+
+['foo 'bar 'baz] map: (.. is('bar) if: (_ NIL))
