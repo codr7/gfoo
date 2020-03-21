@@ -563,6 +563,22 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 [0 2 4]
 ```
 
+The specified body may return an arbitrary number of values.
+
+```
+  3 map: ()...
+
+[]
+```
+
+```
+  3 map: ('foo 'bar)...
+
+['foo 'bar 'foo 'bar 'foo 'bar]
+```
+
+### iterators
+
 Iterators may be manually consumed using `next`,
 
 ```
@@ -587,7 +603,6 @@ and chained using `~`.
 
 [0 1 2 3 4]
 ```
-
 
 ### lambdas
 Lambdas may be created using `/:`;
