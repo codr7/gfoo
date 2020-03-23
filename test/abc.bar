@@ -102,11 +102,12 @@ length([1 2 3]) check: =(3)
 
 [3 times: 42] check: =([42 42 42])
 [3 for: _ *(2)] check: =([0 2 4])
-[3 for: v (v *(2))] check: =([0 2 4])
-[3 map: *(2)...] check: =([0 2 4])
-[3 map: _...] check: =([])
-[2 map: (_ 'foo 'bar)...] check: =(['foo 'bar 'foo 'bar])
-[['foo 'bar 'baz] map: (.. is('bar) if: (_ NIL))...] check: =(['foo])
+{[3 for: v (v *(2))] check: =([0 2 4])}
+[3 map: _ *(2)...] check: =([0 2 4])
+{[3 map: v (v *(2))...] check: =([0 2 4])}
+{[3 map: v ()...] check: =([])}
+{[3 map: _ 'foo...] check: =([0 'foo 1 'foo 2 'foo])}
+[['foo 'bar 'baz] map: v (v is('bar) ?: NIL v)...] check: =(['foo])
 
 /:(x) !x
 call: (42) check: =(!42)
@@ -170,7 +171,7 @@ call: (42) check: =(!42)
 
 {
   method: foo ((x y) Int;Int) {x *(y)}
-  method: bar (x Int y Slice; Slice) {[y map: foo(x)...]}
+  method: bar (x Int y Slice; Slice) {[y map: v foo(x v)...]}
   42 [1 2 3] bar check: =([42 84 126])
 }
 

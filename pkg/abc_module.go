@@ -300,6 +300,23 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func mapImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	id, ok := f.(*Id)
+
+	if !ok {
+		return out, Error(form.Pos(), "Expected identifier: %v", id)
+	}
+	
+	idIndex := -1
+	
+	if id.name != "_" {
+		var err error
+		
+		if idIndex, err = scope.Let(id.name, form.Pos()); err != nil {
+			return out, err
+		}
+	}
+
 	body := in.Pop()	
 	bodyOps, err := body.Compile(in, nil, scope)
 	
@@ -307,7 +324,7 @@ func mapImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		return out, err
 	}
 	
-	return append(out, NewMap(form, bodyOps)), nil
+	return append(out, NewMap(form, idIndex, bodyOps)), nil
 }
 
 func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -883,7 +900,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("/:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)
 	self.AddMacro("macro:", 3, macroImp)
- 	self.AddMacro("map:", 1, mapImp)
+ 	self.AddMacro("map:", 2, mapImp)
 	self.AddMacro("method:", 3, methodImp)
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)

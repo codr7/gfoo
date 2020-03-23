@@ -564,7 +564,18 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 `map:` may be used to lazily transform sequences.
 
 ```
-  3 map: *(2)
+  3 map: _ *(2)
+
+[Iter(0xc000090130)]
+  ...
+
+[0 2 4]
+```
+
+Items may optionally be bound to an identifier instead of pushed on the stack.
+
+```
+  3 map: v (v *(2))
 
 [Iter(0xc000090130)]
   ...
@@ -575,21 +586,15 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 The specified body may return an arbitrary number of values,
 
 ```
-  3 map: ()...
+  3 map: _ 'foo...
 
-[]
-```
-
-```
-  2 map: (_ 'foo 'bar)...
-
-['foo 'bar 'foo 'bar]
+[0 'foo 1 'foo 2 'foo]
 ```
 
 or `NIL` to exit early.
 
 ```
-  ['foo 'bar 'baz] map: (.. is('bar) if: (_ NIL))...
+  ['foo 'bar 'baz] map: (v is('bar) ?: NIL v)...
 
 ['foo]
 ```

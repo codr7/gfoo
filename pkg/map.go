@@ -3,12 +3,14 @@ package gfoo
 type Map struct {
 	OpBase
 	body []Op
+	id int
 }
 
-func NewMap(form Form, body []Op) *Map {
+func NewMap(form Form, id int, body []Op) *Map {
 	op := new(Map)
 	op.OpBase.Init(form)
 	op.body = body
+	op.id = id
 	return op
 }
 
@@ -24,9 +26,17 @@ func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 	if err != nil {
 		return err
 	}
+	
+	if self.id != -1 {
+		if registers.Len() <= self.id {
+			registers.Push(Nil)
+		} else {
+			registers.items[self.id] = Nil
+		}
+	}
 
 	var buffer Slice
-	
+
 	stack.Push(NewVal(&TIter, Iter(func (thread *Thread, pos Pos) (Val, error) {
 		for {			
 			if v := buffer.PopFront(); v != nil {
@@ -47,7 +57,11 @@ func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 				break
 			}
 
-			buffer.Push(v)
+			if self.id == -1 {
+				buffer.Push(v)
+			} else {
+				registers.items[self.id] = v
+			}
 
 			if err = EvalOps(self.body, thread, registers, &buffer); err != nil {
 				return Nil, err
