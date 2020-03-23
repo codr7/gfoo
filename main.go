@@ -14,10 +14,11 @@ import (
 func repl(g *gfoo.Core, stack *gfoo.Slice) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VersionMajor, gfoo.VersionMinor)
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
-
+	
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
-	g.Eval("use: abc...", nil)
+	registers := gfoo.NewSlice(nil)
+	g.Eval("use: abc...", nil, registers, nil)
 	
 	for {
 		fmt.Print("  ")
@@ -40,7 +41,7 @@ func repl(g *gfoo.Core, stack *gfoo.Slice) {
 			if source == "" {
 				stack.Clear()
 			} else {
-				if err = g.Eval(source, stack); err != nil {
+				if err = g.Eval(source, nil, registers, stack); err != nil {
 					fmt.Println(err)
 				}
 			}
@@ -60,7 +61,7 @@ func main() {
 	gfoo.Init()
 	g := gfoo.New()
 
-	flag.BoolVar(&g.Debug, "debug", false, "Enable debug mode")
+	flag.BoolVar(&gfoo.Debug, "debug", false, "Enable debug mode")
 	flag.Parse()
 
 	args := flag.Args()

@@ -8,12 +8,12 @@ type StringModule struct {
 	Module
 }
 
-func stringDownImp(scope *Scope, stack *Slice, pos Pos) error {
+func stringDownImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TString, strings.ToLower(stack.Pop().data.(string))))
 	return nil
 }
 
-func stringUpImp(scope *Scope, stack *Slice, pos Pos) error {
+func stringUpImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TString, strings.ToUpper(stack.Pop().data.(string))))
 	return nil
 }

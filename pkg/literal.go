@@ -28,6 +28,6 @@ func (self *Literal) Dump(out io.Writer) error {
 	return self.val.Dump(out)
 }
 
-func (self *Literal) Quote(scope *Scope, pos Pos) (Val, error) {
+func (self *Literal) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	return self.val, nil
 }

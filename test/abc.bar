@@ -110,6 +110,22 @@ length([1 2 3]) check: =(3)
 call: (42) check: =(!42)
 
 {
+  {
+    let: foo 42
+    /:() foo
+  }
+
+  let: foo 'fail
+  call check: =(42)
+}
+
+{
+  let: foo 42
+  method: bar(;Int) foo
+  bar check: =(42)
+}
+
+{
   method: foo(;Int) 42
   !foo check: =(!42)
 }
@@ -148,6 +164,12 @@ call: (42) check: =(!42)
   }
 
   bar check: =('outer)
+}
+
+{
+  method: foo ((x y) Int;Int) {x *(y)}
+  method: bar (x Int y Slice; Slice) {[y map: foo(x)...]}
+  42 [1 2 3] bar check: =([42 84 126])
 }
 
 thread: (35) {+(7)}

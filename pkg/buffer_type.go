@@ -32,11 +32,11 @@ func (self *BufferType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *BufferType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+func (_ *BufferType) Iter(val Val, pos Pos) (Iter, error) {
 	in := val.data.(*Buffer).Bytes()
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (Val, error) {
+	return func(thread *Thread, pos Pos) (Val, error) {
 		if i < len(in) {
 			v := in[i]
 			i++

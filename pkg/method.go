@@ -1,6 +1,6 @@
 package gfoo
 
-type MethodImp = func(scope *Scope, stack *Slice, pos Pos) error
+type MethodImp = func(thread *Thread, registers, stack *Slice, pos Pos) error
 
 type Method struct {
 	indexes map[*Function]int
@@ -8,6 +8,7 @@ type Method struct {
 	args []Arg
 	rets []Ret
 	imp MethodImp
+	registers Slice
 }
 
 func (self *Method) Init(
@@ -44,7 +45,7 @@ func (self *Method) Applicable(stack *Slice) bool {
 	return true
 }
 
-func (self *Method) Call(scope *Scope, stack *Slice, pos Pos) error {	
+func (self *Method) Call(thread *Thread, stack *Slice, pos Pos) error {	
 	var in []Val
 	argCount := len(self.args)
 
@@ -53,21 +54,21 @@ func (self *Method) Call(scope *Scope, stack *Slice, pos Pos) error {
 		copy(in, stack.items[stack.Len()-argCount:])
 	}
 
-	if err := self.imp(scope, stack, pos); err != nil {
+	if err := self.imp(thread, &self.registers, stack, pos); err != nil {
 		return err
 	}
 
 	retCount := len(self.rets)
 
 	if stack.Len() < retCount {
-		return scope.Error(pos, "Missing method result: %v %v", self.name, stack)
+		return Error(pos, "Missing method result: %v %v", self.name, stack)
 	}
 	
 	offs := stack.Len()-retCount
 	
 	for i := offs; i < stack.Len(); i++ {
 		if !self.rets[i-offs].Match(in, stack.items, i) {
-			return scope.Error(pos, "Invalid method result: %v %v", self.name, stack)
+			return Error(pos, "Invalid method result: %v %v", self.name, stack)
 		}
 	}
 

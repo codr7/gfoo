@@ -8,13 +8,13 @@ type MathModule struct {
 	Module
 }
 
-func divImp(scope *Scope, stack *Slice, pos Pos) error {
+func divImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) / y))
 	return nil
 }
 
-func sqrtImp(scope *Scope, stack *Slice, pos Pos) error {
+func sqrtImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(math.Sqrt(float64(stack.Pop().data.(Int))))))
 	return nil
 }

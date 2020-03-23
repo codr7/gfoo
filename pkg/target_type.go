@@ -2,5 +2,5 @@ package gfoo
 
 type TargetType interface {
 	ValType
-	Call(target Val, scope *Scope, stack *Slice, pos Pos) error
+	Call(target Val, thread *Thread, stack *Slice, pos Pos) error
 }

@@ -23,12 +23,12 @@ func (_ *NilType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *NilType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
+func (_ *NilType) Get(source Val, key string, pos Pos) (Val, error) {
 	return Nil, nil
 }
 
 func (_ *NilType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
-	return func(scope *Scope, pos Pos) (Val, error) {
+	return func(thread *Thread, pos Pos) (Val, error) {
 		return Nil, nil
 	}, nil
 }

@@ -56,8 +56,8 @@ func (self *SliceForm) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *SliceForm) Quote(scope *Scope, pos Pos) (Val, error) {
-	ops, err := scope.Compile(self.body, nil)
+func (self *SliceForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+	ops, err := NewScope().Compile(self.body, nil)
 
 	if err != nil {
 		return Nil, err
@@ -65,7 +65,7 @@ func (self *SliceForm) Quote(scope *Scope, pos Pos) (Val, error) {
 
 	v := NewSlice(nil)
 	
-	if err = scope.EvalOps(ops, v); err != nil {
+	if err = EvalOps(ops, nil, NewSlice(nil), v); err != nil {
 		return Nil, err
 	}
 		

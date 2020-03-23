@@ -11,8 +11,8 @@ type FunctionType struct {
 	ValTypeBase
 }
 
-func (_ *FunctionType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	return target.data.(*Function).Call(scope, stack, pos)
+func (_ *FunctionType) Call(target Val, thread *Thread, stack *Slice, pos Pos) error {
+	return target.data.(*Function).Call(thread, stack, pos)
 }
 
 func (_ *FunctionType) Compare(x, y Val) Order {

@@ -12,19 +12,17 @@ func NewPause(form Form, resultOps []Op) *Pause {
 	return op
 }
 
-func (self *Pause) Eval(scope *Scope, stack *Slice) error {
-	t := scope.thread
-	
-	if t == nil {
-		return scope.Error(self.form.Pos(), "No active thread")
+func (self *Pause) Eval(thread *Thread, registers, stack *Slice) error {
+	if thread == nil {
+		return Error(self.form.Pos(), "No active thread")
 	}
 
 	var result Slice
 	
-	if err := t.scope.EvalOps(self.resultOps, &result); err != nil {
+	if err := EvalOps(self.resultOps, thread, registers, &result); err != nil {
 		return err
 	}
 
-	t.Pause(result.items)
+	thread.Pause(result.items)
 	return nil
 }

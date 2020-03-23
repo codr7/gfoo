@@ -24,11 +24,11 @@ func (_ *StringType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *StringType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+func (_ *StringType) Iter(val Val, pos Pos) (Iter, error) {
 	in := []rune(val.data.(string))
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (Val, error) {
+	return func(thread *Thread, pos Pos) (Val, error) {
 		if i < len(in) {
 			v := NewVal(&TChar, in[i])
 			i++

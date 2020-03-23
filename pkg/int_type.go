@@ -30,11 +30,11 @@ func (self *IntType) Is(x, y Val) bool {
 	return x.data == y.data 
 }
 
-func (_ *IntType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+func (_ *IntType) Iter(val Val, pos Pos) (Iter, error) {
 	var i Int
 	max := val.data.(Int)
 	
-	return Iter(func(scope *Scope, pos Pos) (Val, error) {
+	return Iter(func(thread *Thread, pos Pos) (Val, error) {
 		if i < max {
 			v := NewVal(&TInt, i)
 			i++

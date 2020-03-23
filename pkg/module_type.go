@@ -21,11 +21,11 @@ func (self *ModuleType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *ModuleType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
+func (_ *ModuleType) Get(source Val, key string, pos Pos) (Val, error) {
 	found := source.data.(*Module).Get(key)
 	
 	if found == nil || found.val == Undefined {
-		return Nil, scope.Error(pos, "Unknown identifier: %v", key)
+		return Nil, Error(pos, "Unknown identifier: %v", key)
 	}
 
 	return found.val, nil

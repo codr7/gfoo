@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+var Debug = false
+
 func NewError(pos Pos, spec string, args...interface{}) error {
 	for i, a := range args {
 		if d, ok := a.(Dumper); ok {
@@ -18,10 +20,10 @@ func NewError(pos Pos, spec string, args...interface{}) error {
 	return errors.New(msg)
 }
 
-func (self *Scope) Error(pos Pos, spec string, args...interface{}) error {
+func Error(pos Pos, spec string, args...interface{}) error {
 	err := NewError(pos, spec, args...)
 	
-	if self.Debug {
+	if Debug {
 		panic(err.Error())
 	}
 

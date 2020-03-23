@@ -14,21 +14,21 @@ func NewCheck(form Form, cond Form, condOps []Op) *Check {
 	return op
 }
 
-func (self *Check) Eval(scope *Scope, stack *Slice) error {
+func (self *Check) Eval(thread *Thread, registers, stack *Slice) error {
 	condStack := stack.Clone()
 	
-	if err := scope.EvalOps(self.condOps, stack); err != nil {
+	if err := EvalOps(self.condOps, thread, registers, stack); err != nil {
 		return err
 	}
 
 	result := stack.Pop()
 	
 	if result == nil {
-		return scope.Error(self.form.Pos(), "Missing result")
+		return Error(self.form.Pos(), "Missing result")
 	}
 
 	if !result.Bool() {
-		return scope.Error(self.form.Pos(), "Check failed: %v %v", self.cond, condStack)	
+		return Error(self.form.Pos(), "Check failed: %v %v", self.cond, condStack)	
 	}
 	
 	return nil

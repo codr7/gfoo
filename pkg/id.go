@@ -30,7 +30,7 @@ func (self *Id) Dump(out io.Writer) error {
 	return err
 }
 
-func (self *Id) Quote(scope *Scope, pos Pos) (Val, error) {
+func (self *Id) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	return NewVal(&TId, self.name), nil
 }
 
@@ -79,12 +79,16 @@ func (self *Id) compileName(
 	nameScope, scope *Scope) ([]Op, error) {		
 	b := nameScope.Get(name)
 	
-	if  b == nil && name[0] != '.' {
-		return out, scope.Error(self.pos, "Unknown identifier: %v", name)
+	if  b == nil {
+		if name[0] == '.' {
+			return append(out, NewGet(self, name[1:])), nil
+		}
+		
+		return out, Error(self.pos, "Unknown identifier: %v", name)
 	}
 	
-	if b == nil || b.val == Undefined {
-		return append(out, NewGet(self, name)), nil
+	if b.val == Undefined {
+		return append(out, NewLoad(self, name, nameScope.registers[name])), nil
 	}
 	
 	v := &b.val

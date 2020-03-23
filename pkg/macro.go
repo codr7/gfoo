@@ -20,7 +20,7 @@ func (self *Macro) Expand(form Form, in *Forms, out []Op, scope *Scope) ([]Op, e
 	}
 	
 	if inLen < self.argCount {
-		scope.Error(form.Pos(), "Not enough arguments: %v (%v)", inLen, self.argCount)
+		return out, Error(form.Pos(), "Not enough arguments: %v (%v)", inLen, self.argCount)
 	}
 	
 	return self.imp(form, in, out, scope)

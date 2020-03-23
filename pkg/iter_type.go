@@ -23,7 +23,7 @@ func (self *IterType) Dump(val Val, out io.Writer) error {
 	return err
 }
 
-func (_ *IterType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+func (_ *IterType) Iter(val Val, pos Pos) (Iter, error) {
 	return val.data.(Iter), nil
 }
 

@@ -20,25 +20,25 @@ func (self *Trait) Init(name string, parents...Type) *Trait {
 }
 
 func (_ *Trait) Bool(val Val) bool {
-	panic("Not implemented")
+	panic("Abstract method")
 }
 
 func (_ *Trait) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
-	panic("Not implemented")
+	panic("Abstract method")
 }
 
 func (self *Trait) Clone(val Val) interface{} {
-	panic("Not implemented")
+	panic("Abstract method")
 }
 
 func (self *Trait) Compare(x, y Val) Order {
-	panic("Not implemented")
+	panic("Abstract method")
 }
 
 func (self *Trait) Dump(val Val, out io.Writer) error {
-	panic("Not implemented")	
+	panic("Abstract method")
 }
 
 func (self *Trait) Unquote(val Val, scope *Scope, pos Pos) Form {
-	panic("Not implemented")
+	panic("Abstract method")
 }

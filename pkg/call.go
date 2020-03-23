@@ -14,18 +14,18 @@ func NewCall(form Form, target *Val, args []Op) *Call {
 	return op
 }
 
-func (self *Call) Eval(scope *Scope, stack *Slice) error {
+func (self *Call) Eval(thread *Thread, registers, stack *Slice) error {
 	t := self.target
 	
 	if t == nil {
 		if t = stack.Pop(); t == nil {
-			scope.Error(self.form.Pos(), "Missing target")
+			Error(self.form.Pos(), "Missing target")
 		}
 	}
 
-	if err := scope.EvalOps(self.args, stack); err != nil {
+	if err := EvalOps(self.args, thread, registers, stack); err != nil {
 		return err
 	}
 	
-	return t.Call(scope, stack, self.form.Pos())
+	return t.Call(thread, stack, self.form.Pos())
 }

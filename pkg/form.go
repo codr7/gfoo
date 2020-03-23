@@ -5,7 +5,7 @@ type Form interface {
 	Compile(in *Forms, out []Op, scope *Scope) ([]Op, error)
 	Do(action func(Form) error) error
 	Pos() Pos
-	Quote(scope *Scope, pos Pos) (Val, error)
+	Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error)
 }
 
 type FormBase struct {

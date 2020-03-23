@@ -12,14 +12,14 @@ func NewMap(form Form, body []Op) *Map {
 	return op
 }
 
-func (self *Map) Eval(scope *Scope, stack *Slice) error {
+func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Pop()
 
 	if v == nil {
-		return scope.Error(self.form.Pos(), "Missing value")
+		return Error(self.form.Pos(), "Missing value")
 	}
 
-	in, err := v.Iter(scope, self.form.Pos())
+	in, err := v.Iter(self.form.Pos())
 
 	if err != nil {
 		return err
@@ -27,13 +27,13 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 
 	var buffer Slice
 	
-	stack.Push(NewVal(&TIter, Iter(func (scope *Scope, pos Pos) (Val, error) {
+	stack.Push(NewVal(&TIter, Iter(func (thread *Thread, pos Pos) (Val, error) {
 		for {			
 			if v := buffer.PopFront(); v != nil {
 				return *v, nil
 			}
 			
-			v, err := in(scope, pos)
+			v, err := in(thread, pos)
 			
 			if err != nil {
 				return Nil, err
@@ -49,7 +49,7 @@ func (self *Map) Eval(scope *Scope, stack *Slice) error {
 
 			buffer.Push(v)
 
-			if err = scope.EvalOps(self.body, &buffer); err != nil {
+			if err = EvalOps(self.body, thread, registers, &buffer); err != nil {
 				return Nil, err
 			}
 		}

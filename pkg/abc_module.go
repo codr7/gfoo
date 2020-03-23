@@ -75,7 +75,7 @@ func defineImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	id, ok := f.(*Id)
 
 	if !ok {
-		scope.Error(f.Pos(), "Expected id: %v", f)
+		Error(f.Pos(), "Expected id: %v", f)
 	}
 	
 	var stack Slice
@@ -87,14 +87,14 @@ func defineImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	val := stack.Pop()
 
 	if val == nil {
-	        return out, scope.Error(id.Pos(), "Missing val: %v", id.name) 
+	        return out, Error(id.Pos(), "Missing val: %v", id.name) 
 	}
 	
 
 	if found := scope.Get(id.name); found == nil {
 		scope.Set(id.name, *val)
 	} else if found.scope != scope {
-		return out, scope.Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
+		return out, Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
 	}
 
 	return out, nil
@@ -124,11 +124,11 @@ func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	path, ok := f.(*Literal)
 	
 	if !ok {
-		return out, scope.Error(form.Pos(), "Invalid filename: %v", f)
+		return out, Error(form.Pos(), "Invalid filename: %v", f)
 	}
 
 	if path.val.dataType != &TString {
-		return out, scope.Error(form.Pos(), "Invalid filename: %v", path.val)
+		return out, Error(form.Pos(), "Invalid filename: %v", path.val)
 	}
 
 	return out, scope.Include(path.val.data.(string), func(forms []Form) error {
@@ -146,7 +146,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var ok bool
 	
 	if args, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+		return out, Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
 	var bodyOps []Op
@@ -157,21 +157,20 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		var id *Id
 		
 		if id, ok = args.body[i].(*Id); !ok {
-			return out, scope.Error(a.Pos(), "Invalid argument: %v", a)
+			return out, Error(a.Pos(), "Invalid argument: %v", a)
 		}
 
 		scope.Set(id.name, Undefined)
-		bodyOps = append(bodyOps, NewLet(id, id.name))
+		index := len(scope.registers)
+		scope.registers[id.name] = index
+		bodyOps = append(bodyOps, NewLet(id, id.name, index))
 	}
 
 	body := in.Pop()
 	var bodyForms []Form
-	var lambdaScope *Scope
 	
 	if s, ok := body.(*ScopeForm); ok {
 		bodyForms = s.body
-		lambdaScope = scope
-		out = append(out, NewCapture(form, lambdaScope))
 	} else {
 		bodyForms = append(bodyForms, body)
 	}
@@ -182,7 +181,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, err
 	}
 
-	return append(out, NewPush(form, NewVal(&TLambda, NewLambda(len(args.body), bodyOps, lambdaScope)))), nil
+	return append(out, NewLambdaOp(form, len(args.body), bodyOps)), nil
 }
 
 func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -190,17 +189,21 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	id, ok := f.(*Id)
 
 	if !ok {
-		scope.Error(f.Pos(), "Expected id: %v", f)
+		Error(f.Pos(), "Expected id: %v", f)
 	}
 
+	index := len(scope.registers)
+	
 	if found := scope.Get(id.name); found == nil {
 		scope.Set(id.name, Undefined)
+		scope.registers[id.name] = index
 	} else if found.val != Undefined {
-	        return out, scope.Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
+	        return out, Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
 	} else if found.scope != scope {
 		found.Init(scope, Undefined)
+		scope.registers[id.name] = index
 	} else {
-	        return out, scope.Error(id.Pos(), "Duplicate binding: %v", id.name) 
+	        return out, Error(id.Pos(), "Duplicate binding: %v", id.name) 
 	}
 	
 	val := in.Pop()
@@ -210,7 +213,7 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, err
 	}
 			
-	return append(out, NewLet(form, id.name)), nil
+	return append(out, NewLet(form, id.name, index)), nil
 }
 
 func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
@@ -218,63 +221,66 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	id, ok := f.(*Id)
 
 	if !ok {
-		scope.Error(f.Pos(), "Expected id: %v", f)
+		Error(f.Pos(), "Expected id: %v", f)
 	}
 
 	f = in.Pop()
 	var args *Group
 
 	if args, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+		return out, Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
 	f = in.Pop()
 	var body *ScopeForm
 
 	if body, ok = f.(*ScopeForm); !ok {
-		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
+		return out, Error(form.Pos(), "Invalid body: %v", f)
 	}
 
 	var bodyOps []Op
+	macroScope := scope.Clone()
 
-	for i := len(args.body)-1; i >= 0; i-- {
+	for i := len(args.body)-1; i >= 0 ; i-- {
 		f := args.body[i]
 		var id *Id
 		
 		if id, ok = f.(*Id); !ok {
-			return out, scope.Error(f.Pos(), "Invalid argument: %v", f)
+			return out, Error(f.Pos(), "Invalid argument: %v", f)
 		}
 		
-		bodyOps = append(bodyOps, NewLet(f, id.name))
+		macroScope.Set(id.name, Undefined)
+		index := len(macroScope.registers)
+		macroScope.registers[id.name] = index
+		bodyOps = append(bodyOps, NewLet(f, id.name, index))
 	}
 
 	var err error
-	macroScope := scope.Clone()
 	
 	if bodyOps, err = macroScope.Compile(body.body, bodyOps); err != nil {
 		return out, err
 	}
 	
 	scope.AddMacro(id.name, len(args.body), func(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-		var stack Slice
+		var registers, stack Slice
 
 		for i := 0; i < len(args.body); i++ {
 			f := in.Pop()
 			var v Val
 			
-			if v, err = f.Quote(scope, f.Pos()); err != nil {
+			if v, err = f.Quote(scope, nil, &registers, f.Pos()); err != nil {
 				return out, err
 			}
 			
 			stack.Push(v)
 		}
 
-		scope = macroScope.Clone()
-		
-		if err := scope.EvalOps(bodyOps, &stack); err != nil {
+		if err := EvalOps(bodyOps, nil, &registers, &stack); err != nil {
 			return out, err
 		}
 
+		scope = macroScope.Clone()
+		
 		for i := stack.Len()-1; i >= 0; i-- {
 			in.Push(stack.items[i].Unquote(scope, form.Pos()))
 		}
@@ -301,20 +307,20 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	id, ok := f.(*Id)
 
 	if !ok {
-		scope.Error(f.Pos(), "Expected id: %v", f)
+		Error(f.Pos(), "Expected id: %v", f)
 	}
 
 	f = in.Pop()
 	var argsForm *Group
 
 	if argsForm, ok = f.(*Group); !ok || len(argsForm.body) < 1 {
-		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+		return out, Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
 	var retsForm *Group
 
 	if retsForm, ok = argsForm.body[len(argsForm.body)-1].(*Group); !ok {
-		return out, scope.Error(f.Pos(), "Invalid result list: %v", f)
+		return out, Error(f.Pos(), "Invalid result list: %v", f)
 	}
 
 	body := in.Pop()
@@ -331,11 +337,11 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 				if id, ok := anf.(*Id); ok {
 					ans = append(ans, id.name)
 				} else {
-					return out, scope.Error(anf.Pos(), "Invalid argument name: %v", anf)
+					return out, Error(anf.Pos(), "Invalid argument name: %v", anf)
 				}
 			}
 		} else {
-			return out, scope.Error(anf.Pos(), "Invalid argument name: %v", anf)
+			return out, Error(anf.Pos(), "Invalid argument name: %v", anf)
 		}
 		
 		i++
@@ -349,18 +355,18 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			atb := scope.Get(atn.name)
 
 			if atb == nil {
-				return out, scope.Error(atf.Pos(), "Type not found: %v", atn)
+				return out, Error(atf.Pos(), "Type not found: %v", atn)
 			}
 
 			if atb.val.dataType != &TMeta {
-				return out, scope.Error(atf.Pos(), "Expected type: %v", atb.val.dataType.Name())
+				return out, Error(atf.Pos(), "Expected type: %v", atb.val.dataType.Name())
 			}
 
 			for _, an := range ans {
 				args = append(args, AType(an, atb.val.data.(Type)))
 			}
 		} else {
-			return out, scope.Error(atf.Pos(), "Invalid argument type: %v", atf)
+			return out, Error(atf.Pos(), "Invalid argument type: %v", atf)
 		}
 	}
 
@@ -373,11 +379,11 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			rtb := scope.Get(rtn.name)
 			
 			if rtb == nil {
-				return out, scope.Error(f.Pos(), "Type not found: %v", rtn)
+				return out, Error(f.Pos(), "Type not found: %v", rtn)
 			}
 
 			if rtb.val.dataType != &TMeta {
-				return out, scope.Error(f.Pos(), "Expected type: %v", rtb.val.dataType.Name())
+				return out, Error(f.Pos(), "Expected type: %v", rtb.val.dataType.Name())
 			}
 
 			rets = append(rets, RType(rtb.val.data.(Type)))
@@ -392,36 +398,30 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		
 		if a.name != "_" {
 			methodScope.Set(a.name, Undefined)
-			bodyOps = append(bodyOps, NewLet(argsForm, a.name))
+			index := len(methodScope.registers)
+			methodScope.registers[a.name] = index
+			bodyOps = append(bodyOps, NewLet(argsForm, a.name, index))
 		}
 	}
 
 	var err error
 	var bodyForms []Form
-	var scopeBody bool
 	
 	if s, ok := body.(*ScopeForm); ok {
 		bodyForms = s.body
-		scopeBody = true
-		out = append(out, NewCapture(form, methodScope))
 	} else {
 		bodyForms = append(bodyForms, body)
-		scopeBody = false
 	}
 	
 	if bodyOps, err = methodScope.Compile(bodyForms, bodyOps); err != nil {
 		return out, err
 	}
 	
-	scope.AddMethod(id.name, args, rets, func(scope *Scope, stack *Slice, pos Pos) error {
-		if scopeBody {
-			methodScope = methodScope.Clone()
-		}
-		
-		return methodScope.EvalOps(bodyOps, stack)
+	m := scope.AddMethod(id.name, args, rets, func(thread *Thread, registers, stack *Slice, pos Pos) error {
+		return EvalOps(bodyOps, thread, registers, stack)
 	})
 
-	return out, nil
+	return append(out, NewMethodOp(form, m)), nil
 }
 
 func orImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -454,7 +454,7 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var ok bool
 	
 	if args, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid argument list: %v", f)
+		return out, Error(form.Pos(), "Invalid argument list: %v", f)
 	}
 
 	var argOps []Op
@@ -468,7 +468,7 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var body *ScopeForm
 	
 	if body, ok = f.(*ScopeForm); !ok {
-		return out, scope.Error(form.Pos(), "Invalid body: %v", f)
+		return out, Error(form.Pos(), "Invalid body: %v", f)
 	}
 	
 	var bodyOps []Op
@@ -484,13 +484,13 @@ func traitImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var f Form
 	
 	if f = in.Pop(); f == nil {
-		return out, scope.Error(form.Pos(), "Missing id")
+		return out, Error(form.Pos(), "Missing id")
 	}
 
 	id, ok := f.(*Id)
 	
 	if !ok {
-		return out, scope.Error(form.Pos(), "Expected id: %v", f)
+		return out, Error(form.Pos(), "Expected id: %v", f)
 	}
 
 	var stack Slice
@@ -503,13 +503,13 @@ func traitImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		
 	for _, v := range stack.items {
 		if v.dataType != &TMeta {
-			return out, scope.Error(form.Pos(), "Expected type: %v", v)
+			return out, Error(form.Pos(), "Expected type: %v", v)
 		}
 
 		pt, ok := v.data.(*Trait);
 		
 		if !ok {
-			return out, scope.Error(form.Pos(), "Expected trait: %v", v)
+			return out, Error(form.Pos(), "Expected trait: %v", v)
 		}
 
 		parents = append(parents, pt)
@@ -524,7 +524,7 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	id, ok := f.(*Id)
 	
 	if !ok {
-		return out, scope.Error(form.Pos(), "Expected id: %v", f)
+		return out, Error(form.Pos(), "Expected id: %v", f)
 	}
 
 	var stack Slice
@@ -537,13 +537,13 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		
 	for _, v := range stack.items {
 		if v.dataType != &TMeta {
-			return out, scope.Error(form.Pos(), "Expected type: %v", v)
+			return out, Error(form.Pos(), "Expected type: %v", v)
 		}
 
 		pt, ok := v.data.(*Trait);
 		
 		if !ok {
-			return out, scope.Error(form.Pos(), "Expected trait: %v", v)
+			return out, Error(form.Pos(), "Expected trait: %v", v)
 		}
 
 		parents = append(parents, pt)
@@ -558,17 +558,17 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	imp := stack.Pop()
 
 	if imp == nil {
-		return out, scope.Error(form.Pos(), "Type not found")
+		return out, Error(form.Pos(), "Type not found")
 	}
 
 	if imp.dataType != &TMeta {
-		return out, scope.Error(form.Pos(), "Expected type: %v", imp)
+		return out, Error(form.Pos(), "Expected type: %v", imp)
 	}
 
 	impType, ok := imp.data.(ValType)
 
 	if !ok {
-		return out, scope.Error(form.Pos(), "Expected value type: %v", imp)
+		return out, Error(form.Pos(), "Expected value type: %v", imp)
 	}
 
 	parents = append(parents, impType)
@@ -578,7 +578,7 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	scope.AddMethod(fmt.Sprintf("as-%v", strings.ToLower(t.Name())),
 		[]Arg{AType("val", impType)},
 		[]Ret{RType(t)},
-		func(scope *Scope, stack *Slice, pos Pos) error {
+		func(thread *Thread, registers, stack *Slice, pos Pos) error {
 			v := stack.Peek()
 			v.dataType = t
 			return nil
@@ -592,13 +592,13 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	id, ok := sourceForm.(*Id)
 	
 	if !ok {
-		return out, scope.Error(form.Pos(), "Expected identifier: %v", sourceForm)
+		return out, Error(form.Pos(), "Expected identifier: %v", sourceForm)
 	}
 
 	source := scope.Get(id.name)
 
 	if source == nil || source.val == Undefined {
-		return out, scope.Error(form.Pos(), "Unknown identifier: %v", id)
+		return out, Error(form.Pos(), "Unknown identifier: %v", id)
 	}
 
 	namesForm := in.Pop()
@@ -609,59 +609,59 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 			id, ok = f.(*Id)
 			
 			if !ok {
-				return out, scope.Error(f.Pos(), "Expected identifier: %v", f)
+				return out, Error(f.Pos(), "Expected identifier: %v", f)
 			}
 
 			names = append(names, id.name)
 		}
 	} else if id, ok := namesForm.(*Id); !ok || id.name != "..." {
-		return out, scope.Error(form.Pos(), "Invalid identifier list: %v", namesForm)
+		return out, Error(form.Pos(), "Invalid identifier list: %v", namesForm)
 	}
 	
 	return out, scope.Use(source.val, names, form.Pos())
 }
 
-func boolImp(scope *Scope, stack *Slice, pos Pos) error {
+func boolImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
 }
 
-func cloneImp(scope *Scope, stack *Slice, pos Pos) error {
+func cloneImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(stack.Pop().Clone())
 	return nil
 }
 
-func dumpImp(scope *Scope, stack *Slice, pos Pos) error {
+func dumpImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Pop().Dump(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func eqImp(scope *Scope, stack *Slice, pos Pos) error {
+func eqImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Eq))
 	return nil
 }
 
-func gtImp(scope *Scope, stack *Slice, pos Pos) error {
+func gtImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Gt))
 	return nil
 }
 
-func gteImp(scope *Scope, stack *Slice, pos Pos) error {
+func gteImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) >= Eq))
 	return nil
 }
 
-func intAddImp(scope *Scope, stack *Slice, pos Pos) error {
+func intAddImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) + stack.Pop().data.(Int)))
 	return nil
 }
 
-func intCountImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
+func intCountImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
 		return err
@@ -671,40 +671,40 @@ func intCountImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func intDecImp(scope *Scope, stack *Slice, pos Pos) error {
+func intDecImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	v := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, v-1))
 	return nil
 }
 
-func intIncImp(scope *Scope, stack *Slice, pos Pos) error {
+func intIncImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	v := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, v+1))
 	return nil
 }
 
-func intMulImp(scope *Scope, stack *Slice, pos Pos) error {
+func intMulImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) * stack.Pop().data.(Int)))
 	return nil
 }
 
-func intSubImp(scope *Scope, stack *Slice, pos Pos) error {
+func intSubImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) - y))
 	return nil
 }
 
-func intToStringImp(scope *Scope, stack *Slice, pos Pos) error {
+func intToStringImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TString, strconv.FormatInt(stack.Pop().data.(Int), 10)))
 	return nil
 }
 
-func isImp(scope *Scope, stack *Slice, pos Pos) error {
+func isImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Is(*stack.Pop())))
 	return nil
 }
 
-func isaImp(scope *Scope, stack *Slice, pos Pos) error {
+func isaImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	parent := stack.Pop().data.(Type)
 	out := stack.Pop().data.(Type).Isa(parent)
 	
@@ -717,30 +717,26 @@ func isaImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func loadImp(scope *Scope, stack *Slice, pos Pos) error {
-	return scope.Load(stack.Pop().data.(string), stack)
-}
-
-func ltImp(scope *Scope, stack *Slice, pos Pos) error {
+func ltImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Lt))
 	return nil
 }
 
-func lteImp(scope *Scope, stack *Slice, pos Pos) error {
+func lteImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) <= Eq))
 	return nil
 }
 
-func sayImp(scope *Scope, stack *Slice, pos Pos) error {
+func sayImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func sliceItemsImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
+func sliceItemsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
 		return err
@@ -750,12 +746,12 @@ func sliceItemsImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func sliceLengthImp(scope *Scope, stack *Slice, pos Pos) error {
+func sliceLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Slice).Len())))
 	return nil
 }
 
-func slicePeekImp(scope *Scope, stack *Slice, pos Pos) error {
+func slicePeekImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	in := stack.Pop().data.(*Slice).Peek()
 	var out Val
 	
@@ -769,7 +765,7 @@ func slicePeekImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func slicePopImp(scope *Scope, stack *Slice, pos Pos) error {
+func slicePopImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	in := stack.Pop().data.(*Slice).Pop()
 	var out Val
 	
@@ -783,27 +779,27 @@ func slicePopImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func slicePushImp(scope *Scope, stack *Slice, pos Pos) error {
+func slicePushImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	v := stack.Pop()
 	stack.Pop().data.(*Slice).Push(*v)
 	return nil
 }
 
-func spreadImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
+func spreadImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
 		return err
 	}
 	
-	return in.For(func(v Val, scope *Scope, pos Pos) error {
+	return in.For(func(v Val, thread *Thread, pos Pos) error {
 		stack.Push(v)
 		return nil
-	}, scope, pos)
+	}, thread, pos)
 }
 
-func stringCharsImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
+func stringCharsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
 		return err
@@ -813,17 +809,17 @@ func stringCharsImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func stringLengthImp(scope *Scope, stack *Slice, pos Pos) error {
+func stringLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(len(stack.Pop().data.(string)))))
 	return nil
 }
 
-func threadWaitImp(scope *Scope, stack *Slice, pos Pos) error {
-	stack.Pop().data.(*Thread).Wait(scope, stack, pos)
+func threadWaitImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	stack.Pop().data.(*Thread).Wait(stack, pos)
 	return nil
 }
 
-func typeofImp(scope *Scope, stack *Slice, pos Pos) error {
+func typeofImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }
@@ -899,7 +895,6 @@ func (self *AbcModule) Init() *Module {
 		[]Ret{RType(Option(&TMeta))},
 		isaImp)
 	
-	self.AddMethod("load", []Arg{AType("path", &TString)}, nil, loadImp)
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
@@ -922,7 +917,7 @@ macro: if: (body) {
 macro: else: (body) {
   '(?: () @body)
 }
-        `, nil)
+        `, nil, nil, nil)
 	
 	return &self.Module
 }

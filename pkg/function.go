@@ -25,14 +25,14 @@ func (self *Function) AddMethod(methods...*Method) {
 	}
 }
 
-func (self *Function) Call(scope *Scope, stack *Slice, pos Pos) error {
+func (self *Function) Call(thread *Thread, stack *Slice, pos Pos) error {
 	for i := len(self.methods)-1; i >= 0; i-- {
 		if m := self.methods[i]; m.Applicable(stack) {
-			return m.Call(scope, stack, pos)
+			return m.Call(thread, stack, pos)
 		}
 	}
 	
-	return scope.Error(pos, "Function not applicable: %v %v", self.name, stack)
+	return Error(pos, "Function not applicable: %v %v", self.name, stack)
 }
 
 func (self *Function) MethodName(args []Arg, rets []Ret) string {

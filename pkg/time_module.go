@@ -8,23 +8,23 @@ type TimeModule struct {
 	Module
 }
 
-func daysImp(scope *Scope, stack *Slice, pos Pos) error {
+func daysImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TTimeDelta, Days(int(stack.Pop().data.(Int)))))
 	return nil
 }
 
-func nowImp(scope *Scope, stack *Slice, pos Pos) error {
+func nowImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TTime, time.Now().UTC()))
 	return nil
 }
 
-func timeAddImp(scope *Scope, stack *Slice, pos Pos) error {
+func timeAddImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	d := stack.Pop().data.(TimeDelta)
 	stack.Push(NewVal(&TTime, stack.Pop().data.(time.Time).AddDate(d.years, d.months, d.days)))
 	return nil
 }
 
-func todayImp(scope *Scope, stack *Slice, pos Pos) error {
+func todayImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	now := time.Now().UTC()
 	stack.Push(NewVal(&TTime, time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)))
 	return nil

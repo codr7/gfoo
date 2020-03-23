@@ -12,21 +12,21 @@ func NewFor(form Form, body []Op) *For {
 	return op
 }
 
-func (self *For) Eval(scope *Scope, stack *Slice) error {
+func (self *For) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Pop()
 
 	if v == nil {
-		return scope.Error(self.form.Pos(), "Missing value")
+		return Error(self.form.Pos(), "Missing value")
 	}
 
-	in, err := v.Iter(scope, self.form.Pos())
+	in, err := v.Iter(self.form.Pos())
 
 	if err != nil {
 		return err
 	}
 	
-	return in.For(func(v Val, scope *Scope, pos Pos) error {
+	return in.For(func(v Val, thread *Thread, pos Pos) error {
 		stack.Push(v)
-		return scope.EvalOps(self.body, stack)
-	}, scope, self.form.Pos())
+		return EvalOps(self.body, thread, registers, stack)
+	}, thread, self.form.Pos())
 }

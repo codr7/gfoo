@@ -12,34 +12,19 @@ func NewGet(form Form, key string) *Get {
 	return op
 }
 
-func (self *Get) Eval(scope *Scope, stack *Slice) error {
-	key := self.key
+func (self *Get) Eval(thread *Thread, registers, stack *Slice) error {
+	var source *Val
 	
-	if key[0] == '.' {
-		key = key[1:]
-		var source *Val
-
-		if source = stack.Pop(); source == nil {
-			return scope.Error(self.form.Pos(), "Missing source: %v", self.key)
-		}
-
-		v, err := source.Get(key, scope, self.form.Pos())
-		
-		if err != nil {
-			return err
-		}
-	
-		stack.Push(v)
-	} else {
-		found := scope.Get(key)
-		
-		if found == nil || found.val == Undefined {
-			return scope.Error(self.form.Pos(), "Unknown identifier: %v", key)
-		}
-		
-		stack.Push(found.val)
+	if source = stack.Pop(); source == nil {
+		return Error(self.form.Pos(), "Missing source: %v", self.key)
 	}
-
+	
+	v, err := source.Get(self.key, self.form.Pos())
+	
+	if err != nil {
+		return err
+	}
+	
+	stack.Push(v)
 	return nil
 }
-

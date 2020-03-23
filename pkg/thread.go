@@ -4,16 +4,12 @@ type Thread struct {
 	body []Op
 	err error
 	results chan []Val
-	scope Scope
 	stack Slice
 }
 
-func NewThread(body []Op, scope *Scope) *Thread {
+func NewThread(body []Op) *Thread {
 	t := new(Thread)
 	t.body = body
-	t.scope.Init()
-	scope.Copy(&t.scope)
-	t.scope.thread = t
 	t.results = make(chan []Val, 0) 
 	return t
 }
@@ -24,7 +20,7 @@ func (self *Thread) Pause(result []Val) {
 
 func (self *Thread) Start() {
 	go func() {
-		if self.err = self.scope.EvalOps(self.body, &self.stack); self.err == nil {
+		if self.err = EvalOps(self.body, self, NewSlice(nil), &self.stack); self.err == nil {
 			self.results<- self.stack.items
 		}
 		
@@ -32,7 +28,7 @@ func (self *Thread) Start() {
 	}()
 }
 
-func (self *Thread) Wait(scope *Scope, stack *Slice, pos Pos) error {
+func (self *Thread) Wait(stack *Slice, pos Pos) error {
 	if result, ok := <-self.results; ok {
 		stack.Push(result...)
 	} else {
@@ -40,7 +36,7 @@ func (self *Thread) Wait(scope *Scope, stack *Slice, pos Pos) error {
 			return self.err
 		}
 
-		return scope.Error(pos, "Thread is done")
+		return Error(pos, "Thread is done")
 	}
 		
 	return nil

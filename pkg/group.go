@@ -54,12 +54,12 @@ func (self *Group) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *Group) Quote(scope *Scope, pos Pos) (Val, error) {
+func (self *Group) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error
 	
 	for i, f := range self.body {
-		if out[i], err = f.Quote(scope, pos); err != nil {
+		if out[i], err = f.Quote(scope, thread, registers, pos); err != nil {
 			return Nil, err
 		}
 	}

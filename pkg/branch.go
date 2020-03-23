@@ -13,11 +13,11 @@ func NewBranch(form Form, trueBody, falseBody []Op) *Branch {
 	return op
 }
 
-func (self *Branch) Eval(scope *Scope, stack *Slice) error {
+func (self *Branch) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Pop()
 	
 	if v == nil {
-		scope.Error(self.form.Pos(), "Missing condition")
+		Error(self.form.Pos(), "Missing condition")
 	}
 
 	var body []Op
@@ -28,5 +28,5 @@ func (self *Branch) Eval(scope *Scope, stack *Slice) error {
 		body = self.falseBody
 	}
 	
-	return scope.EvalOps(body, stack)
+	return EvalOps(body, thread, registers, stack)
 }

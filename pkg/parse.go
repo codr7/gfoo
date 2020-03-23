@@ -75,7 +75,7 @@ func (self *Scope) ParseChar(in *bufio.Reader, pos *Pos) (Form, error) {
 	c, _, err := in.ReadRune()
 	
 	if err != nil {
-		self.Error(fpos, "Invalid character literal: %v", err) 
+		return nil, Error(fpos, "Invalid character literal: %v", err) 
 	}
 
 	pos.column++
@@ -86,12 +86,12 @@ func (self *Scope) ParseChar(in *bufio.Reader, pos *Pos) (Form, error) {
 		out, _, err = in.ReadRune()
 		
 		if err != nil {
-			self.Error(fpos, "Invalid character literal: %v", err)
+			return nil, Error(fpos, "Invalid character literal: %v", err)
 		}
 	case 'n':
 		out = '\n'
 	default:
-		self.Error(fpos, "Invalid character literal: %v", c)	
+		return nil, Error(fpos, "Invalid character literal: %v", c)	
 	}
 	
 	return NewLiteral(NewVal(&TChar, out), fpos), nil
@@ -133,7 +133,7 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 		}
 	}
 
-	return nil, self.Error(*pos, "Unexpected input: %v", c)
+	return nil, Error(*pos, "Unexpected input: %v", c)
 }
 
 func (self *Scope) ParseGroup(in *bufio.Reader, pos *Pos) (Form, error) {
@@ -199,7 +199,7 @@ func (self *Scope) ParseNumber(in *bufio.Reader, c rune, pos *Pos) (Form, error)
 		pos.column++
 
 		if !unicode.IsDigit(c) {
-			return nil, self.Error(*pos, "Expected number: %v", c)
+			return nil, Error(*pos, "Expected number: %v", c)
 		}
 	} else {
 		pos.column++

@@ -28,6 +28,6 @@ func (_ *IdType) Unquote(val Val, scope *Scope, pos Pos) Form {
 	if n[0] == '#' {
 		n = scope.Unique(n)
 	}
-	
+
 	return NewId(n, pos)
 }

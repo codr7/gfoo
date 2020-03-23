@@ -22,7 +22,6 @@ func (self *NegateForm) Init(form Form, pos Pos) *NegateForm {
 func (self *NegateForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var err error
 	
-
 	if out, err = self.form.Compile(in, out, scope); err != nil {
 		return out, err
 	}
@@ -42,8 +41,8 @@ func (self *NegateForm) Dump(out io.Writer) error {
 	return self.form.Dump(out)
 }
 
-func (self *NegateForm) Quote(scope *Scope, pos Pos) (Val, error) {
-	v, err := self.form.Quote(scope, pos)
+func (self *NegateForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+	v, err := self.form.Quote(scope, thread, registers, pos)
 
 	if err != nil {
 		return Nil, err

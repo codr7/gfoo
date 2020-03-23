@@ -8,14 +8,14 @@ type ImageModule struct {
 	Module
 }
 
-func rgbaNewImp(scope *Scope, stack *Slice, pos Pos) error {
+func rgbaNewImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	h := stack.Pop().data.(Int)
 	w := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TRgba, NewRgba(int(w), int(h))))
 	return nil
 }
 
-func rgbaSetImp(scope *Scope, stack *Slice, pos Pos) error {
+func rgbaSetImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	a := stack.Pop().data.(Byte)
 	b := stack.Pop().data.(Byte)
 	g := stack.Pop().data.(Byte)

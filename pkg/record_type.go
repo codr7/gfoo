@@ -27,15 +27,15 @@ func (self *RecordType) Dump(val Val, out io.Writer) error {
 	return val.data.(*Record).Dump(out)
 }
 
-func (_ *RecordType) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
+func (_ *RecordType) Get(source Val, key string, pos Pos) (Val, error) {
 	return source.data.(*Record).Get(key, Nil), nil
 }
 
-func (_ *RecordType) Iter(val Val, scope *Scope, pos Pos) (Iter, error) {
+func (_ *RecordType) Iter(val Val, pos Pos) (Iter, error) {
 	in := val.data.(*Record)
 	i := 0
 	
-	return func(scope *Scope, pos Pos) (Val, error) {
+	return func(thread *Thread, pos Pos) (Val, error) {
 		if i < in.Len() {
 			f := in.fields[i]
 			v := NewVal(&TPair, NewPair(NewVal(&TId, f.key), f.val))

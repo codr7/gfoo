@@ -12,10 +12,10 @@ func NewSliceOp(form Form, body []Op) *SliceOp {
 	return op
 }
 
-func (self *SliceOp) Eval(scope *Scope, stack *Slice) error {
+func (self *SliceOp) Eval(thread *Thread, registers, stack *Slice) error {
 	s := NewSlice(nil)
 	
-	if err := scope.EvalOps(self.body, s); err != nil {
+	if err := EvalOps(self.body, thread, registers, s); err != nil {
 		return err
 	}
 

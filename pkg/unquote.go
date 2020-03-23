@@ -21,7 +21,7 @@ func (self *Unquote) Init(form Form, pos Pos) *Unquote {
 }
 
 func (self *Unquote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return nil, scope.Error(self.pos, "Unquote outside of quoted context")
+	return nil, Error(self.pos, "Unquote outside of quoted context")
 }
 
 func (self *Unquote) Do(action func(Form) error) error {
@@ -32,7 +32,7 @@ func (self *Unquote) Dump(out io.Writer) error {
 	return self.form.Dump(out)
 }
 
-func (self *Unquote) Quote(scope *Scope, pos Pos) (Val, error) {
+func (self *Unquote) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	ops, err := self.form.Compile(nil, nil, scope)
 
 	if err != nil {
@@ -42,14 +42,14 @@ func (self *Unquote) Quote(scope *Scope, pos Pos) (Val, error) {
 	var stack Slice
 	stack.Init(nil)
 
-	if err = scope.EvalOps(ops, &stack); err != nil {
+	if err = EvalOps(ops, thread, registers, &stack); err != nil {
 		return Nil, err
 	}
 
 	v := stack.Pop()
 
 	if v == nil {
-		return Nil, scope.Error(pos, "Empty unquote")
+		return Nil, Error(pos, "Empty unquote")
 	}
 	
 	return *v, nil

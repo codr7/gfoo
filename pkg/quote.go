@@ -20,7 +20,7 @@ func (self *Quote) Init(form Form, pos Pos) *Quote {
 }
 
 func (self *Quote) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	return append(out, NewQuoteOp(self.form)), nil
+	return append(out, NewQuoteOp(self.form, scope)), nil
 }
 
 func (self *Quote) Do(action func(Form) error) error {
@@ -35,8 +35,8 @@ func (self *Quote) Dump(out io.Writer) error {
 	return self.form.Dump(out)
 }
 
-func (self *Quote) Quote(scope *Scope, pos Pos) (Val, error) {
-	v, err := self.form.Quote(scope, pos)
+func (self *Quote) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+	v, err := self.form.Quote(scope, thread, registers, pos)
 
 	if err != nil {
 		return Nil, err

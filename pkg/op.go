@@ -1,7 +1,7 @@
 package gfoo
 
 type Op interface {
-	Eval(scope *Scope, stack *Slice) error
+	Eval(thread *Thread, registers, stack *Slice) error
 }
 
 type OpBase struct {
@@ -10,4 +10,14 @@ type OpBase struct {
 
 func (self *OpBase) Init(form Form) {
 	self.form = form
+}
+
+func EvalOps(ops []Op, thread *Thread, registers, stack *Slice) error {
+	for _, op := range ops {
+		if err := op.Eval(thread, registers, stack); err != nil {
+			return err
+		}
+	}
+	
+	return nil
 }

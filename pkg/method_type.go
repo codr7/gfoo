@@ -10,14 +10,14 @@ type MethodType struct {
 	ValTypeBase
 }
 
-func (_ *MethodType) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
+func (_ *MethodType) Call(target Val, thread *Thread, stack *Slice, pos Pos) error {
 	m := target.data.(*Method)
 	
 	if !m.Applicable(stack) {
-		return scope.Error(pos, "Method not applicable: %v %v", m.name, stack)
+		return Error(pos, "Method not applicable: %v %v", m.name, stack)
 	}
 
-	return m.Call(scope, stack, pos)
+	return m.Call(thread, stack, pos)
 }
 
 func (_ *MethodType) Compare(x, y Val) Order {

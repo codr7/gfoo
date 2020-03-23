@@ -8,13 +8,10 @@ import (
 	"strings"
 )
 
-type Bindings = map[string]Binding
-
 type Scope struct {
-	Debug bool
-	thread *Thread
 	loadPath string
-	bindings Bindings
+	bindings map[string]Binding
+	registers map[string]int
 	methods []*Method
 }
 
@@ -23,7 +20,8 @@ func NewScope() *Scope {
 }
 
 func (self *Scope) Init() *Scope {
-	self.bindings = make(Bindings)
+	self.bindings = make(map[string]Binding)
+	self.registers = make(map[string]int)
 	return self
 }
 
@@ -37,7 +35,7 @@ func (self *Scope) AddMacro(name string, argCount int, imp MacroImp) {
 	self.AddVal(name, &TMacro, NewMacro(name, argCount, imp))
 }
 
-func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp) {
+func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp) *Method {
 	var f *Function
 	b := self.Get(name)
 	
@@ -50,6 +48,7 @@ func (self *Scope) AddMethod(name string, args []Arg, rets []Ret, imp MethodImp)
 	m := f.NewMethod(args, rets, imp)
 	self.AddVal(m.name, &TMethod, m)
 	self.methods = append(self.methods, m)
+	return m
 }
 
 func (self *Scope) AddModule(name string, module *Module) {
@@ -62,6 +61,12 @@ func (self *Scope) AddType(val Type) {
 
 func (self *Scope) AddVal(name string, dataType ValType, data interface{}) {
 	self.Set(name, NewVal(dataType, data))
+}
+
+func (self *Scope) Clone() *Scope {
+	out := new(Scope).Init()
+	self.Copy(out)
+	return out
 }
 
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
@@ -79,12 +84,14 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 }
 
 func (self *Scope) Copy(out *Scope) {
-	out.Debug = self.Debug
-	out.thread = self.thread
 	out.loadPath = self.loadPath
 	
 	for k, b := range self.bindings {
 		out.bindings[k] = b
+	}
+
+	for k, v := range self.registers {
+		out.registers[k] = v
 	}
 }
 
@@ -99,13 +106,7 @@ func (self *Scope) Extend(source *Scope) *Scope {
 	return self
 }
 
-func (self *Scope) Clone() *Scope {
-	out := new(Scope).Init()
-	self.Copy(out)
-	return out
-}
-
-func (self *Scope) Eval(source string, stack *Slice) error {
+func (self *Scope) Eval(source string, thread *Thread, registers, stack *Slice) error {
 	in := bufio.NewReader(strings.NewReader(source))
 	pos := NewPos("n/a")
 	var forms []Form
@@ -121,20 +122,10 @@ func (self *Scope) Eval(source string, stack *Slice) error {
 		return err
 	}
 
-	if err = self.EvalOps(ops, stack); err != nil {
+	if err = EvalOps(ops, thread, registers, stack); err != nil {
 		return err
 	}
 
-	return nil
-}
-
-func (self *Scope) EvalOps(ops []Op, stack *Slice) error {
-	for _, o := range ops {
-		if err := o.Eval(self, stack); err != nil {
-			return err
-		}
-	}
-	
 	return nil
 }
 
@@ -145,13 +136,13 @@ func (self *Scope) EvalForm(in *Forms, stack *Slice) error {
 		return nil
 	}
 	
-	ops, err := f.Compile(in, nil, self)
+	ops, err := f.Compile(in, nil, self.Clone())
 	
 	if err != nil {
 		return err
 	}
 	
-	if err = self.EvalOps(ops, stack); err != nil {
+	if err = EvalOps(ops, nil, NewSlice(nil), stack); err != nil {
 		return err
 	}
 
@@ -214,7 +205,7 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 			return err
 		}
 		
-		if err = self.EvalOps(ops, stack); err != nil {
+		if err = EvalOps(ops, nil, NewSlice(nil), stack); err != nil {
 			return err
 		}
 		
@@ -258,7 +249,7 @@ func (self *Scope) Use(source Val, names []string, pos Pos) error {
 	}
 
 	for _, n := range names {
-		v, err := source.Get(n, self, pos)
+		v, err := source.Get(n, pos)
 
 		if err != nil {
 			return err
@@ -268,7 +259,7 @@ func (self *Scope) Use(source Val, names []string, pos Pos) error {
 			if v.dataType == &TFunction && found.val.dataType == &TFunction {
 				v.data.(*Function).AddMethod(found.val.data.(*Function).methods...)
 			} else if !useAll {
-				return self.Error(pos, "Duplicate identifier: %v", n)
+				return Error(pos, "Duplicate identifier: %v", n)
 			}
 		}
 

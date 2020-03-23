@@ -10,7 +10,7 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	var ok bool
 
 	if fields, ok = f.(*Group); !ok {
-		return out, scope.Error(form.Pos(), "Invalid fields: %v", f)
+		return out, Error(form.Pos(), "Invalid fields: %v", f)
 	}
 
 	fieldForms := NewForms(fields.body)
@@ -24,14 +24,14 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		id, ok := f.(*Id)
 		
 		if !ok {
-			return out, scope.Error(f.Pos(), "Expected id: %v", f)
+			return out, Error(f.Pos(), "Expected id: %v", f)
 		}
 
 		fieldOps = append(fieldOps, NewPush(f, NewVal(&TId, id.name)))
 		var err error
 
 		if f = fieldForms.Pop(); f == nil {
-			return out, scope.Error(id.Pos(), "Missing value: %v", id)
+			return out, Error(id.Pos(), "Missing value: %v", id)
 		}
 		
 		if fieldOps, err = f.Compile(fieldForms, fieldOps, scope); err != nil {
@@ -42,8 +42,8 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewRecordOp(form, fieldOps)), nil
 }
 
-func recordFieldsImp(scope *Scope, stack *Slice, pos Pos) error {
-	in, err := stack.Pop().Iter(scope, pos)
+func recordFieldsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
 		return err
@@ -53,18 +53,18 @@ func recordFieldsImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func recordLengthImp(scope *Scope, stack *Slice, pos Pos) error {
+func recordLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Record).Len())))
 	return nil
 }
 
-func recordMergeImp(scope *Scope, stack *Slice, pos Pos) error {
+func recordMergeImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	source := stack.Pop().data.(*Record)
 	stack.Pop().data.(*Record).Merge(source)
 	return nil
 }
 
-func recordSetImp(scope *Scope, stack *Slice, pos Pos) error {
+func recordSetImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
 	r.data.(*Record).Set(k.data.(string), *v)
 	return nil

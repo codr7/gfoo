@@ -58,6 +58,6 @@ func (self *ScopeForm) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *ScopeForm) Quote(scope *Scope, pos Pos) (Val, error) {
+func (self *ScopeForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	return NewVal(&TScope, self), nil
 }

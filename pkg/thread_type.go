@@ -16,6 +16,7 @@ type ThreadType struct {
 	ValTypeBase
 }
 
+
 func (_ *ThreadType) Compare(x, y Val) Order {
 	return ComparePointer(unsafe.Pointer(x.data.(*Thread)), unsafe.Pointer(y.data.(*Thread)))
 }

@@ -10,7 +10,7 @@ type ValType interface {
 	Clone(val Val) interface{}
 	Compare(x, y Val) Order
 	Dump(val Val, out io.Writer) error
-	Get(source Val, key string, scope *Scope, pos Pos) (Val, error)
+	Get(source Val, key string, pos Pos) (Val, error)
 	Print(val Val, out io.Writer) error
 	Is(x, y Val) bool
 	Keys(val Val) []string
@@ -35,8 +35,8 @@ func (_ *ValTypeBase) Clone(val Val) interface{} {
 	return val.data
 }
 
-func (self *ValTypeBase) Get(source Val, key string, scope *Scope, pos Pos) (Val, error) {
-	return Nil, scope.Error(pos, "Dot access not supported for type: %v", self.name)
+func (self *ValTypeBase) Get(source Val, key string, pos Pos) (Val, error) {
+	return Nil, Error(pos, "Dot access not supported for type: %v", self.name)
 }
 
 func (_ *ValTypeBase) Is(x, y Val) bool {

@@ -8,7 +8,7 @@ type ZipModule struct {
 	Module
 }
 
-func zipAddImp(scope *Scope, stack *Slice, pos Pos) error {
+func zipAddImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	p := stack.Pop().data.(string)
 	w, err := stack.Pop().data.(*zip.Writer).Create(p)
 
@@ -20,11 +20,11 @@ func zipAddImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func zipCloseImp(scope *Scope, stack *Slice, pos Pos) error {
+func zipCloseImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return stack.Pop().data.(*zip.Writer).Close()
 }
 
-func zipWriterNewImp(scope *Scope, stack *Slice, pos Pos) error {
+func zipWriterNewImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	out := stack.Pop().data.(*Buffer)
 	stack.Push(NewVal(&TZipWriter, zip.NewWriter(out)))
 	return nil

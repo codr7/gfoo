@@ -4,13 +4,13 @@ type IterModule struct {
 	Module
 }
 
-func iterChainImp(scope *Scope, stack *Slice, pos Pos) error {
+func iterChainImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	y := stack.Pop().data.(Iter)
 	x := stack.Pop().data.(Iter)
 
-	stack.Push(NewVal(&TIter, Iter(func(scope *Scope, pos Pos) (Val, error) {
+	stack.Push(NewVal(&TIter, Iter(func(thread *Thread, pos Pos) (Val, error) {
 		if x != nil {
-			v, err := x(scope, pos)
+			v, err := x(thread, pos)
 
 			if err != nil {
 				return Nil, err
@@ -24,7 +24,7 @@ func iterChainImp(scope *Scope, stack *Slice, pos Pos) error {
 		}
 
 		if y != nil {
-			v, err := y(scope, pos)
+			v, err := y(thread, pos)
 
 			if err != nil {
 				return Nil, err
@@ -43,10 +43,10 @@ func iterChainImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iterNextImp(scope *Scope, stack *Slice, pos Pos) error {
+func iterNextImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	in := stack.Pop().data.(Iter)
 	
-	if v, err := in(scope, pos); err != nil {
+	if v, err := in(thread, pos); err != nil {
 		return err
 	} else {
 		stack.Push(v)
@@ -55,9 +55,13 @@ func iterNextImp(scope *Scope, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iterValueImp(scope *Scope, stack *Slice, pos Pos) error {
+func iterValueImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	v := *stack.Pop()
-	stack.Push(NewVal(&TIter, Iter(func(scope *Scope, pos Pos) (Val, error) { return v, nil })))
+
+	stack.Push(NewVal(&TIter, Iter(func(thread *Thread, pos Pos) (Val, error) {
+		return v, nil
+	})))
+	
 	return nil
 }
 

@@ -10,11 +10,11 @@ func NewNegate(form Form) *Negate {
 	return op
 }
 
-func (self *Negate) Eval(scope *Scope, stack *Slice) error {
+func (self *Negate) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Peek()
 	
 	if v == nil {
-		return scope.Error(self.form.Pos(), "Missing value")
+		return Error(self.form.Pos(), "Missing value")
 	}
 
 	v.Negate()

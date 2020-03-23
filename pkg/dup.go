@@ -10,11 +10,11 @@ func NewDup(form Form) *Dup {
 	return op
 }
 
-func (self *Dup) Eval(scope *Scope, stack *Slice) error {
+func (self *Dup) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Peek()
 	
 	if v == nil {
-		return scope.Error(self.form.Pos(), "Nothing to dup")
+		return Error(self.form.Pos(), "Nothing to dup")
 	}
 
 	stack.Push(*v)
