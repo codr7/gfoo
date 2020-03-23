@@ -101,7 +101,8 @@ length([1 2 3]) check: =(3)
 }
 
 [3 times: 42] check: =([42 42 42])
-[3 for: *(2)] check: =([0 2 4])
+[3 for: _ *(2)] check: =([0 2 4])
+[3 for: v (v *(2))] check: =([0 2 4])
 [3 map: *(2)...] check: =([0 2 4])
 [3 map: _...] check: =([])
 [2 map: (_ 'foo 'bar)...] check: =(['foo 'bar 'foo 'bar])

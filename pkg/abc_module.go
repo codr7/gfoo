@@ -109,14 +109,31 @@ func dupImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 }
 
 func forImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	f := in.Pop()
+	id, ok := f.(*Id)
+
+	if !ok {
+		return out, Error(form.Pos(), "Expected identifier: %v", id)
+	}
+	
+	idIndex := -1
+	
+	if id.name != "_" {
+		var err error
+		
+		if idIndex, err = scope.Let(id.name, form.Pos()); err != nil {
+			return out, err
+		}
+	}
+
 	body := in.Pop()	
 	bodyOps, err := body.Compile(in, nil, scope)
 	
 	if err != nil {
 		return out, err
 	}
-	
-	return append(out, NewFor(form, bodyOps)), nil
+
+	return append(out, NewFor(form, idIndex, bodyOps)), nil
 }
 
 func includeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
@@ -192,22 +209,13 @@ func letImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		Error(f.Pos(), "Expected id: %v", f)
 	}
 
-	index := len(scope.registers)
-	
-	if found := scope.Get(id.name); found == nil {
-		scope.Set(id.name, Undefined)
-		scope.registers[id.name] = index
-	} else if found.val != Undefined {
-	        return out, Error(id.Pos(), "Attempt to override compile time binding: %v", id.name)
-	} else if found.scope != scope {
-		found.Init(scope, Undefined)
-		scope.registers[id.name] = index
-	} else {
-	        return out, Error(id.Pos(), "Duplicate binding: %v", id.name) 
+	index, err := scope.Let(id.name, form.Pos())
+
+	if err != nil {
+		return out, err
 	}
 	
 	val := in.Pop()
-	var err error
 
 	if out, err = val.Compile(in, out, scope); err != nil {
 		return out, err
@@ -870,7 +878,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("define:", 2, defineImp)
 	self.AddMacro("_", 0, dropImp)
 	self.AddMacro("..", 0, dupImp)
- 	self.AddMacro("for:", 1, forImp)
+ 	self.AddMacro("for:", 2, forImp)
 	self.AddMacro("include:", 1, includeImp)
 	self.AddMacro("/:", 2, lambdaImp)
 	self.AddMacro("let:", 2, letImp)

@@ -196,6 +196,24 @@ func (self *Scope) Include(filePath string, action func([]Form) error) error {
 	return action(forms)
 }
 
+func (self *Scope) Let(key string, pos Pos) (int, error) {
+	index := len(self.registers)
+
+	if found := self.Get(key); found == nil {
+		self.Set(key, Undefined)
+		self.registers[key] = index
+	} else if found.val != Undefined {
+	        return index, Error(pos, "Attempt to override compile time binding: %v", key)
+	} else if found.scope != self {
+		found.Init(self, Undefined)
+		self.registers[key] = index
+	} else {
+	        return index, Error(pos, "Duplicate binding: %v", key) 
+	}
+
+	return index, nil
+}
+
 func (self *Scope) Load(filePath string, stack *Slice) error {
 	return self.Include(filePath, func(forms []Form) error {
 		var ops []Op

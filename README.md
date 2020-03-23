@@ -548,7 +548,15 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 `for:` may be used to execute code once for each item in a sequence.
 
 ```
-  3 for: *(2)
+  3 for: _ *(2)
+
+[0 2 4]
+```
+
+Items may optionally be bound to an identifier instead of pushed on the stack.
+
+```
+  3 for: v (v *(2))
 
 [0 2 4]
 ```

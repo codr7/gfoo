@@ -1,10 +1,5 @@
-* add optional for: var
-** add register & init to NIL if not exists
-*** update on each iter and leave on exit
-** use to simplify enojs
-*** remove scopes
-** update readme
-* add optional map: var
+* add optional map: var like for:
+* add optional ?: var like for:
 * --
 * use path package to extract filenames in enojs
 * add string dump support for \n
