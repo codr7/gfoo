@@ -9,19 +9,30 @@ import (
 )
 
 type Scope struct {
+	parent *Scope
 	loadPath string
 	bindings map[string]Binding
 	registers map[string]int
 	methods []*Method
 }
 
-func NewScope() *Scope {
-	return new(Scope).Init()
+func NewScope(parent *Scope) *Scope {
+	return new(Scope).Init(parent)
 }
 
-func (self *Scope) Init() *Scope {
+func (self *Scope) Init(parent *Scope) *Scope {
+	self.parent = parent
 	self.bindings = make(map[string]Binding)
 	self.registers = make(map[string]int)
+
+	if parent != nil {
+		self.loadPath = parent.loadPath
+	
+		for k, v := range parent.registers {
+			self.registers[k] = v
+		}
+	}
+	
 	return self
 }
 
@@ -63,12 +74,6 @@ func (self *Scope) AddVal(name string, dataType ValType, data interface{}) {
 	self.Set(name, NewVal(dataType, data))
 }
 
-func (self *Scope) Clone() *Scope {
-	out := new(Scope).Init()
-	self.Copy(out)
-	return out
-}
-
 func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 	var err error
 	var inForms Forms
@@ -81,18 +86,6 @@ func (self *Scope) Compile(in []Form, out []Op) ([]Op, error) {
 	}
 	
 	return out, nil
-}
-
-func (self *Scope) Copy(out *Scope) {
-	out.loadPath = self.loadPath
-	
-	for k, b := range self.bindings {
-		out.bindings[k] = b
-	}
-
-	for k, v := range self.registers {
-		out.registers[k] = v
-	}
 }
 
 func (self *Scope) Extend(source *Scope) *Scope {
@@ -136,7 +129,7 @@ func (self *Scope) EvalForm(in *Forms, stack *Slice) error {
 		return nil
 	}
 	
-	ops, err := f.Compile(in, nil, self.Clone())
+	ops, err := f.Compile(in, nil, NewScope(self))
 	
 	if err != nil {
 		return err
@@ -154,6 +147,10 @@ func (self *Scope) Get(key string) *Binding {
 		return &found
 	}
 
+	if self.parent != nil {
+		return self.parent.Get(key)
+	}
+	
 	return nil
 }
 
@@ -219,7 +216,7 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 		var ops []Op
 		var err error
 		
-		if ops, err = self.Clone().Compile(forms, nil); err != nil {
+		if ops, err = NewScope(self).Compile(forms, nil); err != nil {
 			return err
 		}
 		

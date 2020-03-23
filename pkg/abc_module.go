@@ -167,7 +167,7 @@ func lambdaImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	var bodyOps []Op
-	scope = scope.Clone()
+	scope = NewScope(scope)
 
 	for i := len(args.body)-1; i >= 0; i-- {
 		a := args.body[i]
@@ -247,7 +247,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 
 	var bodyOps []Op
-	macroScope := scope.Clone()
+	macroScope := NewScope(scope)
 
 	for i := len(args.body)-1; i >= 0 ; i-- {
 		f := args.body[i]
@@ -287,7 +287,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			return out, err
 		}
 
-		scope = macroScope.Clone()
+		scope = NewScope(nil)
 		
 		for i := stack.Len()-1; i >= 0; i-- {
 			in.Push(stack.items[i].Unquote(scope, form.Pos()))
@@ -416,7 +416,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	var bodyOps []Op
-	methodScope := scope.Clone()
+	methodScope := NewScope(scope)
 	
 	for i := len(args)-1; i >= 0; i-- {
 		a := args[i]

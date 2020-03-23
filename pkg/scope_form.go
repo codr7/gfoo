@@ -21,7 +21,7 @@ func (self *ScopeForm) Init(body []Form, pos Pos) *ScopeForm {
 }
 
 func (self *ScopeForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
-	scope = scope.Clone()
+	scope = NewScope(scope)
 	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {

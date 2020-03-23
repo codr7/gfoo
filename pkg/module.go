@@ -5,6 +5,6 @@ type Module struct {
 }
 
 func (self *Module) Init() {
-	self.Scope.Init()
+	self.Scope.Init(nil)
 }
 

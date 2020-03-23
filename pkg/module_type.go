@@ -34,8 +34,14 @@ func (_ *ModuleType) Get(source Val, key string, pos Pos) (Val, error) {
 func (_ *ModuleType) Keys(val Val) []string {
 	var out []string
 
-	for k, _ := range val.data.(*Module).bindings {
-		out = append(out, k)
+	s := &val.data.(*Module).Scope
+
+	for s != nil {
+		for k, _ := range s.bindings {
+			out = append(out, k)
+		}
+
+		s = s.parent
 	}
 	
 	return out

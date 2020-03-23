@@ -16,7 +16,7 @@ type Core struct {
 
 func New() *Core {
 	c := new(Core)
-	c.Init()
+	c.Init(nil)
 	
 	c.AddModule("abc", c.Abc.Init())
 	c.AddModule("data", c.Data.Init())

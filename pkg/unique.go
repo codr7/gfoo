@@ -21,12 +21,12 @@ func Unique(prefix string) string {
 	return fmt.Sprintf("%v-%v", prefix, suffix)
 }
 
-func (self *Scope) Unique(in string) string {
-	if b, ok := self.bindings[in]; ok && b.val.data != nil {
+func (self *Scope) Unique(key string) string {
+	if b := self.Get(key); b != nil && b.val.data != nil {
 		return b.val.data.(string)
 	}
 
-	out := Unique(in[1:])
-	self.Set(in, NewVal(&TString, out))
+	out := Unique(key[1:])
+	self.Set(key, NewVal(&TString, out))
 	return out
 }
