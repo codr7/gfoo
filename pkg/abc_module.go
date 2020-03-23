@@ -113,7 +113,7 @@ func forImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	id, ok := f.(*Id)
 
 	if !ok {
-		return out, Error(form.Pos(), "Expected identifier: %v", id)
+		return out, Error(form.Pos(), "Expected identifier: %v", f)
 	}
 	
 	idIndex := -1
@@ -304,7 +304,7 @@ func mapImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	id, ok := f.(*Id)
 
 	if !ok {
-		return out, Error(form.Pos(), "Expected identifier: %v", id)
+		return out, Error(form.Pos(), "Expected identifier: %v", f)
 	}
 	
 	idIndex := -1
@@ -947,12 +947,29 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("typeof", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeofImp)
 
 	self.Eval(`
-macro: if: (body) {
-  '(?: @body ())
+macro: all: (body) {
+  dump('{
+     let: #in ()
+     T #in for: _ (and: @body)
+   })
+
+  '{
+     let: #in ()
+     T #in for: _ (and: @body)
+   }
+}
+
+macro: any: (body) {
+  dump('[map: #v (#v @body if: (#v NIL))...])
+  '[map: #v (#v @body if: (#v NIL))...]
 }
 
 macro: else: (body) {
   '(?: () @body)
+}
+
+macro: if: (body) {
+  '(?: @body ())
 }
         `, nil, nil, nil)
 	

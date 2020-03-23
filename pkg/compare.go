@@ -79,6 +79,18 @@ func CompareString(x, y string) Order {
 	return Order(strings.Compare(x, y))
 }
 
+func CompareVals(x, y []Val) Order {
+	xl, yl := len(x), len(y)
+	
+	for i := 0; i < MinInt(xl, yl); i++ {
+		if o := x[i].Compare(y[i]); o != Eq {
+			return o
+		}		
+	}
+	
+	return CompareInt(xl, yl)
+}
+
 func MinInt(x, y int) int {
 	if y < x {
 		return y

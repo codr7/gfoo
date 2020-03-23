@@ -59,5 +59,14 @@ func (self *ScopeForm) Dump(out io.Writer) error {
 }
 
 func (self *ScopeForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
-	return NewVal(&TScope, self), nil
+	out := make([]Val, len(self.body))
+	var err error
+	
+	for i, f := range self.body {
+		if out[i], err = f.Quote(scope, thread, registers, pos); err != nil {
+			return Nil, err
+		}
+	}
+	
+	return NewVal(&TScope, out), nil
 }

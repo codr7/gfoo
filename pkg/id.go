@@ -26,7 +26,7 @@ func (self *Id) Do(action func(Form) error) error {
 }
 
 func (self *Id) Dump(out io.Writer) error {
-	_, err := fmt.Fprintf(out, "'%v", self.name)
+	_, err := fmt.Fprintf(out, "%v", self.name)
 	return err
 }
 

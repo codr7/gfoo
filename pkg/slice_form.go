@@ -57,17 +57,14 @@ func (self *SliceForm) Dump(out io.Writer) error {
 }
 
 func (self *SliceForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
-	ops, err := NewScope(scope).Compile(self.body, nil)
-
-	if err != nil {
-		return Nil, err
-	}
-
-	v := NewSlice(nil)
+	out := make([]Val, len(self.body))
+	var err error
 	
-	if err = EvalOps(ops, nil, NewSlice(nil), v); err != nil {
-		return Nil, err
+	for i, f := range self.body {
+		if out[i], err = f.Quote(scope, thread, registers, pos); err != nil {
+			return Nil, err
+		}
 	}
 		
-	return NewVal(&TSlice, v), nil
+	return NewVal(&TSlice, NewSlice(out)), nil
 }

@@ -34,15 +34,7 @@ func (self *Slice) Clone() *Slice {
 }
 
 func (self Slice) Compare(other Slice) Order {
-	xl, yl := self.Len(), other.Len()
-	
-	for i := 0; i < MinInt(xl, yl); i++ {
-		if o := self.items[i].Compare(other.items[i]); o != Eq {
-			return o
-		}		
-	}
-	
-	return CompareInt(xl, yl)
+	return CompareVals(self.items, other.items)
 }
 
 func (self Slice) Dump(out io.Writer) error {
@@ -50,16 +42,8 @@ func (self Slice) Dump(out io.Writer) error {
 		return err
 	}
 
-	for i, v := range self.items {
-		if i > 0 {
-			if _, err := fmt.Fprint(out, " "); err != nil {
-				return err
-			}
-		}
-		
-		if err := v.Dump(out); err != nil {
-			return err
-		}
+	if err := DumpVals(self.items, out); err != nil {
+		return err
 	}
 	
 	if _, err := fmt.Fprint(out, "]"); err != nil {
@@ -136,5 +120,5 @@ func (self *Slice) Unquote(scope *Scope, pos Pos) Form {
 		out[i] = v.Unquote(scope, pos)
 	}
 
-	return NewGroup(out, pos)
+	return NewSliceForm(out, pos)
 }

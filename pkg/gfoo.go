@@ -18,6 +18,7 @@ func Init() {
 	TBuffer.Init("Buffer", &TSequence, &TReader, &TWriter)
 	TChar.Init("Char", &TAny)
 	TFunction.Init("Function", &TAny)
+	TGroup.Init("Group", &TAny)
 	TId.Init("Id", &TAny)
 	TNumber.Init("Number", &TAny)
 	TInt.Init("Int", &TNumber, &TSequence)

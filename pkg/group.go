@@ -64,5 +64,5 @@ func (self *Group) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos
 		}
 	}
 	
-	return NewVal(&TSlice, NewSlice(out)), nil
+	return NewVal(&TGroup, out), nil
 }
