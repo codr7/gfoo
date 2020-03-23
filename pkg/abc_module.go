@@ -480,6 +480,17 @@ func threadImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewThreadOp(form, argOps, bodyOps)), nil
 }
 
+func timesImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
+	body := in.Pop()	
+	bodyOps, err := body.Compile(in, nil, scope)
+	
+	if err != nil {
+		return out, err
+	}
+	
+	return append(out, NewTimes(form, bodyOps)), nil
+}
+
 func traitImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	var f Form
 	
@@ -869,6 +880,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("or:", 1, orImp)
 	self.AddMacro("pause:", 1, pauseImp)
 	self.AddMacro("thread:", 2, threadImp)
+ 	self.AddMacro("times:", 1, timesImp)
 	self.AddMacro("trait:", 2, traitImp)
 	self.AddMacro("type:", 2, typeImp)
 	self.AddMacro("use:", 2, useImp)

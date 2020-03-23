@@ -535,6 +535,15 @@ Error in 'n/a', line 1, column 6: Attempt to override compile time binding: foo
 ['ok 'ok]
 ```
 
+### loops
+`times:` may be used to execute code a specified number of times.
+
+```
+  3 times: 'foo
+
+['foo 'foo 'foo]
+```
+
 ### sequences
 `for:` may be used to execute code once for each item in a sequence.
 

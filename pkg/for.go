@@ -16,7 +16,7 @@ func (self *For) Eval(thread *Thread, registers, stack *Slice) error {
 	v := stack.Pop()
 
 	if v == nil {
-		return Error(self.form.Pos(), "Missing value")
+		return Error(self.form.Pos(), "Missing source")
 	}
 
 	in, err := v.Iter(self.form.Pos())
