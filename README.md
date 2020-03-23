@@ -575,10 +575,7 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 Items may optionally be bound to an identifier instead of pushed on the stack.
 
 ```
-  3 map: v (v *(2))
-
-[Iter(0xc000090130)]
-  ...
+  3 map: v (v *(2))...
 
 [0 2 4]
 ```
