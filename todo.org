@@ -1,3 +1,9 @@
+* add optional for: loop variable
+** add register if not exists
+*** init to NIL
+*** update on each iteration and leave intact on exit
+** use to simplify enojs
+*** remove scopes
 * use path package to extract filenames in enojs
 * add string dump support for \n
 * add support for group binding to let:/define:
