@@ -1,7 +1,6 @@
 package gfoo
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -49,6 +48,5 @@ func (self *ScopeType) Unquote(val Val, scope *Scope, pos Pos) Form {
 		out[i] = v.Unquote(scope, pos)
 	}
 
-	fmt.Printf("%v\n", DumpString(NewScopeForm(out, pos)))
 	return NewScopeForm(out, pos)
 }

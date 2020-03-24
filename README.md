@@ -112,8 +112,8 @@ Besides first class features described elsewhere in this document, the following
 All values have boolean representations; non-zero integers are true, empty strings and slices false etc.
 
 ```
-  42 bool
-  "" bool
+  42 to-bool
+  "" to-bool
   
 [T F]
 ```

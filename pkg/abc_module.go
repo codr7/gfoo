@@ -657,9 +657,8 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return out, scope.Use(source.val, names, form.Pos())
 }
 
-func boolImp(thread *Thread, registers, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
-	return nil
+func breakImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	return &Break
 }
 
 func cloneImp(thread *Thread, registers, stack *Slice, pos Pos) error {
@@ -855,6 +854,11 @@ func threadWaitImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
+func toBoolImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
+	return nil
+}
+
 func typeofImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
@@ -910,7 +914,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddMacro("type:", 2, typeImp)
 	self.AddMacro("use:", 2, useImp)
 
-	self.AddMethod("bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, boolImp)
+	self.AddMethod("break", nil, nil, breakImp)
 	self.AddMethod("clone", []Arg{AType("val", &TAny)}, []Ret{RIndex(0)}, cloneImp)
 	self.AddMethod("dump", []Arg{AType("val", &TOption)}, nil, dumpImp)
 	self.AddMethod("=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, eqImp)
@@ -944,24 +948,22 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("chars", []Arg{AType("val", &TString)}, []Ret{RType(&TIter)}, stringCharsImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)
 	self.AddMethod("wait", []Arg{AType("thread", &TThread)}, nil, threadWaitImp)
+	self.AddMethod("to-bool", []Arg{AType("val", &TAny)}, []Ret{RType(&TBool)}, toBoolImp)
 	self.AddMethod("typeof", []Arg{AType("val", &TAny)}, []Ret{RType(&TMeta)}, typeofImp)
 
 	self.Eval(`
 macro: all: (body) {
-  dump('{
-     let: #in ()
-     T #in for: _ (and: @body)
-   })
-
   '{
      let: #in ()
-     T #in for: _ (and: @body)
+     T #in for: #v and: (#v @body)
    }
 }
 
 macro: any: (body) {
-  dump('[map: #v (#v @body if: (#v NIL))...])
-  '[map: #v (#v @body if: (#v NIL))...]
+  '{
+     let: #in ()
+     F #in for: #v (#v @body if: (or: T break))
+   }
 }
 
 macro: else: (body) {

@@ -1,13 +1,7 @@
-say([1 2 3] any: (=(4)))
-say([1 2 3] all: (<(4)))
-
 * fix reading of macroImp args to get rid of extra group
-** change Quote fn to take out arg and return []Val
+** change Quote fn to take in *Forms/out []Val args and return []Val
 ** consume next if group in Id.Quote
-* debug
-* convert both macros to use break
-** add break op/macro
-*** trap in For op
+* add any/all tests
 * --
 * use path package to extract filenames in enojs
 * add string dump support for \n

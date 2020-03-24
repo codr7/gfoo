@@ -42,6 +42,10 @@ func (self *For) Eval(thread *Thread, registers, stack *Slice) error {
 			registers.items[self.id] = v
 		}
 		
-		return EvalOps(self.body, thread, registers, stack)
+		if err = EvalOps(self.body, thread, registers, stack); err != nil && err != &Break {
+			return err
+		}
+			
+		return nil
 	}, thread, self.form.Pos())
 }
