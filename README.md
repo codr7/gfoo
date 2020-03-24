@@ -561,6 +561,14 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 [0 2 4]
 ```
 
+`break` may be used to exit early.
+
+```
+  ['foo 'bar 'baz] for: (v is('bar) ?: break v)
+
+['foo]
+```
+
 `map:` may be used to lazily transform sequences.
 
 ```
@@ -580,7 +588,7 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 [0 2 4]
 ```
 
-The specified body may return an arbitrary number of values,
+The specified body may return an arbitrary number of values.
 
 ```
   3 map: _ 'foo...
@@ -588,10 +596,10 @@ The specified body may return an arbitrary number of values,
 [0 'foo 1 'foo 2 'foo]
 ```
 
-or `NIL` to exit early.
+`break` may be used to exit early.
 
 ```
-  ['foo 'bar 'baz] map: (v is('bar) ?: NIL v)...
+  ['foo 'bar 'baz] map: (v is('bar) ?: break v)...
 
 ['foo]
 ```

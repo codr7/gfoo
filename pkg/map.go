@@ -48,22 +48,20 @@ func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 			if err != nil {
 				return Nil, err
 			}
-			
-			if v == Nil {
-				if buffer.Len() > 0 {
-					continue
-				}
 
+			if v == Nil {
 				break
 			}
-
+			
 			if self.id == -1 {
 				buffer.Push(v)
 			} else {
 				registers.items[self.id] = v
 			}
 
-			if err = EvalOps(self.body, thread, registers, &buffer); err != nil {
+			if err = EvalOps(self.body, thread, registers, &buffer); err == &Break {
+				break
+			} else if err != nil {
 				return Nil, err
 			}
 		}

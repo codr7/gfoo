@@ -101,13 +101,16 @@ length([1 2 3]) check: =(3)
 }
 
 [3 times: 42] check: =([42 42 42])
+
 [3 for: _ *(2)] check: =([0 2 4])
 {[3 for: v (v *(2))] check: =([0 2 4])}
+{[['foo 'bar 'baz] for: v (v is('bar) ?: break v)]} check: =(['foo])
+
 [3 map: _ *(2)...] check: =([0 2 4])
 {[3 map: v (v *(2))...] check: =([0 2 4])}
 {[3 map: v ()...] check: =([])}
 {[3 map: _ 'foo...] check: =([0 'foo 1 'foo 2 'foo])}
-[['foo 'bar 'baz] map: v (v is('bar) ?: NIL v)...] check: =(['foo])
+{[['foo 'bar 'baz] map: v (v is('bar) ?: break v)...]} check: =(['foo])
 
 /:(x) !x
 call: (42) check: =(!42)

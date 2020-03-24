@@ -14,7 +14,9 @@ func (self Iter) For(action func(val Val, thread *Thread, pos Pos) error, thread
 			break
 		}
 		
-		if err = action(v, thread, pos); err != nil {
+		if err = action(v, thread, pos); err == &Break {
+			break
+		} else if err != nil {
 			return err
 		}
 	}
