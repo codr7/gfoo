@@ -588,7 +588,7 @@ Items may optionally be bound to an identifier instead of pushed on the stack.
 [0 2 4]
 ```
 
-The specified body may return an arbitrary number of values.
+The specified body may return an arbitrary number of values,
 
 ```
   3 map: _ 'foo...
@@ -596,10 +596,10 @@ The specified body may return an arbitrary number of values.
 [0 'foo 1 'foo 2 'foo]
 ```
 
-`break` may be used to exit early.
+or `NIL` to stop iteration.
 
 ```
-  ['foo 'bar 'baz] map: (v is('bar) ?: break v)...
+  ['foo 'bar 'baz] map: (v is('bar) ?: NIL v)...
 
 ['foo]
 ```

@@ -59,9 +59,7 @@ func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 				registers.items[self.id] = v
 			}
 
-			if err = EvalOps(self.body, thread, registers, &buffer); err == &Break {
-				break
-			} else if err != nil {
+			if err = EvalOps(self.body, thread, registers, &buffer); err != nil {
 				return Nil, err
 			}
 		}
