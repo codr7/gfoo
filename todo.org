@@ -1,8 +1,5 @@
 * fix reading of macroImp args to get rid of extra group
-** change Quote fn to take in *Forms/out []Val args and return []Val
-** consume next if group in Id.Quote
-* add any/all tests
-* --
+** add any/all tests
 * use path package to extract filenames in enojs
 * add string dump support for \n
 * add support for group binding to let:/define:
