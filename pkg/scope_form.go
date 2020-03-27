@@ -58,12 +58,12 @@ func (self *ScopeForm) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *ScopeForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+func (self *ScopeForm) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error
 	
 	for i, f := range self.body {
-		if out[i], err = f.Quote(scope, thread, registers, pos); err != nil {
+		if out[i], err = f.Quote(nil, scope, thread, registers, pos); err != nil {
 			return Nil, err
 		}
 	}

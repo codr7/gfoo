@@ -32,8 +32,8 @@ func (self *Unquote) Dump(out io.Writer) error {
 	return self.form.Dump(out)
 }
 
-func (self *Unquote) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
-	ops, err := self.form.Compile(nil, nil, scope)
+func (self *Unquote) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+	ops, err := self.form.Compile(in, nil, scope)
 
 	if err != nil {
 		return Nil, err

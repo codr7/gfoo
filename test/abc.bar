@@ -112,6 +112,11 @@ length([1 2 3]) check: =(3)
 {[3 map: _ 'foo...] check: =([0 'foo 1 'foo 2 'foo])}
 {[['foo 'bar 'baz] map: v (v is('bar) ?: NIL v)...]} check: =(['foo])
 
+[1 2 3] all: <(3) check: is(F)
+[1 2 3] all: <(4) check: is(T)
+[1 2 3] any: >(3) check: is(F)
+[1 2 3] any: >(2) check: is(T)
+
 /:(x) !x
 call: (42) check: =(!42)
 

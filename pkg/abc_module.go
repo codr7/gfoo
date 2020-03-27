@@ -276,7 +276,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 			f := in.Pop()
 			var v Val
 			
-			if v, err = f.Quote(scope, nil, &registers, f.Pos()); err != nil {
+			if v, err = f.Quote(in, scope, nil, &registers, f.Pos()); err != nil {
 				return out, err
 			}
 			
@@ -869,6 +869,7 @@ func (self *AbcModule) Init() *Module {
 	
 	self.AddType(&TAny)
 	self.AddType(&TBool)
+	self.AddType(&TCall)
 	self.AddType(&TChar)
 	self.AddType(&TFunction)
 	self.AddType(&TId)

@@ -67,15 +67,15 @@ func (self *PairForm) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *PairForm) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+func (self *PairForm) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
 	var left, right Val
 	var err error
 
-	if left, err = self.left.Quote(scope, thread, registers, pos); err != nil {
+	if left, err = self.left.Quote(nil, scope, thread, registers, pos); err != nil {
 		return Nil, err
 	}
 
-	if right, err = self.right.Quote(scope, thread, registers, pos); err != nil {
+	if right, err = self.right.Quote(nil, scope, thread, registers, pos); err != nil {
 		return Nil, err
 	}
 

@@ -5,7 +5,7 @@ $ go get https://github.com/codr7/gfoo.git
 $ cd ~/go/src/gfoo
 $ go build -o gfoo main.go
 $ ./gfoo
-gfoo v0.22
+gfoo v0.23
 
 Press Return on empty line to evaluate.
 
@@ -602,6 +602,22 @@ or `NIL` to stop iteration.
   ['foo 'bar 'baz] map: (v is('bar) ?: NIL v)...
 
 ['foo]
+```
+
+`any:` returns true if any items satisfy the specified predicate,
+
+```
+  [1 2 3] any: >(2)
+
+[T]
+```
+
+while `all:` only returns true if all items satisfy.
+
+```
+  [1 2 3] all: <(3)
+
+[F]
 ```
 
 ### iterators

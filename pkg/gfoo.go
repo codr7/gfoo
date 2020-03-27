@@ -2,7 +2,7 @@ package gfoo
 
 const (
 	VersionMajor = 0
-	VersionMinor = 22
+	VersionMinor = 23
 )
 
 func Init() {
@@ -13,6 +13,7 @@ func Init() {
 	TSequence.Init("Sequence", &TAny)
 	TBool.Init("Bool", &TAny)
 	TByte.Init("Byte", &TAny)
+	TCall.Init("Call", &TAny)
 	TReader.Init("Reader", &TAny)
 	TWriter.Init("Writer", &TAny)
 	TBuffer.Init("Buffer", &TSequence, &TReader, &TWriter)

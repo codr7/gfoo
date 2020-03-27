@@ -30,7 +30,18 @@ func (self *Id) Dump(out io.Writer) error {
 	return err
 }
 
-func (self *Id) Quote(scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+func (self *Id) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+	if in != nil {
+		if next := in.Peek(); next != nil {
+			g, ok := next.(*Group)
+
+			if ok {
+				in.Pop()
+				return NewCallForm(self, g, pos).Quote(nil, scope, thread, registers, pos)
+			}
+		}
+	}
+	
 	return NewVal(&TId, self.name), nil
 }
 
