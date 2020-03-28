@@ -35,14 +35,6 @@ F or: 42 check: =(42)
 
 [3 ...] check: =([0 1 2])
 
-42 to-string check: =("42")
-
-"" to-bool check: =(F)
-
-length("abc") check: =(3)
-
-["foo"...] check: =([\'f \'o \'o])
-
 !,1 2 check: =(,!1 !2)
 
 ![1 2 3] check: =([!1 !2 !3])

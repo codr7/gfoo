@@ -1,9 +1,21 @@
+* add string module with ~ for char/string
+* --
 * use path package to extract filenames in enojs
-* add string dump support for \n
-* add support for group binding to let:/define:
+* add denojs.bar
+* add Loop op
+** add Break/Next error
+*** trap in Loop.Evaluate
+** add while macro to lib/abc
+
+macro: while: (cond body) {
+  '(loop: (@cond else: break @body))
+}
+
 * add try:/catch:/fail
 ** require try: or catch: if code contains fail
 ** forward error on try:
+* add string dump support for \n
+* add support for group binding to let:/define:
 * add Table
 ** key/records
 * add Fix
@@ -18,15 +30,6 @@
 ** compile form, call: Print with buffer, call: Print with buffer/string, call: String with buffer 
 
 let: foo 42 "@(foo)bar"
-
-* add Loop op
-** add Break/Next error
-*** trap in Loop.Evaluate
-** add while macro to lib/abc
-
-macro: while: (cond body) {
-  '(loop: (@cond else: break @body))
-}
 
 * add optional type literals
 ** create optional if lookup for X? fails
