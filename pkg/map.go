@@ -14,7 +14,7 @@ func NewMap(form Form, id int, body []Op) *Map {
 	return op
 }
 
-func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Map) Eval(thread *Thread, registers, stack *Stack) error {
 	v := stack.Pop()
 
 	if v == nil {
@@ -35,7 +35,7 @@ func (self *Map) Eval(thread *Thread, registers, stack *Slice) error {
 		}
 	}
 
-	var buffer Slice
+	var buffer Stack
 
 	stack.Push(NewVal(&TIter, Iter(func (thread *Thread, pos Pos) (Val, error) {
 		for {			

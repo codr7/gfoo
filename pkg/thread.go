@@ -4,7 +4,7 @@ type Thread struct {
 	body []Op
 	err error
 	results chan []Val
-	stack Slice
+	stack Stack
 }
 
 func NewThread(body []Op) *Thread {
@@ -20,7 +20,7 @@ func (self *Thread) Pause(result []Val) {
 
 func (self *Thread) Start() {
 	go func() {
-		if self.err = EvalOps(self.body, self, NewSlice(nil), &self.stack); self.err == nil {
+		if self.err = EvalOps(self.body, self, NewStack(nil), &self.stack); self.err == nil {
 			self.results<- self.stack.items
 		}
 		
@@ -28,7 +28,7 @@ func (self *Thread) Start() {
 	}()
 }
 
-func (self *Thread) Wait(stack *Slice, pos Pos) error {
+func (self *Thread) Wait(stack *Stack, pos Pos) error {
 	if result, ok := <-self.results; ok {
 		stack.Push(result...)
 	} else {

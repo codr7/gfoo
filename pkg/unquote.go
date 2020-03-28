@@ -32,14 +32,14 @@ func (self *Unquote) Dump(out io.Writer) error {
 	return self.form.Dump(out)
 }
 
-func (self *Unquote) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+func (self *Unquote) Quote(in *Forms, scope *Scope, thread *Thread, registers *Stack, pos Pos) (Val, error) {
 	ops, err := self.form.Compile(in, nil, scope)
 
 	if err != nil {
 		return Nil, err
 	}
 
-	var stack Slice
+	var stack Stack
 	stack.Init(nil)
 
 	if err = EvalOps(ops, thread, registers, &stack); err != nil {

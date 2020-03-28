@@ -1,5 +1,3 @@
-* add string module with ~ for char/string
-* --
 * use path package to extract filenames in enojs
 * add denojs.bar
 * add Loop op

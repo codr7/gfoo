@@ -11,7 +11,7 @@ type FunctionType struct {
 	ValTypeBase
 }
 
-func (_ *FunctionType) Call(target Val, thread *Thread, stack *Slice, pos Pos) error {
+func (_ *FunctionType) Call(target Val, thread *Thread, stack *Stack, pos Pos) error {
 	return target.data.(*Function).Call(thread, stack, pos)
 }
 

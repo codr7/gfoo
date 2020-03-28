@@ -14,7 +14,7 @@ func NewFor(form Form, id int, body []Op) *For {
 	return op
 }
 
-func (self *For) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *For) Eval(thread *Thread, registers, stack *Stack) error {
 	v := stack.Pop()
 
 	if v == nil {

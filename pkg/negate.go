@@ -10,7 +10,7 @@ func NewNegate(form Form) *Negate {
 	return op
 }
 
-func (self *Negate) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Negate) Eval(thread *Thread, registers, stack *Stack) error {
 	v := stack.Peek()
 	
 	if v == nil {

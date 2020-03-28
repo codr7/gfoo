@@ -27,7 +27,7 @@ func (self Val) Bool() bool {
 	return self.dataType.Bool(self)
 }
 
-func (self Val) Call(thread *Thread, stack *Slice, pos Pos) error {
+func (self Val) Call(thread *Thread, stack *Stack, pos Pos) error {
 	tt, ok := self.dataType.(TargetType)
 
 	if !ok {

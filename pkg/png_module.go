@@ -9,7 +9,7 @@ type PngModule struct {
 	Module
 }
 
-func pngEncode(thread *Thread, registers, stack *Slice, pos Pos) error {
+func pngEncode(thread *Thread, registers, stack *Stack, pos Pos) error {
 	image := stack.Pop().data.(*Rgba)
 	out := stack.Pop().data.(io.Writer)
 	return png.Encode(out, image)

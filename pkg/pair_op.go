@@ -13,7 +13,7 @@ func NewPairOp(form Form, left, right []Op) *PairOp {
 	return op
 }
 
-func (self *PairOp) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *PairOp) Eval(thread *Thread, registers, stack *Stack) error {
 	var left, right *Val
 	
 	if err := EvalOps(self.left, thread, registers, stack); err != nil {

@@ -14,7 +14,7 @@ func NewLoad(form Form, key string, index int) *Load {
 	return op
 }
 
-func (self *Load) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Load) Eval(thread *Thread, registers, stack *Stack) error {
 	stack.Push(registers.items[self.index])
 	return nil
 }

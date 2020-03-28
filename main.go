@@ -11,13 +11,13 @@ import (
 	"strings"
 )
 
-func repl(g *gfoo.Core, stack *gfoo.Slice) {
+func repl(g *gfoo.Core, stack *gfoo.Stack) {
 	fmt.Printf("gfoo v%v.%v\n\n", gfoo.VersionMajor, gfoo.VersionMinor)
 	fmt.Print("Press Return on empty line to evaluate.\n\n")
 	
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
-	registers := gfoo.NewSlice(nil)
+	registers := gfoo.NewStack(nil)
 	g.Eval("use: abc...", nil, registers, nil)
 	
 	for {
@@ -65,7 +65,7 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
-	stack := gfoo.NewSlice(nil)
+	stack := gfoo.NewStack(nil)
 	
 	if len(args) == 0 {
 		repl(g, stack)

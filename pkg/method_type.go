@@ -10,7 +10,7 @@ type MethodType struct {
 	ValTypeBase
 }
 
-func (_ *MethodType) Call(target Val, thread *Thread, stack *Slice, pos Pos) error {
+func (_ *MethodType) Call(target Val, thread *Thread, stack *Stack, pos Pos) error {
 	m := target.data.(*Method)
 	
 	if !m.Applicable(stack) {

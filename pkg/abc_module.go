@@ -78,7 +78,7 @@ func defineImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		Error(f.Pos(), "Expected id: %v", f)
 	}
 	
-	var stack Slice
+	var stack Stack
 	
 	if err := scope.EvalForm(in, &stack); err != nil {
 		return out, err
@@ -270,7 +270,7 @@ func macroImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	}
 	
 	scope.AddMacro(id.name, len(args.body), func(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
-		var registers, stack Slice
+		var registers, stack Stack
 
 		for i := 0; i < len(args.body); i++ {
 			f := in.Pop()
@@ -442,7 +442,7 @@ func methodImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 		return out, err
 	}
 	
-	m := scope.AddMethod(id.name, args, rets, func(thread *Thread, registers, stack *Slice, pos Pos) error {
+	m := scope.AddMethod(id.name, args, rets, func(thread *Thread, registers, stack *Stack, pos Pos) error {
 		return EvalOps(bodyOps, thread, registers, stack)
 	})
 
@@ -529,7 +529,7 @@ func traitImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		return out, Error(form.Pos(), "Expected id: %v", f)
 	}
 
-	var stack Slice
+	var stack Stack
 
 	if err := scope.EvalForm(in, &stack); err != nil {
 		return out, err
@@ -563,7 +563,7 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 		return out, Error(form.Pos(), "Expected id: %v", f)
 	}
 
-	var stack Slice
+	var stack Stack
 
 	if err := scope.EvalForm(in, &stack); err != nil {
 		return out, err
@@ -614,7 +614,7 @@ func typeImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	scope.AddMethod(fmt.Sprintf("as-%v", strings.ToLower(t.Name())),
 		[]Arg{AType("val", impType)},
 		[]Ret{RType(t)},
-		func(thread *Thread, registers, stack *Slice, pos Pos) error {
+		func(thread *Thread, registers, stack *Stack, pos Pos) error {
 			v := stack.Peek()
 			v.dataType = t
 			return nil
@@ -657,45 +657,45 @@ func useImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error){
 	return out, scope.Use(source.val, names, form.Pos())
 }
 
-func breakImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func breakImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	return &Break
 }
 
-func cloneImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func cloneImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(stack.Pop().Clone())
 	return nil
 }
 
-func dumpImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func dumpImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Pop().Dump(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func eqImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func eqImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Eq))
 	return nil
 }
 
-func gtImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func gtImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Gt))
 	return nil
 }
 
-func gteImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func gteImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) >= Eq))
 	return nil
 }
 
-func intAddImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intAddImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) + stack.Pop().data.(Int)))
 	return nil
 }
 
-func intCountImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intCountImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -706,40 +706,40 @@ func intCountImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func intDecImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intDecImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	v := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, v-1))
 	return nil
 }
 
-func intIncImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intIncImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	v := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, v+1))
 	return nil
 }
 
-func intMulImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intMulImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) * stack.Pop().data.(Int)))
 	return nil
 }
 
-func intSubImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intSubImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop().data.(Int)
 	stack.Push(NewVal(&TInt, stack.Pop().data.(Int) - y))
 	return nil
 }
 
-func intToStringImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func intToStringImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TString, strconv.FormatInt(stack.Pop().data.(Int), 10)))
 	return nil
 }
 
-func isImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func isImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Is(*stack.Pop())))
 	return nil
 }
 
-func isaImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func isaImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	parent := stack.Pop().data.(Type)
 	out := stack.Pop().data.(Type).Isa(parent)
 	
@@ -752,25 +752,25 @@ func isaImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func ltImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func ltImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) == Lt))
 	return nil
 }
 
-func lteImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func lteImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop()
 	stack.Push(NewVal(&TBool, stack.Pop().Compare(*y) <= Eq))
 	return nil
 }
 
-func sayImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func sayImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Pop().Print(os.Stdout)
 	os.Stdout.WriteString("\n")
 	return nil
 }
 
-func sliceItemsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func stackItemsImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -781,13 +781,13 @@ func sliceItemsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func sliceLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
-	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Slice).Len())))
+func stackLengthImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Stack).Len())))
 	return nil
 }
 
-func slicePeekImp(thread *Thread, registers, stack *Slice, pos Pos) error {
-	in := stack.Pop().data.(*Slice).Peek()
+func stackPeekImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+	in := stack.Pop().data.(*Stack).Peek()
 	var out Val
 	
 	if in == nil {
@@ -800,8 +800,8 @@ func slicePeekImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func slicePopImp(thread *Thread, registers, stack *Slice, pos Pos) error {
-	in := stack.Pop().data.(*Slice).Pop()
+func stackPopImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+	in := stack.Pop().data.(*Stack).Pop()
 	var out Val
 	
 	if in == nil {
@@ -814,13 +814,13 @@ func slicePopImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func slicePushImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func stackPushImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	v := stack.Pop()
-	stack.Pop().data.(*Slice).Push(*v)
+	stack.Pop().data.(*Stack).Push(*v)
 	return nil
 }
 
-func spreadImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func spreadImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -833,7 +833,7 @@ func spreadImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	}, thread, pos)
 }
 
-func stringCharsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func stringCharsImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -844,22 +844,22 @@ func stringCharsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func stringLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func stringLengthImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(len(stack.Pop().data.(string)))))
 	return nil
 }
 
-func threadWaitImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func threadWaitImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Pop().data.(*Thread).Wait(stack, pos)
 	return nil
 }
 
-func toBoolImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func toBoolImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TBool, stack.Pop().Bool()))
 	return nil
 }
 
-func typeofImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func typeofImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TMeta, stack.Pop().dataType))
 	return nil
 }
@@ -885,7 +885,7 @@ func (self *AbcModule) Init() *Module {
 	self.AddType(&TPair)
 	self.AddType(&TScope)
 	self.AddType(&TSequence)
-	self.AddType(&TSlice)
+	self.AddType(&TStack)
 	self.AddType(&TString)
 
 	self.AddVal("NIL", &TNil, nil)
@@ -940,11 +940,11 @@ func (self *AbcModule) Init() *Module {
 	self.AddMethod("<", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, ltImp)
 	self.AddMethod("<=", []Arg{AType("x", &TAny), AType("y", &TAny)}, []Ret{RType(&TBool)}, lteImp)
 	self.AddMethod("say", []Arg{AType("val", &TAny)}, nil, sayImp)
-	self.AddMethod("items", []Arg{AType("val", &TSlice)}, []Ret{RType(&TIter)}, sliceItemsImp)
-	self.AddMethod("length", []Arg{AType("val", &TSlice)}, []Ret{RType(&TInt)}, sliceLengthImp)
-	self.AddMethod("peek", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePeekImp)
-	self.AddMethod("pop", []Arg{AType("val", &TSlice)}, []Ret{RType(&TOption)}, slicePopImp)
-	self.AddMethod("push", []Arg{AType("target", &TSlice), AType("val", &TAny)}, nil, slicePushImp)
+	self.AddMethod("items", []Arg{AType("val", &TStack)}, []Ret{RType(&TIter)}, stackItemsImp)
+	self.AddMethod("length", []Arg{AType("val", &TStack)}, []Ret{RType(&TInt)}, stackLengthImp)
+	self.AddMethod("peek", []Arg{AType("val", &TStack)}, []Ret{RType(&TOption)}, stackPeekImp)
+	self.AddMethod("pop", []Arg{AType("val", &TStack)}, []Ret{RType(&TOption)}, stackPopImp)
+	self.AddMethod("push", []Arg{AType("target", &TStack), AType("val", &TAny)}, nil, stackPushImp)
 	self.AddMethod("...", []Arg{AType("val", &TSequence)}, nil, spreadImp)
 	self.AddMethod("chars", []Arg{AType("val", &TString)}, []Ret{RType(&TIter)}, stringCharsImp)
 	self.AddMethod("length", []Arg{AType("val", &TString)}, []Ret{RType(&TInt)}, stringLengthImp)

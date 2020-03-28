@@ -4,7 +4,7 @@ type IterModule struct {
 	Module
 }
 
-func iterChainImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func iterChainImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	y := stack.Pop().data.(Iter)
 	x := stack.Pop().data.(Iter)
 
@@ -43,7 +43,7 @@ func iterChainImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iterNextImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func iterNextImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in := stack.Pop().data.(Iter)
 	
 	if v, err := in(thread, pos); err != nil {
@@ -55,7 +55,7 @@ func iterNextImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func iterValueImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func iterValueImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	v := *stack.Pop()
 
 	stack.Push(NewVal(&TIter, Iter(func(thread *Thread, pos Pos) (Val, error) {

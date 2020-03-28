@@ -33,7 +33,7 @@ func Init() {
 	TRecord.Init("Record", &TAny, &TSequence)
 	TRgba.Init("Rgba", &TRgba)
 	TScope.Init("Scope", &TAny)
-	TSlice.Init("Slice", &TAny, &TSequence)
+	TStack.Init("Stack", &TAny, &TSequence)
 	TString.Init("String", &TAny, &TSequence)
 	TTime.Init("Time", &TAny)
 	TTimeDelta.Init("TimeDelta", &TAny)

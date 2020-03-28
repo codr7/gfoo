@@ -109,7 +109,7 @@ New types are derived from their implementation type and may be used as such wit
 Besides first class features described elsewhere in this document, the following types are provided.
 
 #### Bool
-All values have boolean representations; non-zero integers are true, empty strings and slices false etc.
+All values have boolean representations; non-zero integers are true, empty strings and stacks false etc.
 
 ```
   42 to-bool
@@ -280,7 +280,7 @@ Records may be negated using `!`.
 [Record(bar -2 foo -1)]
 ```
 
-#### Slice
+#### Stack
 
 ```
   ['foo 'bar 'baz]
@@ -288,7 +288,7 @@ Records may be negated using `!`.
 [['foo 'bar 'baz]]
 ```
 
-Slices support basic stack operations,
+Stacks support basic stack operations,
 
 ```
   [1 2] push(3)
@@ -322,7 +322,7 @@ and spreading using `...`.
 [1 2 3]
 ```
 
-`;` may be used as shorthand for a nested slice.
+`;` may be used as shorthand for a nested stack.
 
 ```
   ['foo; 'bar 'baz]
@@ -443,7 +443,7 @@ foo
 []
 ```
 
-Slices may be used to print several values at once.
+Stacks may be used to print several values at once.
 
 ```
   say([1 \n 2 \n 3])

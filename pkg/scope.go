@@ -99,7 +99,7 @@ func (self *Scope) Extend(source *Scope) *Scope {
 	return self
 }
 
-func (self *Scope) Eval(source string, thread *Thread, registers, stack *Slice) error {
+func (self *Scope) Eval(source string, thread *Thread, registers, stack *Stack) error {
 	in := bufio.NewReader(strings.NewReader(source))
 	pos := NewPos("n/a")
 	var forms []Form
@@ -122,7 +122,7 @@ func (self *Scope) Eval(source string, thread *Thread, registers, stack *Slice) 
 	return nil
 }
 
-func (self *Scope) EvalForm(in *Forms, stack *Slice) error {
+func (self *Scope) EvalForm(in *Forms, stack *Stack) error {
 	f := in.Pop()
 
 	if f == nil {
@@ -135,7 +135,7 @@ func (self *Scope) EvalForm(in *Forms, stack *Slice) error {
 		return err
 	}
 	
-	if err = EvalOps(ops, nil, NewSlice(nil), stack); err != nil {
+	if err = EvalOps(ops, nil, NewStack(nil), stack); err != nil {
 		return err
 	}
 
@@ -211,7 +211,7 @@ func (self *Scope) Let(key string, pos Pos) (int, error) {
 	return index, nil
 }
 
-func (self *Scope) Load(filePath string, stack *Slice) error {
+func (self *Scope) Load(filePath string, stack *Stack) error {
 	return self.Include(filePath, func(forms []Form) error {
 		var ops []Op
 		var err error
@@ -220,7 +220,7 @@ func (self *Scope) Load(filePath string, stack *Slice) error {
 			return err
 		}
 		
-		if err = EvalOps(ops, nil, NewSlice(nil), stack); err != nil {
+		if err = EvalOps(ops, nil, NewStack(nil), stack); err != nil {
 			return err
 		}
 		

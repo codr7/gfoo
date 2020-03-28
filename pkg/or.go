@@ -12,7 +12,7 @@ func NewOr(form Form, right []Op) *Or {
 	return op
 }
 
-func (self *Or) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Or) Eval(thread *Thread, registers, stack *Stack) error {
 	left := stack.Peek()
 
 	if left == nil {

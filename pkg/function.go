@@ -25,7 +25,7 @@ func (self *Function) AddMethod(methods...*Method) {
 	}
 }
 
-func (self *Function) Call(thread *Thread, stack *Slice, pos Pos) error {
+func (self *Function) Call(thread *Thread, stack *Stack, pos Pos) error {
 	for i := len(self.methods)-1; i >= 0; i-- {
 		if m := self.methods[i]; m.Applicable(stack) {
 			return m.Call(thread, stack, pos)

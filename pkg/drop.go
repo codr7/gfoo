@@ -10,7 +10,7 @@ func NewDrop(form Form) *Drop {
 	return op
 }
 
-func (self *Drop) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Drop) Eval(thread *Thread, registers, stack *Stack) error {
 	if stack.Pop() == nil {
 		return Error(self.form.Pos(), "Nothing to drop")
 	}

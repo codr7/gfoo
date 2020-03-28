@@ -42,7 +42,7 @@ func recordImp(form Form, in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	return append(out, NewRecordOp(form, fieldOps)), nil
 }
 
-func recordFieldsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func recordFieldsImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -53,18 +53,18 @@ func recordFieldsImp(thread *Thread, registers, stack *Slice, pos Pos) error {
 	return nil
 }
 
-func recordLengthImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func recordLengthImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Record).Len())))
 	return nil
 }
 
-func recordMergeImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func recordMergeImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	source := stack.Pop().data.(*Record)
 	stack.Pop().data.(*Record).Merge(source)
 	return nil
 }
 
-func recordSetImp(thread *Thread, registers, stack *Slice, pos Pos) error {
+func recordSetImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	v, k, r := stack.Pop(), stack.Pop(), stack.Pop()
 	r.data.(*Record).Set(k.data.(string), *v)
 	return nil

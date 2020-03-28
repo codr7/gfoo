@@ -4,32 +4,32 @@ import (
 	"io"
 )
 
-type SliceForm struct {
+type StackForm struct {
 	FormBase
 	body []Form
 }
 
-func NewSliceForm(body []Form, pos Pos) *SliceForm {
-	return new(SliceForm).Init(body, pos)
+func NewStackForm(body []Form, pos Pos) *StackForm {
+	return new(StackForm).Init(body, pos)
 }
 
-func (self *SliceForm) Init(body []Form, pos Pos) *SliceForm {
+func (self *StackForm) Init(body []Form, pos Pos) *StackForm {
 	self.FormBase.Init(pos)
 	self.body = body
 	return self
 }
 
-func (self *SliceForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
+func (self *StackForm) Compile(in *Forms, out []Op, scope *Scope) ([]Op, error) {
 	ops, err := scope.Compile(self.body, nil)
 
 	if err != nil {
 		return out, err
 	}
 	
-	return append(out, NewSliceOp(self, ops)), nil
+	return append(out, NewStackOp(self, ops)), nil
 }
 
-func (self *SliceForm) Do(action func(Form) error) error {
+func (self *StackForm) Do(action func(Form) error) error {
 	for _, f := range self.body {
 		if err := f.Do(action); err != nil {
 			return err
@@ -39,7 +39,7 @@ func (self *SliceForm) Do(action func(Form) error) error {
 	return nil
 }
 
-func (self *SliceForm) Dump(out io.Writer) error {
+func (self *StackForm) Dump(out io.Writer) error {
  	io.WriteString(out, "[")
 	
 	for i, f := range self.body {
@@ -56,7 +56,7 @@ func (self *SliceForm) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *SliceForm) Quote(in *Forms, scope *Scope, thread *Thread, registers *Slice, pos Pos) (Val, error) {
+func (self *StackForm) Quote(in *Forms, scope *Scope, thread *Thread, registers *Stack, pos Pos) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error
 	
@@ -66,5 +66,5 @@ func (self *SliceForm) Quote(in *Forms, scope *Scope, thread *Thread, registers 
 		}
 	}
 		
-	return NewVal(&TSlice, NewSlice(out)), nil
+	return NewVal(&TStack, NewStack(out)), nil
 }

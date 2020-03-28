@@ -171,7 +171,7 @@ call: (42) check: =(!42)
 
 {
   method: foo ((x y) Int;Int) {x *(y)}
-  method: bar (x Int y Slice; Slice) {[y map: v foo(x v)...]}
+  method: bar (x Int y Stack; Stack) {[y map: v foo(x v)...]}
   42 [1 2 3] bar check: =([42 84 126])
 }
 

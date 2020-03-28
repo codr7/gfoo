@@ -12,7 +12,7 @@ func NewTimes(form Form, body []Op) *Times {
 	return op
 }
 
-func (self *Times) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Times) Eval(thread *Thread, registers, stack *Stack) error {
 	v := stack.Pop()
 
 	if v == nil {

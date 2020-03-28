@@ -122,7 +122,7 @@ func (self *Scope) ParseForm(in *bufio.Reader, pos *Pos) (Form, error) {
 	case '{':
 		return self.ParseScope(in, pos)
 	case '[':
-		return self.ParseSlice(in, pos)
+		return self.ParseStack(in, pos)
 	default:
 		if unicode.IsDigit(c) {
 			return self.ParseNumber(in, c, pos)
@@ -320,8 +320,8 @@ func (self *Scope) ParseScope(in *bufio.Reader, pos *Pos) (Form, error) {
 	return self.ParseBody(in, '}', func(body []Form, pos Pos) Form { return NewScopeForm(body, pos) }, 0, pos)
 }
 
-func (self *Scope) ParseSlice(in *bufio.Reader, pos *Pos) (Form, error) {
-	return self.ParseBody(in, ']', func(body []Form, pos Pos) Form { return NewSliceForm(body, pos) }, 0, pos)
+func (self *Scope) ParseStack(in *bufio.Reader, pos *Pos) (Form, error) {
+	return self.ParseBody(in, ']', func(body []Form, pos Pos) Form { return NewStackForm(body, pos) }, 0, pos)
 }
 
 func (self *Scope) ParseString(in *bufio.Reader, pos *Pos) (Form, error) {

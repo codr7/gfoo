@@ -12,7 +12,7 @@ type LambdaType struct {
 	ValTypeBase
 }
 
-func (_ *LambdaType) Call(target Val, thread *Thread, stack *Slice, pos Pos) error {
+func (_ *LambdaType) Call(target Val, thread *Thread, stack *Stack, pos Pos) error {
 	return target.data.(*Lambda).Call(thread, stack, pos)
 }
 

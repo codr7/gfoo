@@ -1,6 +1,6 @@
 package gfoo
 
-type MethodImp = func(thread *Thread, registers, stack *Slice, pos Pos) error
+type MethodImp = func(thread *Thread, registers, stack *Stack, pos Pos) error
 
 type Method struct {
 	indexes map[*Function]int
@@ -8,7 +8,7 @@ type Method struct {
 	args []Arg
 	rets []Ret
 	imp MethodImp
-	registers Slice
+	registers Stack
 }
 
 func (self *Method) Init(
@@ -24,7 +24,7 @@ func (self *Method) Init(
 	return self
 }
 
-func (self *Method) Applicable(stack *Slice) bool {
+func (self *Method) Applicable(stack *Stack) bool {
 	sl, al := stack.Len(), len(self.args)
 	
 	if sl < al {
@@ -45,7 +45,7 @@ func (self *Method) Applicable(stack *Slice) bool {
 	return true
 }
 
-func (self *Method) Call(thread *Thread, stack *Slice, pos Pos) error {	
+func (self *Method) Call(thread *Thread, stack *Stack, pos Pos) error {	
 	var in []Val
 	argCount := len(self.args)
 

@@ -14,7 +14,7 @@ func NewLet(form Form, key string, index int) *Let {
 	return op
 }
 
-func (self *Let) Eval(thread *Thread, registers, stack *Slice) error {	
+func (self *Let) Eval(thread *Thread, registers, stack *Stack) error {	
 	v := stack.Pop()
 
 	if v == nil {

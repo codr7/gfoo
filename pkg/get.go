@@ -12,7 +12,7 @@ func NewGet(form Form, key string) *Get {
 	return op
 }
 
-func (self *Get) Eval(thread *Thread, registers, stack *Slice) error {
+func (self *Get) Eval(thread *Thread, registers, stack *Stack) error {
 	var source *Val
 	
 	if source = stack.Pop(); source == nil {

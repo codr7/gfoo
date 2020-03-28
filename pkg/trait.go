@@ -23,7 +23,7 @@ func (_ *Trait) Bool(val Val) bool {
 	panic("Abstract method")
 }
 
-func (_ *Trait) Call(target Val, scope *Scope, stack *Slice, pos Pos) error {
+func (_ *Trait) Call(target Val, scope *Scope, stack *Stack, pos Pos) error {
 	panic("Abstract method")
 }
 
