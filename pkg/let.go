@@ -14,19 +14,14 @@ func NewLet(form Form, key string, index int) *Let {
 	return op
 }
 
-func (self *Let) Eval(thread *Thread, registers, stack *Stack) error {	
+func (self *Let) Eval(thread *Thread, registers []Val, stack *Stack) error {	
 	v := stack.Pop()
 
 	if v == nil {
 		return Error(self.form.Pos(), "Missing value: %v", self.key)
 	}
 
-	if registers.Len() == self.index {
-		registers.Push(*v)
-	} else {
-		registers.items[self.index] = *v
-	}
-
+	registers[self.index] = *v
 	return nil
 }
 

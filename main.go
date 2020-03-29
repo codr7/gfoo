@@ -17,8 +17,8 @@ func repl(g *gfoo.Core, stack *gfoo.Stack) {
 	
 	scanner := bufio.NewScanner(os.Stdin)
 	var buffer bytes.Buffer
-	registers := gfoo.NewStack(nil)
-	g.Eval("use: abc...", nil, registers, nil)
+	var registers gfoo.Registers
+	g.Eval("use: abc...", nil, registers[:], nil)
 	
 	for {
 		fmt.Print("  ")
@@ -41,7 +41,7 @@ func repl(g *gfoo.Core, stack *gfoo.Stack) {
 			if source == "" {
 				stack.Clear()
 			} else {
-				if err = g.Eval(source, nil, registers, stack); err != nil {
+				if err = g.Eval(source, nil, registers[:], stack); err != nil {
 					fmt.Println(err)
 				}
 			}

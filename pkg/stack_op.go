@@ -12,7 +12,7 @@ func NewStackOp(form Form, body []Op) *StackOp {
 	return op
 }
 
-func (self *StackOp) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *StackOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	s := NewStack(nil)
 	
 	if err := EvalOps(self.body, thread, registers, s); err != nil {

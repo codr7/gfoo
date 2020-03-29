@@ -14,7 +14,7 @@ func NewMap(form Form, id int, body []Op) *Map {
 	return op
 }
 
-func (self *Map) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Map) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	v := stack.Pop()
 
 	if v == nil {
@@ -28,11 +28,7 @@ func (self *Map) Eval(thread *Thread, registers, stack *Stack) error {
 	}
 	
 	if self.id != -1 {
-		if registers.Len() <= self.id {
-			registers.Push(Nil)
-		} else {
-			registers.items[self.id] = Nil
-		}
+		registers[self.id] = Nil
 	}
 
 	var buffer Stack
@@ -56,7 +52,7 @@ func (self *Map) Eval(thread *Thread, registers, stack *Stack) error {
 			if self.id == -1 {
 				buffer.Push(v)
 			} else {
-				registers.items[self.id] = v
+				registers[self.id] = v
 			}
 
 			if err = EvalOps(self.body, thread, registers, &buffer); err != nil {

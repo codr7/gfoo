@@ -12,7 +12,7 @@ func NewRecordOp(form Form, fields []Op) *RecordOp {
 	return op
 }
 
-func (self *RecordOp) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *RecordOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	var fs Stack
 	
 	if err := EvalOps(self.fields, thread, registers, &fs); err != nil {

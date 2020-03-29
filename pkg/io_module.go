@@ -13,7 +13,7 @@ type IoModule struct {
 	OUT *bufio.Writer
 }
 
-func bufferBytesImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func bufferBytesImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	in, err := stack.Pop().Iter(pos)
 
 	if err != nil {
@@ -24,23 +24,23 @@ func bufferBytesImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	return nil
 }
 
-func bufferLengthImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func bufferLengthImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TInt, Int(stack.Pop().data.(*Buffer).Len())))
 	return nil
 }
 
-func bufferNewImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func bufferNewImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TBuffer, new(Buffer)))
 	return nil
 }
 
-func byteToIntImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func byteToIntImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	v := stack.Pop().data.(Byte)
 	stack.Push(NewVal(&TInt, Int(v)))
 	return nil
 }
 
-func intToByteImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func intToByteImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	v := stack.Pop().data.(Int)
 
 	if v < 0 || v > 255 {
@@ -51,7 +51,7 @@ func intToByteImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	return nil
 }
 
-func slurpImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func slurpImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	p := stack.Pop().data.(string)
 	f, err := os.Open(p)
 	
@@ -65,28 +65,28 @@ func slurpImp(thread *Thread, registers, stack *Stack, pos Pos) error {
 	return nil
 }
 
-func slurpReaderImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func slurpReaderImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	var b Buffer
 	b.ReadFrom(stack.Pop().data.(io.Reader))
 	stack.Push(NewVal(&TBuffer, &b))
 	return nil
 }
 
-func writeBufferImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func writeBufferImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	d := stack.Pop().data.(*Buffer)
 	w := stack.Pop().data.(io.Writer)
 	_, err := d.WriteTo(w)
 	return err
 }
 
-func writeStringImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func writeStringImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	s := stack.Pop().data.(string)
 	w := stack.Pop().data.(io.Writer)
 	_, err := io.WriteString(w, s)
 	return err
 }
 
-func writeByteImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func writeByteImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	b := stack.Pop().data.(byte)
 	w := stack.Pop().data.(io.Writer)
 	_, err := w.Write([]byte{b})

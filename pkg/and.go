@@ -12,7 +12,7 @@ func NewAnd(form Form, right []Op) *And {
 	return op
 }
 
-func (self *And) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *And) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	left := stack.Peek()
 
 	if left == nil {

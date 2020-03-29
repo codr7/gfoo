@@ -12,7 +12,7 @@ func NewQuoteOp(form Form, scope *Scope) *QuoteOp {
 	return op
 }
 
-func (self *QuoteOp) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *QuoteOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	v, err := self.form.Quote(nil, self.scope, thread, registers, self.form.Pos())
 	
 	if err != nil {

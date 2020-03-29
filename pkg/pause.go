@@ -12,7 +12,7 @@ func NewPause(form Form, resultOps []Op) *Pause {
 	return op
 }
 
-func (self *Pause) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Pause) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	if thread == nil {
 		return Error(self.form.Pos(), "No active thread")
 	}

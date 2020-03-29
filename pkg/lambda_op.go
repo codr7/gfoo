@@ -15,7 +15,7 @@ func NewLambdaOp(form Form, argCount int, body []Op) *LambdaOp {
 	return op
 }
 
-func (self *LambdaOp) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *LambdaOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	stack.Push(NewVal(&TLambda, NewLambda(self.argCount, self.body, registers)))
 	return nil
 }

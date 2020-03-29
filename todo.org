@@ -1,3 +1,14 @@
+dump(UNIT-ROWS for: ur (UNIT-COLS for: uc [ur for: r (uc for: c (r ~(c)))]))
+
+define: UNITS [{ROWS map: r [COLS for: c (r ~(c))]}
+               ~({COLS map: c [ROWS for: r (r ~(c))]})...]
+
+UNITS dump
+
+define: SQUARES [ROWS for: r (COLS for: c (r ~(c)))]
+
+SQUARES dump
+
 * use path package to extract filenames in enojs
 * add denojs.bar
 * add Loop op

@@ -99,7 +99,7 @@ func (self *Scope) Extend(source *Scope) *Scope {
 	return self
 }
 
-func (self *Scope) Eval(source string, thread *Thread, registers, stack *Stack) error {
+func (self *Scope) Eval(source string, thread *Thread, registers []Val, stack *Stack) error {
 	in := bufio.NewReader(strings.NewReader(source))
 	pos := NewPos("n/a")
 	var forms []Form
@@ -134,8 +134,10 @@ func (self *Scope) EvalForm(in *Forms, stack *Stack) error {
 	if err != nil {
 		return err
 	}
+
+	var registers Registers
 	
-	if err = EvalOps(ops, nil, NewStack(nil), stack); err != nil {
+	if err = EvalOps(ops, nil, registers[:], stack); err != nil {
 		return err
 	}
 
@@ -219,8 +221,10 @@ func (self *Scope) Load(filePath string, stack *Stack) error {
 		if ops, err = NewScope(self).Compile(forms, nil); err != nil {
 			return err
 		}
+
+		var registers Registers
 		
-		if err = EvalOps(ops, nil, NewStack(nil), stack); err != nil {
+		if err = EvalOps(ops, nil, registers[:], stack); err != nil {
 			return err
 		}
 		

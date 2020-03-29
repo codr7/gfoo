@@ -20,7 +20,9 @@ func (self *Thread) Pause(result []Val) {
 
 func (self *Thread) Start() {
 	go func() {
-		if self.err = EvalOps(self.body, self, NewStack(nil), &self.stack); self.err == nil {
+		var registers Registers
+		
+		if self.err = EvalOps(self.body, self, registers[:], &self.stack); self.err == nil {
 			self.results<- self.stack.items
 		}
 		

@@ -1,6 +1,6 @@
 package gfoo
 
-type MethodImp = func(thread *Thread, registers, stack *Stack, pos Pos) error
+type MethodImp = func(thread *Thread, registers []Val, stack *Stack, pos Pos) error
 
 type Method struct {
 	indexes map[*Function]int
@@ -8,7 +8,7 @@ type Method struct {
 	args []Arg
 	rets []Ret
 	imp MethodImp
-	registers Stack
+	registers Registers
 }
 
 func (self *Method) Init(
@@ -54,7 +54,7 @@ func (self *Method) Call(thread *Thread, stack *Stack, pos Pos) error {
 		copy(in, stack.items[stack.Len()-argCount:])
 	}
 
-	if err := self.imp(thread, &self.registers, stack, pos); err != nil {
+	if err := self.imp(thread, self.registers[:], stack, pos); err != nil {
 		return err
 	}
 

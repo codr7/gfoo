@@ -12,7 +12,7 @@ func NewMethodOp(form Form, method *Method) *MethodOp {
 	return op
 }
 
-func (self *MethodOp) Eval(thread *Thread, registers, stack *Stack) error {
-	self.method.registers.items = append(self.method.registers.items, registers.items...)
+func (self *MethodOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
+	copy(self.method.registers[:], registers)
 	return nil
 }

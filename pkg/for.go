@@ -14,7 +14,7 @@ func NewFor(form Form, id int, body []Op) *For {
 	return op
 }
 
-func (self *For) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *For) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	v := stack.Pop()
 
 	if v == nil {
@@ -28,18 +28,14 @@ func (self *For) Eval(thread *Thread, registers, stack *Stack) error {
 	}
 
 	if self.id != -1 {
-		if registers.Len() <= self.id {
-			registers.Push(Nil)
-		} else {
-			registers.items[self.id] = Nil
-		}
+		registers[self.id] = Nil
 	}
 	
 	return in.For(func(v Val, thread *Thread, pos Pos) error {
 		if self.id == -1 {
 			stack.Push(v)
 		} else {
-			registers.items[self.id] = v
+			registers[self.id] = v
 		}
 		
 		return EvalOps(self.body, thread, registers, stack)

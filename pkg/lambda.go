@@ -3,16 +3,16 @@ package gfoo
 type Lambda struct {
 	argCount int
 	body []Op
-	registers Stack
+	registers Registers
 }
 
-func NewLambda(argCount int, body []Op, registers *Stack) *Lambda {
+func NewLambda(argCount int, body []Op, registers []Val) *Lambda {
 	return new(Lambda).Init(argCount, body, registers)
 }
 
-func (self *Lambda) Init(argCount int, body []Op, registers *Stack) *Lambda {
+func (self *Lambda) Init(argCount int, body []Op, registers []Val) *Lambda {
 	self.body = body
-	self.registers.items = append(self.registers.items, registers.items...)
+	copy(self.registers[:], registers)
 	return self
 }
 
@@ -21,5 +21,5 @@ func (self *Lambda) Call(thread *Thread, stack *Stack, pos Pos) error {
 		return Error(pos, "Not enough arguments: %v (%v)", sl, self.argCount)
 	}
 
-	return EvalOps(self.body, thread, &self.registers, stack)
+	return EvalOps(self.body, thread, self.registers[:], stack)
 }

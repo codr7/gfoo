@@ -54,7 +54,7 @@ func (self *Group) Dump(out io.Writer) error {
 	return nil
 }
 
-func (self *Group) Quote(in *Forms, scope *Scope, thread *Thread, registers *Stack, pos Pos) (Val, error) {
+func (self *Group) Quote(in *Forms, scope *Scope, thread *Thread, registers []Val, pos Pos) (Val, error) {
 	out := make([]Val, len(self.body))
 	var err error
 	

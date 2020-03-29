@@ -13,7 +13,7 @@ func NewBranch(form Form, trueBody, falseBody []Op) *Branch {
 	return op
 }
 
-func (self *Branch) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Branch) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	v := stack.Pop()
 	
 	if v == nil {

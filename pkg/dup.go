@@ -10,7 +10,7 @@ func NewDup(form Form) *Dup {
 	return op
 }
 
-func (self *Dup) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Dup) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	v := stack.Peek()
 	
 	if v == nil {

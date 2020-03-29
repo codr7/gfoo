@@ -14,7 +14,7 @@ func NewCall(form Form, target *Val, args []Op) *Call {
 	return op
 }
 
-func (self *Call) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Call) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	t := self.target
 	
 	if t == nil {

@@ -42,7 +42,7 @@ func (self *CallForm) Dump(out io.Writer) error {
 	return self.args.Dump(out)
 }
 
-func (self *CallForm) Quote(in *Forms, scope *Scope, thread *Thread, registers *Stack, pos Pos) (Val, error) {
+func (self *CallForm) Quote(in *Forms, scope *Scope, thread *Thread, registers []Val, pos Pos) (Val, error) {
 	out := make([]Val, len(self.args.body)+1)
 	var err error
 

@@ -14,7 +14,7 @@ func NewCheck(form Form, cond Form, condOps []Op) *Check {
 	return op
 }
 
-func (self *Check) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *Check) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	condStack := stack.Clone()
 	
 	if err := EvalOps(self.condOps, thread, registers, stack); err != nil {

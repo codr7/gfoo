@@ -14,7 +14,7 @@ func NewScopeOp(form Form, body []Op, scope *Scope) *ScopeOp {
 	return op
 }
 
-func (self *ScopeOp) Eval(thread *Thread, registers, stack *Stack) error {
+func (self *ScopeOp) Eval(thread *Thread, registers []Val, stack *Stack) error {
 	for _, m := range self.scope.methods {
 		for f, i := range m.indexes {
 			if i == -1 {

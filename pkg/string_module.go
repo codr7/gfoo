@@ -8,26 +8,26 @@ type StringModule struct {
 	Module
 }
 
-func charChainImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func charChainImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	y := stack.Pop().data.(rune)
 	x := stack.Pop().data.(rune)
 	stack.Push(NewVal(&TString, string([]rune{x, y})))
 	return nil
 }
 
-func stringChainImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func stringChainImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	y := stack.Pop().data.(string)
 	x := stack.Pop().data.(string)
 	stack.Push(NewVal(&TString, string(append([]rune(x), []rune(y)...))))
 	return nil
 }
 
-func stringDownImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func stringDownImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TString, strings.ToLower(stack.Pop().data.(string))))
 	return nil
 }
 
-func stringUpImp(thread *Thread, registers, stack *Stack, pos Pos) error {
+func stringUpImp(thread *Thread, registers []Val, stack *Stack, pos Pos) error {
 	stack.Push(NewVal(&TString, strings.ToUpper(stack.Pop().data.(string))))
 	return nil
 }
